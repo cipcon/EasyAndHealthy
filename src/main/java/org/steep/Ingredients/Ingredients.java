@@ -259,4 +259,10 @@ public class Ingredients {
         }
         return ingredientExist;
     }
+
+    public static void main(String[] args) {
+        Ingredients ingredients = new Ingredients();
+        String unit = UnitEnum.ML.toString().toLowerCase();
+        System.out.println(ingredients.createIngredient("Gin", unit));
+    }
 }
