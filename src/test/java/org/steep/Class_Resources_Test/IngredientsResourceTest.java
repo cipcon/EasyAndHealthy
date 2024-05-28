@@ -21,8 +21,8 @@ public class IngredientsResourceTest {
 
     @Test
     void testCreateIngredientSuccess() {
-        String ingredient = "Gin";
-        String unit = UnitEnum.ML.toString();
+        String ingredient = "Apfel";
+        String unit = UnitEnum.STÜCK.toString();
         int ingredientId = Ingredients.ingredientId(ingredient);
 
         // Clean up if the ingredient already exists
