@@ -11,26 +11,23 @@ import org.steep.Ingredients.UnitEnum;
 import org.steep.Recipe.CrudRecipe;
 
 public class IngredientsTest {
-
-    public Ingredients ingredients = new Ingredients();
-
     @Test
     void globalIngredientAddedSuccessfully() {
         String eier = "Eier";
-        int eierId = ingredients.ingredientId(eier);
+        int eierId = Ingredients.ingredientId(eier);
         // add the ingredient global
-        assertEquals(1, ingredients.createIngredient(eier, "stück"));
+        assertEquals(1, Ingredients.createIngredient(eier, "stück"));
 
         // try to insert it again. Return value must be false
-        assertNotEquals(1, ingredients.createIngredient(eier, "stück"));
+        assertNotEquals(1, Ingredients.createIngredient(eier, "stück"));
 
         // delete insertion
-        ingredients.deleteGlobalIngredient(eierId);
+        Ingredients.deleteGlobalIngredient(eierId);
     }
 
     @Test
     void readAllIngredientsCheckIngredients() {
-        ArrayList<String> allIngredients = ingredients.readAllIngredients();
+        ArrayList<String> allIngredients = Ingredients.readAllIngredients();
         ArrayList<String> coupleOfIngredients = new ArrayList<>();
 
         coupleOfIngredients.add("Ananas");
@@ -38,23 +35,23 @@ public class IngredientsTest {
         coupleOfIngredients.add("Erbsen");
         coupleOfIngredients.add("Kokosöl");
 
-        // return true if the ingredients match
+        // return true if the Ingredients match
         assertTrue(allIngredients.containsAll(coupleOfIngredients));
 
-        // return false if the ingredients doesn't match
+        // return false if the Ingredients doesn't match
         assertFalse(allIngredients.contains("Laptop"));
     }
 
     @Test
     void searchIngredientsAfterName() {
-        ArrayList<String> ingredientsList = ingredients.searchIngredient("mehl");
-        ArrayList<String> emptyList = ingredients.searchIngredient("Pistazien");
+        ArrayList<String> ingredientsList = Ingredients.searchIngredient("mehl");
+        ArrayList<String> emptyList = Ingredients.searchIngredient("Pistazien");
         ArrayList<String> mehl = new ArrayList<>();
 
         mehl.add("Dinkel Vollkornmehl");
         mehl.add("Dinkelmehl Typ 1050");
 
-        // return true if the ingredientList ArrayList contains the ingredients should
+        // return true if the ingredientList ArrayList contains the Ingredients should
         // contain
         assertTrue(ingredientsList.containsAll(mehl));
 
@@ -69,7 +66,7 @@ public class IngredientsTest {
         String recipe = "Cashewmilch";
         CrudRecipe crudRecipe = new CrudRecipe();
         int recipeId = crudRecipe.recipeId(recipe);
-        HashMap<String, Double> recipeIngredientsHashMap = ingredients.readRecipeIngredients(recipeId);
+        HashMap<String, Double> recipeIngredientsHashMap = Ingredients.readRecipeIngredients(recipeId);
         ArrayList<String> cashewmilchIngredientsCheck = new ArrayList<>();
         ArrayList<String> cashewmilchIngredients = new ArrayList<>();
 
@@ -81,7 +78,7 @@ public class IngredientsTest {
             cashewmilchIngredients.add(ingredient);
         }
 
-        // return true if the ingredients match
+        // return true if the Ingredients match
         assertTrue(cashewmilchIngredients.containsAll(cashewmilchIngredientsCheck));
 
         // the recipe doesn't contain Zucker, return false
@@ -91,7 +88,7 @@ public class IngredientsTest {
 
     @Test
     void ingredientIdFounded() {
-        int id = ingredients.ingredientId("Brot");
+        int id = Ingredients.ingredientId("Brot");
         int idButter = 9457;
 
         // return true if the correct inserted ingredietId match
@@ -104,7 +101,7 @@ public class IngredientsTest {
     @Test
     void ingredientUnitFounded() {
         String brot = "Brot";
-        String unitBrot = ingredients.ingredientUnit(ingredients.ingredientId(brot));
+        String unitBrot = Ingredients.ingredientUnit(Ingredients.ingredientId(brot));
         String unitErbsen = "G";
         String scheibe = UnitEnum.SCHEIBE.toString();
 
@@ -120,18 +117,18 @@ public class IngredientsTest {
 
 
         // add the ingredient
-        ingredients.createIngredient("Eier", "stück");
+        Ingredients.createIngredient("Eier", "stück");
 
         String firstIngredient = "Eier";
-        int firstIngredientId = ingredients.ingredientId(firstIngredient);
+        int firstIngredientId = Ingredients.ingredientId(firstIngredient);
         String secondIngredient = "Gemüs";
 
         // update it, check if successfull
-        boolean ingredientUpdatedSuccessfully = ingredients
-                .updateGlobalIngredient(ingredients.ingredientId(firstIngredient), "Ei", "stück");
+        boolean ingredientUpdatedSuccessfully = Ingredients
+                .updateGlobalIngredient(Ingredients.ingredientId(firstIngredient), "Ei", "stück");
 
         // check if by trying to modify an ingredient doesn't exist, return false
-        boolean ingredientUpdatedFalse = ingredients.updateGlobalIngredient(ingredients.ingredientId(secondIngredient),
+        boolean ingredientUpdatedFalse = Ingredients.updateGlobalIngredient(Ingredients.ingredientId(secondIngredient),
                 "Gemüse", "stück");
 
         // return true if the ingredient was updated successfully
@@ -141,7 +138,7 @@ public class IngredientsTest {
         assertFalse(ingredientUpdatedFalse);
 
         // delete the updated ingredient
-        ingredients.deleteGlobalIngredient(firstIngredientId);
+        Ingredients.deleteGlobalIngredient(firstIngredientId);
     }
 
     // even though I ordered the tests and added Thread.sleep(1000), the update and
@@ -150,15 +147,15 @@ public class IngredientsTest {
     void deleteGlobalIngredientSuccessfully() {
         // insert the ingredient before delete it
         String ei = "Ei";
-        ingredients.createIngredient(ei, "stuck");
-        int eiId = ingredients.ingredientId(ei);
+        Ingredients.createIngredient(ei, "stuck");
+        int eiId = Ingredients.ingredientId(ei);
 
 
         // try if successfully delete
-        boolean globalIngredientDeleted = ingredients.deleteGlobalIngredient(eiId);
+        boolean globalIngredientDeleted = Ingredients.deleteGlobalIngredient(eiId);
 
         // try to delete an ingredient that doesn't exist, return false
-        boolean globalIngredientDeleteFalse = ingredients.deleteGlobalIngredient(eiId);
+        boolean globalIngredientDeleteFalse = Ingredients.deleteGlobalIngredient(eiId);
 
         assertTrue(globalIngredientDeleted);
 
@@ -168,14 +165,14 @@ public class IngredientsTest {
     @Test
     void existingIngredientReturnOne() {
         String oliven = "Oliven";
-        int olivenId = ingredients.ingredientId(oliven);
+        int olivenId = Ingredients.ingredientId(oliven);
 
         // return true if the ingredient oliven was found
-        assertTrue(ingredients.existingIngredient(olivenId));
+        assertTrue(Ingredients.existingIngredient(olivenId));
 
         // return false if the ingredient Brombeeren wasn't found
         String brombeeren = "Brombeeren";
-        int brombeerenId = ingredients.ingredientId(brombeeren);
-        assertFalse(ingredients.existingIngredient(brombeerenId));
+        int brombeerenId = Ingredients.ingredientId(brombeeren);
+        assertFalse(Ingredients.existingIngredient(brombeerenId));
     }
 }

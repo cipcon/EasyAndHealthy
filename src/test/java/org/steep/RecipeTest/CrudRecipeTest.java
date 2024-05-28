@@ -21,8 +21,6 @@ public class CrudRecipeTest {
     }
 
     CrudRecipe crudRecipe = new CrudRecipe();
-    Ingredients ingredients = new Ingredients();
-
     @Test
     void createRecipeReturnOne() {
         String recipe = "Erdnussmuss";
@@ -54,16 +52,16 @@ public class CrudRecipeTest {
         String ingredient = "Salz";
         String recipe = "Guacamole";
 
-        // return one if ingredient added succcessfully to the recipe's ingredients list
+        // return one if ingredient added succcessfully to the recipe's Ingredients list
         assertEquals(1,
-                crudRecipe.addIngredientToRecipe(ingredients.ingredientId(ingredient), 1, crudRecipe.recipeId(recipe)));
+                crudRecipe.addIngredientToRecipe(Ingredients.ingredientId(ingredient), 1, crudRecipe.recipeId(recipe)));
 
-        // return zero if ingredient wasn't added to the recipe's ingredients list
+        // return zero if ingredient wasn't added to the recipe's Ingredients list
         assertEquals(0,
-                crudRecipe.addIngredientToRecipe(ingredients.ingredientId(ingredient), 1, crudRecipe.recipeId(recipe)));
+                crudRecipe.addIngredientToRecipe(Ingredients.ingredientId(ingredient), 1, crudRecipe.recipeId(recipe)));
 
         // delete insertion
-        crudRecipe.deleteOnlyOneIngredientFromRecipeIngredientTable(ingredients.ingredientId(ingredient),
+        crudRecipe.deleteOnlyOneIngredientFromRecipeIngredientTable(Ingredients.ingredientId(ingredient),
                 crudRecipe.recipeId(recipe));
     }
 
@@ -126,16 +124,16 @@ public class CrudRecipeTest {
         String ingredient = "Cashewkerne";
 
         // update the quantity of ingredient. Return one if successfull
-        assertEquals(1, crudRecipe.updateRecipeIngredientTable(ingredients.ingredientId(ingredient), 120,
+        assertEquals(1, crudRecipe.updateRecipeIngredientTable(Ingredients.ingredientId(ingredient), 120,
                 crudRecipe.recipeId(recipe), user().getId()));
 
         // try to update the quantity of ingredient. Return null because the inserted
         // userId is not the user that added the recipe.
-        assertEquals(0, crudRecipe.updateRecipeIngredientTable(ingredients.ingredientId(ingredient), 120,
+        assertEquals(0, crudRecipe.updateRecipeIngredientTable(Ingredients.ingredientId(ingredient), 120,
                 crudRecipe.recipeId(recipe), 20));
 
         // restore to initial quantity
-        crudRecipe.updateRecipeIngredientTable(ingredients.ingredientId(ingredient), 100, crudRecipe.recipeId(recipe),
+        crudRecipe.updateRecipeIngredientTable(Ingredients.ingredientId(ingredient), 100, crudRecipe.recipeId(recipe),
                 user().getId());
     }
 
@@ -165,7 +163,7 @@ public class CrudRecipeTest {
         // recipe
         crudRecipe.createRecipe(10, recipe, user().getId());
         crudRecipe.addRecipeToUser(crudRecipe.recipeId(recipe), user().getId());
-        crudRecipe.addIngredientToRecipe(ingredients.ingredientId(ingredient), 200, crudRecipe.recipeId(recipe));
+        crudRecipe.addIngredientToRecipe(Ingredients.ingredientId(ingredient), 200, crudRecipe.recipeId(recipe));
 
         // return 1 if the recipe was deleted from everywhere successfully
         assertEquals(1, crudRecipe.deleteRecipeGlobally(crudRecipe.recipeId(recipe), user().getId()));

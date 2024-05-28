@@ -15,7 +15,6 @@ import org.steep.User.User;
 
 public class ManageStockTest {
     ManageStock manageStock = new ManageStock();
-    Ingredients ingredients = new Ingredients();
 
     private User user() {
         User user = new User();
@@ -27,7 +26,7 @@ public class ManageStockTest {
     @Test
     void addIngredientToUserListReturnOne() {
         String ingredient = "Avocado";
-        int ingredientId = ingredients.ingredientId(ingredient);
+        int ingredientId = Ingredients.ingredientId(ingredient);
         // return true if the ingredient was added to user
         assertEquals(1, manageStock.addIngredientToUserList(ingredientId, 1, user().getId()));
 
@@ -43,7 +42,7 @@ public class ManageStockTest {
         ingredientQuantity.put("Butter", 4.0);
         ingredientQuantity.put("Brot", 500.0);
 
-        // return true if the ingredients and their quantities in both HashMaps match
+        // return true if the Ingredients and their quantities in both HashMaps match
         assertTrue(manageStock.readUserStock(user().getId()).entrySet().equals(ingredientQuantity.entrySet()));
         assertTrue(manageStock.readUserStock(user().getId()).get("Butter").equals(ingredientQuantity.get("Butter")));
 
@@ -54,7 +53,7 @@ public class ManageStockTest {
     @Test
     void updateUserStockSuccessfully() {
         String ingredient = "Avocado";
-        int ingredientId = ingredients.ingredientId(ingredient);
+        int ingredientId = Ingredients.ingredientId(ingredient);
 
         // add the ingredient in the user stock
         manageStock.addIngredientToUserList(ingredientId, 1, user().getId());
@@ -75,7 +74,7 @@ public class ManageStockTest {
     @Test
     void deleteStockSuccessfully() {
         String ingredient = "Avocado";
-        int ingredientId = ingredients.ingredientId(ingredient);
+        int ingredientId = Ingredients.ingredientId(ingredient);
 
         // add the ingredient
         manageStock.addIngredientToUserList(ingredientId, 1, user().getId());
@@ -92,7 +91,7 @@ public class ManageStockTest {
 
     @Test 
     void existingIngredientFound() {
-        // return true if the ingredient was found in the user's list of ingredients he has  
+        // return true if the ingredient was found in the user's list of Ingredients he has  
         assertTrue(manageStock.existingIngredient(40, user().getId()));
 
         // return false if the ingredient wasn't found

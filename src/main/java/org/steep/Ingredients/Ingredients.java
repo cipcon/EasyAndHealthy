@@ -17,7 +17,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class Ingredients {
     // Add ingredient global
     // return one if successfull, 0 if sth went wrong or ingredient already exist
-    public int createIngredient(String ingredient, String unit) {
+    public static int createIngredient(String ingredient, String unit) {
         int rowsAffected = 0;
         int ingredientId = ingredientId(ingredient);
 
@@ -47,7 +47,7 @@ public class Ingredients {
 
     // read all ingredients ant their unit
     // return a list filled with the ingredients if works, an empty list if doesn't
-    public ArrayList<String> readAllIngredients() {
+    public static ArrayList<String> readAllIngredients() {
         ArrayList<String> allIngredients = new ArrayList<>();
         String sqlReadAllIngredients = "SELECT zutat_name FROM zutaten";
         try (Connection connection = DatabaseManagement.connectToDB();
@@ -67,7 +67,7 @@ public class Ingredients {
     // read ingredients based on the letters they contain
     // return a list with ingredients based on the letters they contain
     // return an empty list if wth went wrong or no ingredients founded
-    public ArrayList<String> searchIngredient(String ingredientName) {
+    public static ArrayList<String> searchIngredient(String ingredientName) {
         ArrayList<String> ingredients = new ArrayList<>();
         String sqlReadIngredients = "SELECT zutat_name FROM zutaten WHERE zutat_name LIKE ?";
         try (Connection connection = DatabaseManagement.connectToDB();
@@ -87,7 +87,7 @@ public class Ingredients {
     }
 
     // Read the ingredients of a recipe, save them in a HashMap and return them
-    public HashMap<String, Double> readRecipeIngredients(int recipeId) {
+    public static HashMap<String, Double> readRecipeIngredients(int recipeId) {
         HashMapShoppingList hashMapShoppingList = new HashMapShoppingList();
 
         CrudRecipe crudRecipe = new CrudRecipe();
@@ -127,7 +127,7 @@ public class Ingredients {
 
     // get the id of an ingredient
     // return the ingredient id if it was found or 0 if it wasn't or sth went wrong
-    public int ingredientId(String ingredient) {
+    public static int ingredientId(String ingredient) {
         int ingredientId = 0;
         String sqlIngredientId = "SELECT zutat_id FROM zutaten WHERE zutat_name = ?";
         try (Connection connection = DatabaseManagement.connectToDB();
@@ -151,7 +151,7 @@ public class Ingredients {
     // get the unit of an ingredient
     // return the ingredient unit if it was found or an empty String if it wasn't or
     // sth went wrong
-    public String ingredientUnit(int ingredientId) {
+    public static String ingredientUnit(int ingredientId) {
         String ingredientUnit = "";
         String sqlIngredientUnit = "SELECT einheit FROM zutaten WHERE zutat_id = ?";
 
@@ -178,7 +178,7 @@ public class Ingredients {
 
     // update the name or unit of an ingredient
     // return 1 if the ingredient was successfully updated or 0 if it wasn't
-    public boolean updateGlobalIngredient(int ingredientId, String newIngredient, String unit) {
+    public static boolean updateGlobalIngredient(int ingredientId, String newIngredient, String unit) {
         String updateIngredient = "UPDATE zutaten SET zutat_name = ?, einheit = ? WHERE zutat_id = ?";
         boolean ingredientUpdated = false;
 
@@ -208,7 +208,7 @@ public class Ingredients {
 
     // delete an ingredient globally
     // return 1 if the ingredient was successfully deleted or 0 if it wasn't
-    public boolean deleteGlobalIngredient(int ingredientId) {
+    public static boolean deleteGlobalIngredient(int ingredientId) {
         boolean globalIngredientDeleted = false;
 
         if (existingIngredient(ingredientId) == false) {
@@ -236,7 +236,7 @@ public class Ingredients {
 
     // check if an ingredient exist
     // return true if exist, false if doesn't
-    public boolean existingIngredient(int ingredientId) {
+    public static boolean existingIngredient(int ingredientId) {
         boolean ingredientExist = false;
         String searchRecipes = "SELECT zutat_id FROM zutaten WHERE zutat_id = ?";
 
@@ -258,11 +258,5 @@ public class Ingredients {
             e.printStackTrace();
         }
         return ingredientExist;
-    }
-
-    public static void main(String[] args) {
-        Ingredients ingredients = new Ingredients();
-        String unit = UnitEnum.ML.toString().toLowerCase();
-        System.out.println(ingredients.createIngredient("Gin", unit));
     }
 }
