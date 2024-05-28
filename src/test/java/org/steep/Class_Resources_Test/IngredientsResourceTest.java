@@ -16,8 +16,9 @@ public class IngredientsResourceTest {
     
     @Test
     void testCreateIngredientSuccess() {
-        String unit = UnitEnum.ML.toString().toLowerCase();
         String ingredient = "Gin";
+        String unit = UnitEnum.ML.toString();
+
         IngredientRequest request = new IngredientRequest(ingredient, unit);
 
         IngredientsResource resource = new IngredientsResource();

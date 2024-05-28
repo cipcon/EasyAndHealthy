@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.steep.Ingredients.Ingredients;
+import org.steep.Ingredients.UnitEnum;
 import org.steep.Recipe.CrudRecipe;
 
 public class IngredientsTest {
@@ -104,13 +105,14 @@ public class IngredientsTest {
     void ingredientUnitFounded() {
         String brot = "Brot";
         String unitBrot = ingredients.ingredientUnit(ingredients.ingredientId(brot));
-        String unitErbsen = "g";
+        String unitErbsen = "G";
+        String scheibe = UnitEnum.SCHEIBE.toString();
 
         // return true if the correct inserted unit match
-        assertEquals("Scheibe", unitBrot);
+        assertEquals(scheibe, unitBrot);
 
         // the unit of Erbsen is false, must return false
-        assertNotEquals("Scheibe", unitErbsen);
+        assertNotEquals(scheibe, unitErbsen);
     }
 
     @Test

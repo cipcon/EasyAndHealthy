@@ -4,6 +4,7 @@ public enum UnitEnum {
     BUND,
     EL,
     G,
+    HANDVOLL,
     KG,
     L,
     ML,
@@ -12,5 +13,5 @@ public enum UnitEnum {
     STÜCK,
     TL,
     ZEHE,
-    ZWEIGE
+    ZWEIGE,
 }
