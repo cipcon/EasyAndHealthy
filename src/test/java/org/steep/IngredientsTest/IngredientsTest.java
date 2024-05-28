@@ -27,7 +27,7 @@ public class IngredientsTest {
 
     @Test
     void readAllIngredientsCheckIngredients() {
-        ArrayList<String> allIngredients = Ingredients.readAllIngredients();
+        ArrayList<String> allIngredients = Ingredients.getAllIngredients();
         ArrayList<String> coupleOfIngredients = new ArrayList<>();
 
         coupleOfIngredients.add("Ananas");
