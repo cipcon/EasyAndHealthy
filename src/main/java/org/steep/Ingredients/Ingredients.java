@@ -47,7 +47,7 @@ public class Ingredients {
 
     // read all ingredients ant their unit
     // return a list filled with the ingredients if works, an empty list if doesn't
-    public static ArrayList<String> readAllIngredients() {
+    public static ArrayList<String> getAllIngredients() {
         ArrayList<String> allIngredients = new ArrayList<>();
         String sqlReadAllIngredients = "SELECT zutat_name FROM zutaten";
         try (Connection connection = DatabaseManagement.connectToDB();
