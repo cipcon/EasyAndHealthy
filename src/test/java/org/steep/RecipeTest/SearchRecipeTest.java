@@ -13,8 +13,7 @@ import org.steep.User.User;
 
 public class SearchRecipeTest {
     SearchRecipe searchRecipe = new SearchRecipe();
-    CrudRecipe crudRecipe = new CrudRecipe();
-
+    
     private User user() {
         User user = new User();
         user.setCurrentUsername("Ciprian");
@@ -48,10 +47,10 @@ public class SearchRecipeTest {
         cookingPlanCheck.put("Käse", 200.0);
 
         // return true if the name of the ingredients added in the list above match the list returned from the function
-        assertTrue(searchRecipe.cookingPlan(4, crudRecipe.recipeId(recipe)).entrySet().equals(cookingPlanCheck.entrySet()));
+        assertTrue(searchRecipe.cookingPlan(4, CrudRecipe.recipeId(recipe)).entrySet().equals(cookingPlanCheck.entrySet()));
         
         // return false if the ingredient Karotten doesn't belong to recipe's ingredients
-        assertFalse(searchRecipe.cookingPlan(4, crudRecipe.recipeId(recipe)).keySet().contains("Karotten"));
+        assertFalse(searchRecipe.cookingPlan(4, CrudRecipe.recipeId(recipe)).keySet().contains("Karotten"));
     }
 
     @Test
@@ -64,10 +63,10 @@ public class SearchRecipeTest {
         shoppingListCheck.put("Käse", 100.0);
 
         // return true if the ingredients in the list received from function match the list i created 
-        assertTrue(searchRecipe.shoppingList(4, crudRecipe.recipeId(recipe), user().getId()).entrySet().equals(shoppingListCheck.entrySet()));
+        assertTrue(searchRecipe.shoppingList(4, CrudRecipe.recipeId(recipe), user().getId()).entrySet().equals(shoppingListCheck.entrySet()));
     
         // return false if the ingredient doesn't match
-        assertFalse(searchRecipe.shoppingList(4, crudRecipe.recipeId(recipe), user().getId()).keySet().contains("Karotten"));
+        assertFalse(searchRecipe.shoppingList(4, CrudRecipe.recipeId(recipe), user().getId()).keySet().contains("Karotten"));
     }
 
     @Test

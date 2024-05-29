@@ -30,7 +30,7 @@ public class IngredientsTest {
         ArrayList<String> allIngredients = Ingredients.getAllIngredients();
         ArrayList<String> coupleOfIngredients = new ArrayList<>();
 
-        coupleOfIngredients.add("Ananas");
+        coupleOfIngredients.add("Zwiebeln");
         coupleOfIngredients.add("Butter");
         coupleOfIngredients.add("Erbsen");
         coupleOfIngredients.add("Kokosöl");
@@ -64,8 +64,7 @@ public class IngredientsTest {
     @Test
     void readRecipeIngredientsCheckIfMatch() {
         String recipe = "Cashewmilch";
-        CrudRecipe crudRecipe = new CrudRecipe();
-        int recipeId = crudRecipe.recipeId(recipe);
+        int recipeId = CrudRecipe.recipeId(recipe);
         HashMap<String, Double> recipeIngredientsHashMap = Ingredients.readRecipeIngredients(recipeId);
         ArrayList<String> cashewmilchIngredientsCheck = new ArrayList<>();
         ArrayList<String> cashewmilchIngredients = new ArrayList<>();
