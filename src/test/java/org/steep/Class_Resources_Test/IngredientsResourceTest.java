@@ -1,9 +1,9 @@
 package org.steep.Class_Resources_Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.steep.Class_resources.IngredientsResource;
 import org.steep.Ingredients.Ingredients;
@@ -12,7 +12,6 @@ import org.steep.Requests.IngredientRequest;
 
 import jakarta.inject.Inject;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @QuarkusTest
@@ -23,54 +22,81 @@ public class IngredientsResourceTest {
     final private int OK = Response.Status.OK.getStatusCode();
     final private int CREATED = Response.Status.CREATED.getStatusCode();
 
+    String ananas = "Ananas";
+    int ananasId = Ingredients.ingredientId(ananas);
+    String ananasUnit = UnitEnum.STÜCK.toString();
+
+    @BeforeEach
+    void beforeEach() {
+        Ingredients.createIngredient(ananas, ananasUnit);
+    }
+
+    @AfterEach
+    void afterEach() {
+        Ingredients.deleteGlobalIngredient(ananasId);
+    }
+
     @Inject
     private IngredientsResource resource;
 
     @Test
     void testCreateIngredientSuccess() {
-        String ingredient = "Apfel";
-        String unit = UnitEnum.STÜCK.toString();
-        int ingredientId = Ingredients.ingredientId(ingredient);
+        IngredientRequest request = new IngredientRequest(ananas, ananasUnit);
 
-        // Clean up if the ingredient already exists
-        if (ingredientId != 0) {
-            Ingredients.deleteGlobalIngredient(ingredientId);
-        }
+        Response response = resource.createIngredient(request);
+        assertEquals(CREATED, response.getStatus());
 
-        // Verify that the ingredient does not exist before the test
-        assertEquals(0, ingredientId);
-
-        IngredientRequest request = new IngredientRequest(ingredient, unit);
-
-        try {
-            Response response = resource.createIngredient(request);
-            assertEquals(CREATED, response.getStatus());
-            if (response.getStatus() == CREATED) {
-
-                ingredientId = Ingredients.ingredientId(ingredient);
-                Ingredients.deleteGlobalIngredient(ingredientId);
-            }
-        } catch (Exception e) {
-            fail("Unexpected exception during test: " + e.getMessage());
-        }
     }
 
     @Test
     void testGetAllIngredientsSuccess() {
-        assertEquals(OK, resource.getAllIngredients().getStatus());
+        Response response = resource.getAllIngredients();
+        assertEquals(OK, response.getStatus());
     }
 
     @Test
     void testSearchIngredientSuccess() {
         String ingredient = "kar";
 
+        Response response = resource.searchIngredient(ingredient);
         // check if OK
-        assertEquals(OK, resource.searchIngredient(ingredient).getStatus());
+        assertEquals(OK, response.getStatus());
     }
 
     @Test
     void getAllUnitsSuccess() {
-        assertEquals(OK, resource.getAllUnits().getStatus());
+        Response response = resource.getAllUnits();
+
+        assertEquals(OK, response.getStatus());
     }
 
+    @Test
+    void readRecipeIngredientsSuccess() {
+        int recipeId = 1; // Caprese Salat
+
+        Response response = resource.readRecipeIngredients(recipeId);
+        assertEquals(OK, response.getStatus());
+    }
+
+    @Test
+    void getIngredientUnitSuccess() {
+        Response response = resource.getIngredientUnit(ananasId);
+
+        assertEquals(OK, response.getStatus());
+    }
+
+    @Test
+    void updateGlobalIngredientSuccess() {
+        String newName = "Pineapple";
+        Response response = resource.updateGlobalIngredient(ananasId, newName, ananasUnit);
+
+        assertEquals(OK, response.getStatus());
+    }
+
+    @Test
+    void deleteGlobalIngredientSuccess() {
+        Response response = resource.deleteGlobalIngredient(ananasId);
+
+        assertEquals(OK, response.getStatus());
+    }
 }

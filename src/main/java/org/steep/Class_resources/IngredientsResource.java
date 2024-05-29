@@ -1,6 +1,7 @@
 package org.steep.Class_resources;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.steep.Ingredients.Ingredients;
 import org.steep.Ingredients.UnitEnum;
@@ -9,6 +10,7 @@ import org.steep.Requests.IngredientRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -30,7 +32,7 @@ public class IngredientsResource {
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Fehler beim Hinzufügen: " + e.getMessage()).build();
+                    .entity("Error adding ingredient: " + e.getMessage()).build();
         }
     }
 
@@ -44,7 +46,6 @@ public class IngredientsResource {
      * list of ingredients).
      */
 
-     
     @GET
     @Path("/ingredients")
     public Response getAllIngredients() {
@@ -85,6 +86,56 @@ public class IngredientsResource {
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error retrieving ingredients: " + e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/RecipeIngredients/{recipeId}")
+    public Response readRecipeIngredients(@PathParam("recipeId") int recipeId) {
+        try {
+            HashMap<String, Double> ingredientsFound = Ingredients.readRecipeIngredients(recipeId);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(ingredientsFound);
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Error retrieving ingredients: " + e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/ingredientUnit/{ingredientId}")
+    public Response getIngredientUnit(@PathParam("ingredientId") int ingredientId) {
+        try {
+            String json = Ingredients.ingredientUnit(ingredientId);
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Error retrieving ingredient unit: " + e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/updateGlobalIngredient/{ingredientId}/{newIngredientName}/{unit}")
+    public Response updateGlobalIngredient(@PathParam("ingredientId") int ingredientId, @PathParam("newIngredientName") String newIngredientName, @PathParam("unit") String unit) {
+        try {
+            Ingredients.updateGlobalIngredient(ingredientId, newIngredientName, unit);
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Error editing ingredient: " + e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/deleteIngredient/{ingredientId}")
+    public Response deleteGlobalIngredient(@PathParam("ingredientId") int ingredientId) {
+        try {
+            Ingredients.deleteGlobalIngredient(ingredientId);
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Error deleting ingredient: " + e.getMessage()).build();
         }
     }
 }
