@@ -3,6 +3,7 @@ package org.steep.Class_resources;
 import java.util.ArrayList;
 
 import org.steep.Ingredients.Ingredients;
+import org.steep.Ingredients.UnitEnum;
 import org.steep.Requests.IngredientRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,5 +72,19 @@ public class IngredientsResource {
                     .entity("Error retrieving ingredients: " + e.getMessage()).build();
         }
 
+    }
+
+    @GET
+    @Path("/unit")
+    public Response getAllUnits() {
+        try {
+            ArrayList<String> allUnits = UnitEnum.allUnits();
+            ObjectMapper mapper = new ObjectMapper(); // Create an ObjectMapper instance
+            String json = mapper.writeValueAsString(allUnits); // Convert list to JSON string
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Error retrieving ingredients: " + e.getMessage()).build();
+        }
     }
 }

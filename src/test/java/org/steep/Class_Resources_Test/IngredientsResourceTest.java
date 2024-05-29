@@ -1,6 +1,7 @@
 package org.steep.Class_Resources_Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
@@ -11,10 +12,16 @@ import org.steep.Requests.IngredientRequest;
 
 import jakarta.inject.Inject;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @QuarkusTest
 public class IngredientsResourceTest {
+
+    Response response;
+
+    final private int OK = Response.Status.OK.getStatusCode();
+    final private int CREATED = Response.Status.CREATED.getStatusCode();
 
     @Inject
     private IngredientsResource resource;
@@ -37,8 +44,8 @@ public class IngredientsResourceTest {
 
         try {
             Response response = resource.createIngredient(request);
-            assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-            if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
+            assertEquals(CREATED, response.getStatus());
+            if (response.getStatus() == CREATED) {
 
                 ingredientId = Ingredients.ingredientId(ingredient);
                 Ingredients.deleteGlobalIngredient(ingredientId);
@@ -49,17 +56,21 @@ public class IngredientsResourceTest {
     }
 
     @Test
-    void testGetAllIngredients() {
-        assertEquals(Response.Status.OK.getStatusCode(), resource.getAllIngredients().getStatus());
+    void testGetAllIngredientsSuccess() {
+        assertEquals(OK, resource.getAllIngredients().getStatus());
     }
 
     @Test
-    void testSearchIngredient() {
+    void testSearchIngredientSuccess() {
         String ingredient = "kar";
 
         // check if OK
-        assertEquals(Response.Status.OK.getStatusCode(), resource.searchIngredient(ingredient).getStatus());
+        assertEquals(OK, resource.searchIngredient(ingredient).getStatus());
     }
 
+    @Test
+    void getAllUnitsSuccess() {
+        assertEquals(OK, resource.getAllUnits().getStatus());
+    }
 
 }
