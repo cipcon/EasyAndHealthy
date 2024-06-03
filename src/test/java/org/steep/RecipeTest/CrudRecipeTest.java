@@ -123,16 +123,16 @@ public class CrudRecipeTest {
         String ingredient = "Cashewkerne";
 
         // update the quantity of ingredient. Return one if successfull
-        assertEquals(1, CrudRecipe.updateRecipeIngredientTable(Ingredients.ingredientId(ingredient), 120,
+        assertEquals(1, CrudRecipe.updateIngredientQuantity(Ingredients.ingredientId(ingredient), 120,
                 CrudRecipe.recipeId(recipe), user().getId()));
 
         // try to update the quantity of ingredient. Return null because the inserted
         // userId is not the user that added the recipe.
-        assertEquals(0, CrudRecipe.updateRecipeIngredientTable(Ingredients.ingredientId(ingredient), 120,
+        assertEquals(0, CrudRecipe.updateIngredientQuantity(Ingredients.ingredientId(ingredient), 120,
                 CrudRecipe.recipeId(recipe), 20));
 
         // restore to initial quantity
-        CrudRecipe.updateRecipeIngredientTable(Ingredients.ingredientId(ingredient), 100, CrudRecipe.recipeId(recipe),
+        CrudRecipe.updateIngredientQuantity(Ingredients.ingredientId(ingredient), 100, CrudRecipe.recipeId(recipe),
                 user().getId());
     }
 

@@ -167,6 +167,7 @@ public class CrudRecipe {
         return hashMapShoppingList.getRecipeData();
     }
 
+    // Not sure yet if i need this function
     // Return a ArrayList with the recipes the user saved in his recipe list
     // If the ArrayList is empty, sth went wrong
     public static ArrayList<String> recipesFromUser(int userId) {
@@ -235,7 +236,7 @@ public class CrudRecipe {
 
     // Updates ingredient quantity in a recipe belonging to the user.
     // Returns affected rows (1 on success, 0 otherwise).
-    public static int updateRecipeIngredientTable(int ingredientId, int quantity,
+    public static int updateIngredientQuantity(int ingredientId, int quantity,
             int recipeId, int userId) {
 
         int rowsUpdated = 0;
@@ -304,7 +305,7 @@ public class CrudRecipe {
 
     // Removes recipe from all users list if it exists. Returns affected rows
     // (1 on success, 0 otherwise).
-    public static int deleteRecipeFromUsersLists(int recipeId) {
+    public static int deleteRecipeFromAllUsersLists(int recipeId) {
 
         int rowsDeleted = 0;
 
@@ -411,7 +412,7 @@ public class CrudRecipe {
         }
         try (Connection connection = DatabaseManagement.connectToDB()) {
             deleteFromRecipeIngredientTable(recipeId);
-            deleteRecipeFromUsersLists(recipeId);
+            deleteRecipeFromAllUsersLists(recipeId);
 
             String deleteRecipeGlobally = "DELETE FROM rezept " +
                     "WHERE rezept_id = ? AND benutzer_id = ?";
@@ -564,5 +565,30 @@ public class CrudRecipe {
             e.printStackTrace();
         }
         return recipeExist;
+    }
+
+    // Return recipeId based on recipe name
+    // Return 0 if the recipe wasn't found
+    public static String recipeName(int recipeid) {
+        String recipeName = "";
+        try (Connection connection = DatabaseManagement.connectToDB()) {
+            String sqlRecipeId = "SELECT rezept_name FROM rezept " +
+                    "WHERE rezept_id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sqlRecipeId)) {
+                statement.setInt(1, recipeid);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    recipeName = resultSet.getString("rezept_name");
+                    return recipeName;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return recipeName;
     }
 }
