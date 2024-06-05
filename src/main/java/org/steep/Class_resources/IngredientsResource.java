@@ -46,7 +46,7 @@ public class IngredientsResource {
      */
 
     @GET
-    @Path("/ingredients")
+    @Path("/getAllIngredients")
     public Response getAllIngredients() {
         try {
             ArrayList<String> allIngredients = Ingredients.getAllIngredients();

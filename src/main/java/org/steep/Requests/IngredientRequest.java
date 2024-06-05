@@ -1,20 +1,20 @@
 package org.steep.Requests;
 
 public class IngredientRequest {
-    private String ingredient;
+    private String name;
     private String unit;
 
     public IngredientRequest() {
     
     }
 
-    public IngredientRequest(String ingredient, String unit) {
-        this.ingredient = ingredient;
+    public IngredientRequest(String name, String unit) {
+        this.name = name;
         this.unit = unit;
     }
 
-    public void setIngredient(String ingredient) {
-        this.ingredient = ingredient;
+    public void setIngredient(String name) {
+        this.name = name;
     }
 
     public void setUnit(String unit) {
@@ -22,10 +22,10 @@ public class IngredientRequest {
     }
 
     public String getIngredient() {
-        return ingredient;
+        return this.name;
     }
 
     public String getUnit() {
-        return unit;
+        return this.unit;
     }
 }
