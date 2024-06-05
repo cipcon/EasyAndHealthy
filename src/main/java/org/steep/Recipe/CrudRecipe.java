@@ -11,12 +11,14 @@ import java.util.HashMap;
 
 import org.steep.Database.DatabaseManagement;
 import org.steep.Stock.CurrentStock;
-import org.steep.User.User;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class CrudRecipe {
     // Create a new recipe in the database with the provided details.
     // Returns 1 if the recipe is created successfully, 0 if there's an error.
-    public int createRecipe(int portions, String recipeName, int userId) {
+    public static int createRecipe(int portions, String recipeName, int userId) {
         int rowsAffected = 0;
         int recipeId = recipeId(recipeName);
 
@@ -44,7 +46,7 @@ public class CrudRecipe {
     // Add an existing recipe to the user's recipe list
     // Returns 1 if the recipe is added successfully, 0 if it already exists in the
     // user's list,
-    public int addRecipeToUser(int recipeId, int userId) {
+    public static int addRecipeToUser(int recipeId, int userId) {
         int rowsAffected = 0;
         if (recipeId == 0 || userId == 0) {
             System.out.println("Invalid input: recipe or user is null.");
@@ -86,7 +88,7 @@ public class CrudRecipe {
     // Adds an ingredient to a recipe in the database.
     // Returns the number of rows affected (typically 1 if successful).
     // Returns 0 if the ingredient already exists in the recipe.
-    public int addIngredientToRecipe(int ingredientId, int quantity,
+    public static int addIngredientToRecipe(int ingredientId, int quantity,
             int recipeId) {
         int rowsAffected = 0;
         if (ingredientId == 0 || quantity == 0 || recipeId == 0) {
@@ -121,7 +123,7 @@ public class CrudRecipe {
     // not sure if i need this function
     // output only the recipes that has ingredients
     // return a HashMap in a HashMap. CurrentStock is a HashMap
-    public HashMap<String, CurrentStock> readAllRecipes() {
+    public static HashMap<String, CurrentStock> readAllRecipes() {
         HashMapShoppingList hashMapShoppingList = new HashMapShoppingList();
         try (Connection connection = DatabaseManagement.connectToDB()) {
             String readRecipes = "SELECT r.rezept_name, z.zutat_name, rz.menge " +
@@ -165,13 +167,12 @@ public class CrudRecipe {
         return hashMapShoppingList.getRecipeData();
     }
 
+    // Not sure yet if i need this function
     // Return a ArrayList with the recipes the user saved in his recipe list
     // If the ArrayList is empty, sth went wrong
-    public ArrayList<String> recipesFromUser(User user) {
+    public static ArrayList<String> recipesFromUser(int userId) {
         ArrayList<String> recipeList = new ArrayList<>();
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            int userId = user.getId();
-            String userName = user.getCurrentUsername();
             String readUsersRecipes = "SELECT r.rezept_name " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_benutzer rz ON rz.rezept_id = r.rezept_id " +
@@ -190,7 +191,7 @@ public class CrudRecipe {
                     } while (resultSet.next());
                     return recipeList;
                 } else {
-                    System.out.println("Hello " + userName + ", you don't have any recipe in your list");
+                    System.out.println("Hello, you don't have any recipe in your list");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -203,7 +204,7 @@ public class CrudRecipe {
 
     // Updates recipe name & portions if it exists and belongs to the user.
     // Returns affected rows (1 on success, 0 otherwise).
-    public int updateGlobalRecipe(String newRecipeName, int recipeId, int portions, int userId) {
+    public static int updateGlobalRecipe(String newRecipeName, int recipeId, int portions, int userId) {
         int rowsAffected = 0;
         if (existingGlobalRecipe(recipeId) == false) {
             System.out.println("Recipe doesn't exist");
@@ -235,7 +236,7 @@ public class CrudRecipe {
 
     // Updates ingredient quantity in a recipe belonging to the user.
     // Returns affected rows (1 on success, 0 otherwise).
-    public int updateRecipeIngredientTable(int ingredientId, int quantity,
+    public static int updateIngredientQuantity(int ingredientId, int quantity,
             int recipeId, int userId) {
 
         int rowsUpdated = 0;
@@ -279,7 +280,7 @@ public class CrudRecipe {
 
     // Removes recipe from user's list if it exists. Returns affected rows (1 on
     // success, 0 otherwise).
-    public int deleteFromRecipeUserTable(int recipeId, int userId) {
+    public static int deleteFromRecipeUserTable(int recipeId, int userId) {
         int rowsDeleted = 0;
 
         if (existingGlobalRecipe(recipeId) == true) {
@@ -304,7 +305,7 @@ public class CrudRecipe {
 
     // Removes recipe from all users list if it exists. Returns affected rows
     // (1 on success, 0 otherwise).
-    public int deleteRecipeFromUsersLists(int recipeId) {
+    public static int deleteRecipeFromAllUsersLists(int recipeId) {
 
         int rowsDeleted = 0;
 
@@ -332,7 +333,7 @@ public class CrudRecipe {
 
     // Deletes recipe's ingredients (from rezept_zutat) if the recipe exists.
     // Returns affected rows (number of deleted entries).
-    public int deleteFromRecipeIngredientTable(int recipeId) {
+    public static int deleteFromRecipeIngredientTable(int recipeId) {
         int rowsDeleted = 0;
         boolean recipeExist = existingGlobalRecipe(recipeId);
 
@@ -362,7 +363,7 @@ public class CrudRecipe {
     // Delete only one ingredient from rezept_zutat table
     // Returns one if successfull or zero if sth went wrong or already exist
 
-    public int deleteOnlyOneIngredientFromRecipeIngredientTable(int ingredientId, int recipeId) {
+    public static int deleteOnlyOneIngredientFromRecipeIngredientTable(int ingredientId, int recipeId) {
         int rowsDeleted = 0;
         boolean ingredientFound = ingredientFoundInRecipe(ingredientId, recipeId);
 
@@ -401,7 +402,7 @@ public class CrudRecipe {
     // - Deleting the recipe itself (rezept) if it belongs to the current user.
     // Returns 1 if the recipe was successfull deleted.
     // Returns 0 if the recipe doesn't exist or the user is null.
-    public int deleteRecipeGlobally(int recipeId, int userId) {
+    public static int deleteRecipeGlobally(int recipeId, int userId) {
         int rowsDeleted = 0;
         boolean recipeExist = existingGlobalRecipe(recipeId);
 
@@ -411,7 +412,7 @@ public class CrudRecipe {
         }
         try (Connection connection = DatabaseManagement.connectToDB()) {
             deleteFromRecipeIngredientTable(recipeId);
-            deleteRecipeFromUsersLists(recipeId);
+            deleteRecipeFromAllUsersLists(recipeId);
 
             String deleteRecipeGlobally = "DELETE FROM rezept " +
                     "WHERE rezept_id = ? AND benutzer_id = ?";
@@ -434,14 +435,13 @@ public class CrudRecipe {
     // This function retrieves a list of recipe IDs for recipes created by the
     // current user.
     // If no recipes are found, an empty ArrayList is returned.
-    public ArrayList<Integer> recipesCreatedByUser(User user) {
+    public static ArrayList<Integer> recipesCreatedByUser(int userId) {
         ArrayList<Integer> userRecipes = new ArrayList<>();
         try (Connection connection = DatabaseManagement.connectToDB()) {
-
             String sqlRecipesCreatedByUser = "SELECT rezept_id FROM rezept " +
                     "WHERE benutzer_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(sqlRecipesCreatedByUser)) {
-                statement.setInt(1, user.getId());
+                statement.setInt(1, userId);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
                     do {
@@ -449,7 +449,7 @@ public class CrudRecipe {
                         userRecipes.add(recipeId);
                     } while (resultSet.next());
                 } else {
-                    System.out.println("No recipes added by " + user.getCurrentUsername());
+                    System.out.println("No recipes added by ");
                 }
                 return userRecipes;
             } catch (Exception e) {
@@ -458,13 +458,12 @@ public class CrudRecipe {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return userRecipes;
     }
 
     // Return recipeId based on recipe name
     // Return 0 if the recipe wasn't found
-    public int recipeId(String recipeName) {
+    public static int recipeId(String recipeName) {
         int recipeID = 0;
         try (Connection connection = DatabaseManagement.connectToDB()) {
             String sqlRecipeId = "SELECT rezept_id FROM rezept " +
@@ -490,7 +489,7 @@ public class CrudRecipe {
     // Checks if an ingredient with the given ID already exists in the specified
     // recipe
     // Returns true if the ingredient exists in the recipe, False otherwise.
-    public boolean ingredientFoundInRecipe(int ingredientId, int recipeId) {
+    public static boolean ingredientFoundInRecipe(int ingredientId, int recipeId) {
         boolean ingredientFoundInRecipe = false;
         try (Connection connection = DatabaseManagement.connectToDB()) {
             String ingredientBelongingRecipe = "SELECT zutat_id FROM rezept_zutat WHERE rezept_id = ?";
@@ -516,7 +515,7 @@ public class CrudRecipe {
 
     // Checks if a recipe with the given ID exists in the user's list of recipes.
     // Returns true if the recipe exists in the user's list, False otherwise.
-    public Boolean recipeExistsInUsersList(int recipeId, int userId) {
+    public static Boolean recipeExistsInUsersList(int recipeId, int userId) {
         try (Connection connection = DatabaseManagement.connectToDB()) {
             Boolean existingRecipeUserDB = false;
             String sqlExistingRecipeUserDB = "SELECT rezept_id " +
@@ -543,7 +542,7 @@ public class CrudRecipe {
 
     // Checks if a recipe with the given name exists in the database.
     // Returns true if the recipe exists, False otherwise.
-    public boolean existingGlobalRecipe(int recipeId) {
+    public static boolean existingGlobalRecipe(int recipeId) {
         boolean recipeExist = false;
         String searchRecipes = "SELECT rezept_id FROM rezept WHERE rezept_id = ?";
 
@@ -566,5 +565,30 @@ public class CrudRecipe {
             e.printStackTrace();
         }
         return recipeExist;
+    }
+
+    // Return recipeId based on recipe name
+    // Return 0 if the recipe wasn't found
+    public static String recipeName(int recipeid) {
+        String recipeName = "";
+        try (Connection connection = DatabaseManagement.connectToDB()) {
+            String sqlRecipeId = "SELECT rezept_name FROM rezept " +
+                    "WHERE rezept_id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sqlRecipeId)) {
+                statement.setInt(1, recipeid);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    recipeName = resultSet.getString("rezept_name");
+                    return recipeName;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return recipeName;
     }
 }

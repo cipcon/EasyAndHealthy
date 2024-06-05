@@ -14,7 +14,6 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -62,7 +61,7 @@ public class IngredientsResource {
 
     @GET
     @Path("/{name}")
-    public Response searchIngredient(@PathParam("name") String name) {
+    public Response searchIngredient(String name) {
         try {
             ArrayList<String> ingredientsFound = Ingredients.searchIngredient(name);
             ObjectMapper mapper = new ObjectMapper();
@@ -90,8 +89,8 @@ public class IngredientsResource {
     }
 
     @GET
-    @Path("/RecipeIngredients/{recipeId}")
-    public Response readRecipeIngredients(@PathParam("recipeId") int recipeId) {
+    @Path("/RecipeIngredients/{recipeId:\\d+}")
+    public Response readRecipeIngredients(int recipeId) {
         try {
             HashMap<String, Double> ingredientsFound = Ingredients.readRecipeIngredients(recipeId);
             ObjectMapper mapper = new ObjectMapper();
@@ -104,8 +103,8 @@ public class IngredientsResource {
     }
 
     @GET
-    @Path("/ingredientUnit/{ingredientId}")
-    public Response getIngredientUnit(@PathParam("ingredientId") int ingredientId) {
+    @Path("/ingredientUnit/{ingredientId:\\d+}")
+    public Response getIngredientUnit(int ingredientId) {
         try {
             String json = Ingredients.ingredientUnit(ingredientId);
             return Response.ok(json).build();
@@ -116,8 +115,8 @@ public class IngredientsResource {
     }
 
     @POST
-    @Path("/updateGlobalIngredient/{ingredientId}/{newIngredientName}/{unit}")
-    public Response updateGlobalIngredient(@PathParam("ingredientId") int ingredientId, @PathParam("newIngredientName") String newIngredientName, @PathParam("unit") String unit) {
+    @Path("/updateGlobalIngredient/{ingredientId:\\d+}/{newIngredientName}/{unit}")
+    public Response updateGlobalIngredient(int ingredientId, String newIngredientName, String unit) {
         try {
             Ingredients.updateGlobalIngredient(ingredientId, newIngredientName, unit);
             return Response.status(Response.Status.OK).build();
@@ -128,8 +127,8 @@ public class IngredientsResource {
     }
 
     @DELETE
-    @Path("/deleteIngredient/{ingredientId}")
-    public Response deleteGlobalIngredient(@PathParam("ingredientId") int ingredientId) {
+    @Path("/deleteIngredient/{ingredientId:\\d+}")
+    public Response deleteGlobalIngredient(int ingredientId) {
         try {
             Ingredients.deleteGlobalIngredient(ingredientId);
             return Response.status(Response.Status.OK).build();

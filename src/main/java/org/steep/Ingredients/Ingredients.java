@@ -90,8 +90,7 @@ public class Ingredients {
     public static HashMap<String, Double> readRecipeIngredients(int recipeId) {
         HashMapShoppingList hashMapShoppingList = new HashMapShoppingList();
 
-        CrudRecipe crudRecipe = new CrudRecipe();
-        boolean recipeIdExist = crudRecipe.existingGlobalRecipe(recipeId);
+        boolean recipeIdExist = CrudRecipe.existingGlobalRecipe(recipeId);
 
         if (recipeIdExist == true) {
             String readRecipesIngredients = "SELECT z.zutat_name, rz.menge " +

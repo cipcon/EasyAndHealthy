@@ -7,8 +7,7 @@ public class User {
     private int id;
 
     public User() {
-        this.currentUsername = "";
-        this.id = 0;
+ 
     }
 
     // Getter
