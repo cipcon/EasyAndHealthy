@@ -1,3 +1,9 @@
+*, header {
+    background-color: antiquewhite;
+    margin: 0;
+    padding: 0;
+}
+
 .header-center-align {
-    text-align: center;
+    text-align: left;
 }
