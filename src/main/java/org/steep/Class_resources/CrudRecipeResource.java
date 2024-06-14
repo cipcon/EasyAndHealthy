@@ -13,6 +13,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -63,9 +64,7 @@ public class CrudRecipeResource {
     public Response readAllRecipes() {
         try {
             HashMap<String, CurrentStock> allRecipes = CrudRecipe.readAllRecipes();
-            ObjectMapper mapper = new ObjectMapper(); // Create an ObjectMapper instance
-            String json = mapper.writeValueAsString(allRecipes); // Convert list to JSON string
-            return Response.ok(json).build();
+            return Response.ok(allRecipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error retrieving ingredients: " + e.getMessage()).build();
@@ -74,12 +73,10 @@ public class CrudRecipeResource {
 
     @GET
     @Path("/recipesFromUser/{userId}")
-    public Response recipesFromUser(int userId) {
+    public Response recipesFromUser(@PathParam("userId") int userId) {
         try {
             ArrayList<String> recipes = CrudRecipe.recipesFromUser(userId);
-            ObjectMapper mapper = new ObjectMapper(); // Create an ObjectMapper instance
-            String json = mapper.writeValueAsString(recipes); // Convert list to JSON string
-            return Response.ok(json).build();
+            return Response.ok(recipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error retrieving ingredients: " + e.getMessage()).build();

@@ -1,3 +1,15 @@
-.header-center-align {
-    text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: antiquewhite;
+  text-decoration: none;
+}
+
+.margin-left {
+  margin-left: 5px;
+}
+
+form {
+  max-width: 500px;
 }
