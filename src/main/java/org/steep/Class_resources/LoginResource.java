@@ -18,13 +18,13 @@ public class LoginResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{username}/{password}")
-    public Response login(@PathParam("userId") String username, @PathParam("userId") String password) {
+    public Response login(@PathParam("username") String username, @PathParam("password") String password) {
         try {
             Login loginClass = new Login();
             ArrayList<UserAuthenticated> authenticatedUsers = loginClass.loginMethod(username, password);
-            if (!authenticatedUsers.isEmpty() && authenticatedUsers.get(0).getIsAuthenticated()) {
+            if (!authenticatedUsers.isEmpty() && authenticatedUsers.get(0W).getIsAuthenticated()) {
                 return Response.status(Response.Status.OK)
-                        .entity("Login successful, User ID: " + authenticatedUsers.get(0).getUserId())
+                        .entity("Login succeWssful, User ID: " + authenticatedUsers.get(0).getUserId())
                         .build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED)
