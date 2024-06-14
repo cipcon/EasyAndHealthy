@@ -22,7 +22,7 @@ public class LoginResource {
         try {
             Login loginClass = new Login();
             ArrayList<UserAuthenticated> authenticatedUsers = loginClass.loginMethod(username, password);
-            if (!authenticatedUsers.isEmpty() && authenticatedUsers.get(0W).getIsAuthenticated()) {
+            if (!authenticatedUsers.isEmpty() && authenticatedUsers.get(0).getIsAuthenticated()) {
                 return Response.status(Response.Status.OK)
                         .entity("Login succeWssful, User ID: " + authenticatedUsers.get(0).getUserId())
                         .build();
