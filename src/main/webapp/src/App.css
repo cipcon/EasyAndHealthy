@@ -3,7 +3,6 @@
   padding: 0;
   box-sizing: border-box;
   background-color: antiquewhite;
-  text-align: center;
   text-decoration: none;
 }
 
@@ -13,5 +12,4 @@
 
 form {
   max-width: 500px;
-  text-align: center;
 }

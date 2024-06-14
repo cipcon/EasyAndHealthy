@@ -5,6 +5,7 @@ import { Home } from './Homepage/Home';
 import { Login } from './User/Login';
 import { Register } from './User/Register';
 import { Profile } from './User/Profile';
+import { Allrecipes } from './Recipes/AllRecipes';
 
 
 
@@ -19,6 +20,7 @@ function App() {
           <Route path='/login' element={<Login />}/>
           <Route path='/register' element={<Register />}/>
           <Route path='/profile' element={<Profile />}/>
+          <Route path='/allRecipes' element={<Allrecipes />} />
           <Route path='*' element={<h1>You are out of the page</h1>}/>
         </Routes>
       </Router>

@@ -1,26 +1,31 @@
-import Axios from "axios";
 import { useEffect, useState } from "react"
+import { UserRecipesComponent } from "./UserRecipesComponent";
 
 export const UserRecipes = () => {
-    const [recipe, setRecipe] = useState([]);
+    const [recipes, setRecipe] = useState([]);
 
+    const fetchUserData = async () => {
+        try {
+            const userId = 15;
+            const response = await fetch(`/recipe/recipesFromUser/${userId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setRecipe(data);
+        } catch (error) {
+            console.error("Error fetching recipes: ", error)
+        }
+    }
 
     useEffect(() => {
-        Axios.get(`/recipesFromUser/${15}`).then((res) => {
-            setRecipe(res.data);
-        })
-    })
+        fetchUserData();
+    }, []);
 
     return (
         <div>
             <h1>Your saved recipes</h1>
-            <div>
-                <ol>
-                    {recipe.map((recipe) =>
-                    <li>{recipe}</li>
-                    )}
-                </ol>
-            </div>
+            <UserRecipesComponent recipes={recipes}/>
         </div>
     )
 }

@@ -13,10 +13,11 @@ export const Navbar = () => {
                         <a className="navbar-brand" href="/">
                             <img src="2.png" alt="Easy and healthy" width="60" height="40" style={{ marginLeft: -16}} />
                         </a>
-                        <Link to={'/'} className='margin-left nav-link '>Homepage</Link>
+                        <Link to={'/'} className='margin-left nav-link '>Home</Link>
                         <Link to={'/register'} className='margin-left nav-link '>Register</Link>
                         <Link to={'/login'} className='margin-left nav-link '>Login</Link>
                         <Link to={'/profile'} className='margin-left nav-link '>Profile</Link>
+                        <Link to={'/allRecipes'} className='margin-left nav-link '>Recipes</Link>
                     </div>
                 </div>
             </nav>
