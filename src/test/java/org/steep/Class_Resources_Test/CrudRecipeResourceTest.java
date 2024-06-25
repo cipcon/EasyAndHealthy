@@ -9,7 +9,7 @@ import org.steep.Class_resources.CrudRecipeResource;
 import org.steep.Ingredients.Ingredients;
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
-import org.steep.User.User;
+import org.steep.Requests.UserRequest;
 
 import jakarta.inject.Inject;
 import io.quarkus.test.junit.QuarkusTest;
@@ -23,8 +23,8 @@ public class CrudRecipeResourceTest {
     final private int OK = Response.Status.OK.getStatusCode();
     final private int CREATED = Response.Status.CREATED.getStatusCode();
 
-    private User user() {
-        User user = new User();
+    private UserRequest user() {
+        UserRequest user = new UserRequest();
         user.setCurrentUsername("Ciprian");
         user.setId(15);
         return user;

@@ -12,17 +12,24 @@ import { Allrecipes } from './Recipes/AllRecipes';
 function App() {
 
   return (
-    <div className="App">
+    <div>
       <Router>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/login' element={<Login />}/>
-          <Route path='/register' element={<Register />}/>
-          <Route path='/profile' element={<Profile />}/>
-          <Route path='/allRecipes' element={<Allrecipes />} />
-          <Route path='*' element={<h1>You are out of the page</h1>}/>
-        </Routes>
+        <header>
+          <Navbar />
+        </header>
+        <main>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/allRecipes' element={<Allrecipes />} />
+            <Route path='*' element={<h1>You are out of the page</h1>} />
+          </Routes>
+        </main>
+        <footer>
+
+        </footer>
       </Router>
     </div>
   );

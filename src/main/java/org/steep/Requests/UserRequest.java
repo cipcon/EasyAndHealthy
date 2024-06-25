@@ -1,12 +1,12 @@
-package org.steep.User;
+package org.steep.Requests;
 
-public class User {
-
-    // java will automatically create a default constructor based on the attributes i saved here
+public class UserRequest {
+    // java will automatically create a default constructor based on the attributes
+    // i saved here
     private String currentUsername;
     private int id;
 
-    public User() {
+    public UserRequest() {
     }
 
     // Getter
@@ -26,6 +26,4 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
-
-
 }

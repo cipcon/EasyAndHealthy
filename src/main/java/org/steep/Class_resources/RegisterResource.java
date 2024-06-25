@@ -1,26 +1,31 @@
 package org.steep.Class_resources;
 
+import org.steep.Requests.RegisterRequest;
+import org.steep.User.Register;
+import org.steep.User.Register.RegisterResponse;
+import org.steep.User.Register.RegisterStatus;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/register")
-
 public class RegisterResource {
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{userId}/{password}")
-    public Response login(@PathParam("userId") String userId, @PathParam("userId") String password) {
-        try {
-            return Response.status(Response.Status.CREATED).entity("Recipe successfully created").build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+    public Response register(RegisterRequest request) {
+        Register registerClass = new Register();
+        RegisterResponse registerResponse = registerClass.registerMethod(request.getUsername(), request.getPassword());
+
+        if (registerResponse.getStatus() == RegisterStatus.SUCCESS) {
+            return Response.status(Response.Status.CREATED).entity(registerResponse.getMessage()).build();
+        } else if (registerResponse.getStatus() == RegisterStatus.USERNAME_EXISTS) {
+            return Response.status(Response.Status.CONFLICT).entity(registerResponse.getMessage()).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(registerResponse.getMessage()).build();
         }
     }
 }

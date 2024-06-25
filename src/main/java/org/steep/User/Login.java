@@ -16,31 +16,20 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class Login {
     public ArrayList<UserAuthenticated> loginMethod(String username, String password) {
         ArrayList<UserAuthenticated> authenticatedUser = new ArrayList<>();
-        User user = new User();
+
         // Establishing connection
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            int userId = 0;
-            String getUserId = "SELECT benutzer_id FROM benutzer WHERE benutzer_name = ?";
-            // Read data from db
-            try (PreparedStatement statement = connection.prepareStatement(getUserId)) {
-                statement.setString(1, username);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        userId = resultSet.getInt("benutzer_id");
-                        user.setId(userId);
-                    } else {
-                        System.out.println("No user found, please check your input and try again");
-                    }
-                }
+            int userId = getUserId(username);
 
+            if (userId != 0) {
                 String checkPass = "SELECT passwort FROM benutzer WHERE benutzer_id = ?";
                 try (PreparedStatement statement2 = connection.prepareStatement(checkPass)) {
-                    statement2.setInt(1, user.getId());
+                    statement2.setInt(1, userId);
                     try (ResultSet resultSet = statement2.executeQuery()) {
                         if (resultSet.next()) {
                             String hashedPassword = resultSet.getString("passwort");
                             if (BCrypt.checkpw(password, hashedPassword)) {
-                                authenticatedUser.add(new UserAuthenticated(userId, true));
+                                authenticatedUser.add(new UserAuthenticated(username, userId, true));
                                 return authenticatedUser;
                             } else {
                                 System.out.println("Invalid password.");
@@ -50,15 +39,30 @@ public class Login {
                         }
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                System.out.println("User login failed: User not found.");
             }
-
-            System.out.println("User login failed");
-            return authenticatedUser;
         } catch (SQLException e) {
             e.printStackTrace();
-            return authenticatedUser;
         }
+        return authenticatedUser;
+    }
+
+    public static int getUserId(String username) throws SQLException {
+        try (Connection connection = DatabaseManagement.connectToDB()) {
+            String getUserIdQuery = "SELECT benutzer_id FROM benutzer WHERE benutzer_name = ?";
+            // Read data from db
+            try (PreparedStatement statement = connection.prepareStatement(getUserIdQuery)) {
+                statement.setString(1, username);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getInt("benutzer_id");
+                    } else {
+                        System.out.println("No user found with username: " + username);
+                    }
+                }
+            }
+        }
+        return 0;
     }
 }

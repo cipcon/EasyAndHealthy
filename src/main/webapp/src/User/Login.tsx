@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoginForm } from "./components/LoginForm";
 
 interface UserCredentials {
     username: string;
@@ -19,7 +20,7 @@ export const Login = () => {
         setCredentials({ ...credentials, password: event.target.value });
     };
 
-    const handleSigninButton = async (event: FormEvent) => {
+    const handleForm = async (event: FormEvent) => {
         event.preventDefault();
         try {
             const response = await fetch(`/login/${credentials.username}/${credentials.password}`, {
@@ -31,7 +32,7 @@ export const Login = () => {
 
             if (!response.ok) {
                 setWrongCredentials('Wrong username or Password, please try again');
-                throw new Error(`HTTP error! status: ${response.status}`);      
+                throw new Error(`HTTP error! status: ${response.status}`);
             } else {
                 setWrongCredentials('');
                 navigate('/');
@@ -39,7 +40,7 @@ export const Login = () => {
 
             const data = await response.text(); // Change to response.text() for a plain text response
             console.log("Login response:", data);
-            
+
 
         } catch (error) {
             console.error("Error during login:", error);
@@ -47,33 +48,13 @@ export const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSigninButton}>
-            <div className="row mb-3">
-                <label htmlFor="inputUsername" className="col-sm-2 col-form-label">Username</label>
-                <div className="col-sm-10">
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="inputUsername"
-                        value={credentials.username}
-                        onChange={handleUsernameChange}
-                    />
-                </div>
-            </div>
-            <div className="row mb-3">
-                <label htmlFor="inputPassword" className="col-sm-2 col-form-label">Password</label>
-                <div className="col-sm-10">
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="inputPassword"
-                        value={credentials.password}
-                        onChange={handlePasswordChange}
-                    />
-                </div>
-            </div>
-            <button type="submit" className="btn btn-primary">Sign in</button>
-            <p>{wrongCredentials}</p>
-        </form>
+        <LoginForm
+            handleForm={handleForm}
+            handleUsernameChange={handleUsernameChange}
+            handlePasswordChange={handlePasswordChange}
+            username={credentials.username}
+            password={credentials.password}
+            wrongCredentials={wrongCredentials}
+        />
     );
 };

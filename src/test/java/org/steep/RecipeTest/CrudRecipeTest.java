@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 
 import org.steep.Ingredients.Ingredients;
 import org.steep.Recipe.CrudRecipe;
+import org.steep.Requests.UserRequest;
 import org.steep.Stock.CurrentStock;
-import org.steep.User.User;
 
 public class CrudRecipeTest {
-    private User user() {
-        User user = new User();
+    private UserRequest user() {
+        UserRequest user = new UserRequest();
         user.setCurrentUsername("Ciprian");
         user.setId(15);
         return user;

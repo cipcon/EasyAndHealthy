@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Recipe.SearchRecipe;
-import org.steep.User.User;
+import org.steep.Requests.UserRequest;
 
 public class SearchRecipeTest {
     SearchRecipe searchRecipe = new SearchRecipe();
-    
-    private User user() {
-        User user = new User();
+
+    private UserRequest user() {
+        UserRequest user = new UserRequest();
         user.setCurrentUsername("Ciprian");
         user.setId(15);
         return user;
@@ -32,7 +32,8 @@ public class SearchRecipeTest {
         // return true if the Arrays match
         assertTrue(searchRecipe.recipeSearch("Kartoffeln").containsAll(recipesCheck));
 
-        // return false if the recipe Omelett contains Kartoffeln neither in it's name or ingredients
+        // return false if the recipe Omelett contains Kartoffeln neither in it's name
+        // or ingredients
         assertFalse(searchRecipe.recipeSearch("Kartoffeln").contains("Omelett"));
     }
 
@@ -46,10 +47,13 @@ public class SearchRecipeTest {
         cookingPlanCheck.put("Salz", 2.0);
         cookingPlanCheck.put("Käse", 200.0);
 
-        // return true if the name of the ingredients added in the list above match the list returned from the function
-        assertTrue(searchRecipe.cookingPlan(4, CrudRecipe.recipeId(recipe)).entrySet().equals(cookingPlanCheck.entrySet()));
-        
-        // return false if the ingredient Karotten doesn't belong to recipe's ingredients
+        // return true if the name of the ingredients added in the list above match the
+        // list returned from the function
+        assertTrue(searchRecipe.cookingPlan(4, CrudRecipe.recipeId(recipe)).entrySet()
+                .equals(cookingPlanCheck.entrySet()));
+
+        // return false if the ingredient Karotten doesn't belong to recipe's
+        // ingredients
         assertFalse(searchRecipe.cookingPlan(4, CrudRecipe.recipeId(recipe)).keySet().contains("Karotten"));
     }
 
@@ -62,11 +66,14 @@ public class SearchRecipeTest {
         shoppingListCheck.put("Butter", 1.0);
         shoppingListCheck.put("Käse", 100.0);
 
-        // return true if the ingredients in the list received from function match the list i created 
-        assertTrue(searchRecipe.shoppingList(4, CrudRecipe.recipeId(recipe), user().getId()).entrySet().equals(shoppingListCheck.entrySet()));
-    
+        // return true if the ingredients in the list received from function match the
+        // list i created
+        assertTrue(searchRecipe.shoppingList(4, CrudRecipe.recipeId(recipe), user().getId()).entrySet()
+                .equals(shoppingListCheck.entrySet()));
+
         // return false if the ingredient doesn't match
-        assertFalse(searchRecipe.shoppingList(4, CrudRecipe.recipeId(recipe), user().getId()).keySet().contains("Karotten"));
+        assertFalse(searchRecipe.shoppingList(4, CrudRecipe.recipeId(recipe), user().getId()).keySet()
+                .contains("Karotten"));
     }
 
     @Test
@@ -78,10 +85,12 @@ public class SearchRecipeTest {
         recipeCheck.add("Griechischer Joghurt mit Honig und Nüssen");
         recipeCheck.add("Cashewmilch");
 
-        // return true if the list of ingredients i created match with the list of ingredient returned from the function
+        // return true if the list of ingredients i created match with the list of
+        // ingredient returned from the function
         assertTrue(searchRecipe.noIdeaMode(user().getId()).containsAll(recipeCheck));
 
-        // return false if the ingredient Karotten isn't found in the list returned from the function
+        // return false if the ingredient Karotten isn't found in the list returned from
+        // the function
         assertFalse(searchRecipe.noIdeaMode(user().getId()).contains("Karotten"));
     }
 }

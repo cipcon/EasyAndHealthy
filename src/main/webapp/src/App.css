@@ -2,14 +2,28 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: antiquewhite;
-  text-decoration: none;
-}
-
-.margin-left {
-  margin-left: 5px;
+  background-color: wheat;
 }
 
 form {
   max-width: 500px;
+}
+
+header {
+  background-color: antiquewhite;
+  border-bottom: 1px solid whitesmoke;
+}
+
+main {
+  padding: 10px;
+  background-color: wheat;
+}
+
+footer {
+  background-color: wheat;
+}
+
+.nav-link {
+  margin-left: 10px;
+  text-align: center;
 }

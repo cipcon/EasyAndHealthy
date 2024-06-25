@@ -10,14 +10,14 @@ import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 
 import org.steep.Ingredients.Ingredients;
+import org.steep.Requests.UserRequest;
 import org.steep.Stock.ManageStock;
-import org.steep.User.User;
 
 public class ManageStockTest {
     ManageStock manageStock = new ManageStock();
 
-    private User user() {
-        User user = new User();
+    private UserRequest user() {
+        UserRequest user = new UserRequest();
         user.setCurrentUsername("Marta");
         user.setId(6737);
         return user;
@@ -30,7 +30,8 @@ public class ManageStockTest {
         // return true if the ingredient was added to user
         assertEquals(1, manageStock.addIngredientToUserList(ingredientId, 1, user().getId()));
 
-        // return false if the ingredient wasn't added to user. Cannot be added again because already exist
+        // return false if the ingredient wasn't added to user. Cannot be added again
+        // because already exist
         assertNotEquals(1, manageStock.addIngredientToUserList(ingredientId, 1, user().getId()));
 
         manageStock.deleteStock(ingredientId, user().getId());
@@ -61,7 +62,8 @@ public class ManageStockTest {
         // return one if the quantity of the ingredient is changed
         assertEquals(1, manageStock.updateUserStock(ingredientId, 2, user().getId()));
 
-        // return zero if the quantity of the ingredient couldn't be changed because the ingredient doesn't exist in the user's list
+        // return zero if the quantity of the ingredient couldn't be changed because the
+        // ingredient doesn't exist in the user's list
         assertNotEquals(1, manageStock.updateUserStock(16, 2, user().getId()));
 
         // return zero if the user doesn't exist
@@ -89,9 +91,10 @@ public class ManageStockTest {
         assertNotEquals(1, manageStock.deleteStock(ingredientId, 1));
     }
 
-    @Test 
+    @Test
     void existingIngredientFound() {
-        // return true if the ingredient was found in the user's list of Ingredients he has  
+        // return true if the ingredient was found in the user's list of Ingredients he
+        // has
         assertTrue(manageStock.existingIngredient(40, user().getId()));
 
         // return false if the ingredient wasn't found

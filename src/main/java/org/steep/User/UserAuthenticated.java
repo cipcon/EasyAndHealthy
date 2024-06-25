@@ -1,15 +1,22 @@
 package org.steep.User;
 
 public class UserAuthenticated {
+    private String username;
     private int userId;
     private boolean isAuthenticated;
 
-    public UserAuthenticated(int userId, boolean isAuthenticated) {
+    public UserAuthenticated(String username, int userId, boolean isAuthenticated) {
+        this.username = username;
         this.userId = userId;
         this.isAuthenticated = isAuthenticated;
+
     }
 
     // Getter
+    public String getUsername() {
+        return username;
+    }
+
     public int getUserId() {
         return userId;
     }
@@ -19,6 +26,10 @@ public class UserAuthenticated {
     }
 
     // Setter
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void setUserId(int userId) {
         this.userId = userId;
     }

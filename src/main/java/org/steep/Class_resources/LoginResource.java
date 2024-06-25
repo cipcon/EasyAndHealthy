@@ -22,9 +22,10 @@ public class LoginResource {
         try {
             Login loginClass = new Login();
             ArrayList<UserAuthenticated> authenticatedUsers = loginClass.loginMethod(username, password);
+            // check if the Array has no entry and if the user is authenticated, receive true back
             if (!authenticatedUsers.isEmpty() && authenticatedUsers.get(0).getIsAuthenticated()) {
                 return Response.status(Response.Status.OK)
-                        .entity("Login succeWssful, User ID: " + authenticatedUsers.get(0).getUserId())
+                        .entity(authenticatedUsers)
                         .build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED)
