@@ -14,7 +14,8 @@ public class Register {
     public enum RegisterStatus {
         SUCCESS,
         USERNAME_EXISTS,
-        ERROR
+        ERROR,
+        EXPECTATION_FAILED
     }
 
     public static class RegisterResponse {
@@ -46,6 +47,11 @@ public class Register {
         boolean existingUser = true;
         String username = user;
         String password = pass;
+
+        if (pass == null || pass.isEmpty()) {
+            System.out.println("Password equal null or empty");
+            return new RegisterResponse(RegisterStatus.EXPECTATION_FAILED, "Password empty or null", 0);
+        }
 
         try (Connection connection = DatabaseManagement.connectToDB();
                 PreparedStatement statement = connection
@@ -82,5 +88,25 @@ public class Register {
         }
 
         return new RegisterResponse(RegisterStatus.ERROR, "An unexpected error has occurred!", 0);
+    }
+
+    public static int deleteUser(int userId) {
+        int rowsDeleted = 0;
+
+        if (userId == 0) {
+            System.out.println("UserId = 0");
+            return rowsDeleted;
+        }
+
+        try (Connection connection = DatabaseManagement.connectToDB();
+                PreparedStatement statement = connection
+                        .prepareStatement("DELETE FROM benutzer WHERE benutzer_id = ?")) {
+            statement.setInt(1, userId);
+            rowsDeleted = statement.executeUpdate();
+            return rowsDeleted;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rowsDeleted;
     }
 }
