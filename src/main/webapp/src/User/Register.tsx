@@ -1,17 +1,24 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RegisterForm } from "./components/RegisterForm";
+import { useUserContext } from "../context";
 
 interface UserCredentials {
     username: string;
     password: string;
+}
+
+interface RegisterResponse {
+    status: string;
+    message: string;
     userId: number;
+    username: string;
 }
 
 export const Register = () => {
-    const [credentials, setCredentials] = useState<UserCredentials>({ username: "", password: "", userId: 0 });
+    const [credentials, setCredentials] = useState<UserCredentials>({ username: "", password: "" });
     const [registrationError, setRegistrationError] = useState('');
-
+    const userContext = useUserContext();
     const navigate = useNavigate();
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -44,18 +51,18 @@ export const Register = () => {
                 body: JSON.stringify(credentials) // Sending credentials in the request body
             });
 
-            const data = await response.text(); // Change to response.text() for a plain text response
+            const data: RegisterResponse = await response.json();
 
             if (!response.ok) {
-                setRegistrationError(data);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                setRegistrationError(data.message);
             } else {
-                setRegistrationError('');
+                userContext.setUserCredentials({ id: data.userId, name: data.username });
                 navigate('/');
             }
-
         } catch (error) {
             console.error("Error during registration:", error);
+            setRegistrationError("Registration failed due to a network or server issue. Please try again.");
+
         }
     };
 

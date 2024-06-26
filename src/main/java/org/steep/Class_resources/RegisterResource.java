@@ -21,13 +21,13 @@ public class RegisterResource {
         RegisterResponse registerResponse = registerClass.registerMethod(request.getUsername(), request.getPassword());
 
         if (registerResponse.getStatus() == RegisterStatus.SUCCESS) {
-            return Response.status(Response.Status.CREATED).entity(registerResponse.getMessage()).build();
+            return Response.status(Response.Status.CREATED).entity(registerResponse).build();
         } else if (registerResponse.getStatus() == RegisterStatus.USERNAME_EXISTS) {
-            return Response.status(Response.Status.CONFLICT).entity(registerResponse.getMessage()).build();
+            return Response.status(Response.Status.CONFLICT).entity(registerResponse).build();
         } else if (registerResponse.getStatus() == RegisterStatus.EXPECTATION_FAILED) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity(registerResponse.getMessage()).build();
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity(registerResponse).build();
         } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(registerResponse.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(registerResponse).build();
         }
     }
 }

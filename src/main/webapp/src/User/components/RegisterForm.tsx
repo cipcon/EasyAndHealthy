@@ -15,7 +15,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     handlePasswordChange,
     username,
     password,
-    registrationError
+    registrationError,
 }) => (
     <form action="POST" onSubmit={handleForm}>
         <div className="row mb-3">
@@ -42,7 +42,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 />
             </div>
         </div>
-        <button type="submit" className="btn btn-primary">Sign in</button>
+        <button type="submit" className="btn btn-primary">Register</button>
         <p>{registrationError}</p>
     </form>
 )
