@@ -48,7 +48,7 @@ public class Login {
         return authenticatedUser;
     }
 
-    public static int getUserId(String username) throws SQLException {
+    public static int getUserId(String username) {
         try (Connection connection = DatabaseManagement.connectToDB()) {
             String getUserIdQuery = "SELECT benutzer_id FROM benutzer WHERE benutzer_name = ?";
             // Read data from db
@@ -61,7 +61,11 @@ public class Login {
                         System.out.println("No user found with username: " + username);
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return 0;
     }
