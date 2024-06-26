@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.steep.Class_resources.RegisterResource;
-import org.steep.Requests.RegisterRequest;
+import org.steep.Requests.CredentialsRequest;
 import org.steep.User.Login;
 import org.steep.User.Register;
 
@@ -18,9 +18,10 @@ public class RegisterResourceTest {
 
     @Inject
     RegisterResource registerResource;
-    RegisterRequest requestConflict = new RegisterRequest("Ciprian", "Ciprian");
-    RegisterRequest requestCreated = new RegisterRequest("newUser", "newUser");
-    RegisterRequest requestWrongPassOrUsername = new RegisterRequest("", null);
+
+    CredentialsRequest requestConflict = new CredentialsRequest("Ciprian", "Ciprian");
+    CredentialsRequest requestSuccess = new CredentialsRequest("newUser", "newUser");
+    CredentialsRequest requestWrongPassOrUsername = new CredentialsRequest("", "");
 
     @Test
     void testRegisterConflict() {
@@ -30,9 +31,9 @@ public class RegisterResourceTest {
 
     @Test
     void testRegisterSuccess() {
-        response = registerResource.register(requestCreated);
+        response = registerResource.register(requestSuccess);
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-        Register.deleteUser(Login.getUserId(requestCreated.getUsername()));
+        Register.deleteUser(Login.getUserId(requestSuccess.getUsername()));
     }
 
     @Test

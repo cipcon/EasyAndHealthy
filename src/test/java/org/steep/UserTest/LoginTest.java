@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 import org.steep.User.Login;
+import org.steep.User.RegisterStatusAndResponse.RegisterResponse;
 import org.steep.User.UserAuthenticated;
 
 public class LoginTest {
@@ -13,11 +14,11 @@ public class LoginTest {
     String falseUsername = "Jon";
     String correctPassword = "Ciprian";
     String wrongPassword = "BadBoys";
-    UserAuthenticated compare = new UserAuthenticated(existingUsername, Login.getUserId(existingUsername), true);
+    UserAuthenticated compare = new UserAuthenticated(existingUsername, Login.getUserId(existingUsername), true, "");
 
     @Test
     void loginSuccess() {
-        UserAuthenticated authenticatedUser = new Login().loginMethod(existingUsername, correctPassword);
+        RegisterResponse authenticatedUser = new Login().loginMethod(existingUsername, correctPassword);
         assertEquals(authenticatedUser.getIsAuthenticated(), compare.getIsAuthenticated());
         assertEquals(authenticatedUser.getUserId(), compare.getUserId());
         assertEquals(authenticatedUser.getUsername(), compare.getUsername());
@@ -25,7 +26,7 @@ public class LoginTest {
 
     @Test
     void wrongPassword() {
-        UserAuthenticated authenticatedUser = new Login().loginMethod(existingUsername, wrongPassword);
+        RegisterResponse authenticatedUser = new Login().loginMethod(existingUsername, wrongPassword);
         assertEquals(authenticatedUser.getUserId(), 0);
         assertFalse(authenticatedUser.getIsAuthenticated());
         assertEquals(authenticatedUser.getUsername(), existingUsername);
@@ -33,7 +34,7 @@ public class LoginTest {
 
     @Test
     void wrongUsername() {
-        UserAuthenticated authenticatedUser = new Login().loginMethod(falseUsername, wrongPassword);
+        RegisterResponse authenticatedUser = new Login().loginMethod(falseUsername, wrongPassword);
         assertEquals(authenticatedUser.getUserId(), 0);
         assertFalse(authenticatedUser.getIsAuthenticated());
         assertEquals(authenticatedUser.getUsername(), falseUsername);
@@ -41,7 +42,7 @@ public class LoginTest {
 
     @Test
     void emptyCredentials() {
-        UserAuthenticated authenticatedUser = new Login().loginMethod("", "");
+        RegisterResponse authenticatedUser = new Login().loginMethod("", "");
         assertEquals(authenticatedUser.getUserId(), 0);
         assertFalse(authenticatedUser.getIsAuthenticated());
         assertEquals(authenticatedUser.getUsername(), "");

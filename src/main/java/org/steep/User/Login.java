@@ -8,12 +8,14 @@ import java.sql.SQLException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.User.RegisterStatusAndResponse.RegisterResponse;
+import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Login {
-    public UserAuthenticated loginMethod(String username, String password) {
+    public RegisterResponse loginMethod(String username, String password) {
 
         // Establishing connection
         try (Connection connection = DatabaseManagement.connectToDB()) {
@@ -21,7 +23,8 @@ public class Login {
 
             if (username.isEmpty() && password.isEmpty()) {
                 System.out.println("Password or username are empty");
-                return new UserAuthenticated(username, 0, false);
+                return new RegisterResponse(false, "Password empty or null", RegisterStatus.EXPECTATION_FAILED, 0,
+                        username);
             }
 
             if (userId != 0) {
@@ -33,7 +36,9 @@ public class Login {
                             String hashedPassword = resultSet.getString("passwort");
                             if (BCrypt.checkpw(password, hashedPassword)) {
                                 System.out.println(username + " successfully logged in");
-                                return new UserAuthenticated(username, userId, true);
+                                return new RegisterResponse(true, "Successfully logged in", RegisterStatus.SUCCESS,
+                                        userId,
+                                        username);
                             } else {
                                 System.out.println("Invalid password.");
                             }
@@ -49,7 +54,7 @@ public class Login {
             e.printStackTrace();
         }
         // Login failed, return object with unauthenticated status
-        return new UserAuthenticated(username, 0, false);
+        return new RegisterResponse(false, "User login failed: User not found.", RegisterStatus.ERROR, 0, username);
     }
 
     public static int getUserId(String username) {

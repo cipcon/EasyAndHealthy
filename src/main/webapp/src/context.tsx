@@ -18,4 +18,3 @@ export function useUserContext() {
 
     return user;
 }
-

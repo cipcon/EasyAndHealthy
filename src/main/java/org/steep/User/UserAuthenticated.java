@@ -4,11 +4,13 @@ public class UserAuthenticated {
     private String username;
     private int userId;
     private boolean isAuthenticated;
+    private String message;
 
-    public UserAuthenticated(String username, int userId, boolean isAuthenticated) {
+    public UserAuthenticated(String username, int userId, boolean isAuthenticated, String message) {
         this.username = username;
         this.userId = userId;
         this.isAuthenticated = isAuthenticated;
+        this.message = message;
 
     }
 
@@ -36,6 +38,14 @@ public class UserAuthenticated {
 
     public void setisAuthenticated(boolean isAuthenticated) {
         this.isAuthenticated = isAuthenticated;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     // Override toString() method for better representation
