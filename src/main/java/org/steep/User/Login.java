@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -14,12 +13,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Login {
-    public ArrayList<UserAuthenticated> loginMethod(String username, String password) {
-        ArrayList<UserAuthenticated> authenticatedUser = new ArrayList<>();
+    public UserAuthenticated loginMethod(String username, String password) {
 
         // Establishing connection
         try (Connection connection = DatabaseManagement.connectToDB()) {
             int userId = getUserId(username);
+
+            if (username.isEmpty() && password.isEmpty()) {
+                System.out.println("Password or username are empty");
+                return new UserAuthenticated(username, 0, false);
+            }
 
             if (userId != 0) {
                 String checkPass = "SELECT passwort FROM benutzer WHERE benutzer_id = ?";
@@ -29,8 +32,8 @@ public class Login {
                         if (resultSet.next()) {
                             String hashedPassword = resultSet.getString("passwort");
                             if (BCrypt.checkpw(password, hashedPassword)) {
-                                authenticatedUser.add(new UserAuthenticated(username, userId, true));
-                                return authenticatedUser;
+                                System.out.println(username + " successfully logged in");
+                                return new UserAuthenticated(username, userId, true);
                             } else {
                                 System.out.println("Invalid password.");
                             }
@@ -45,7 +48,8 @@ public class Login {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return authenticatedUser;
+        // Login failed, return object with unauthenticated status
+        return new UserAuthenticated(username, 0, false);
     }
 
     public static int getUserId(String username) {

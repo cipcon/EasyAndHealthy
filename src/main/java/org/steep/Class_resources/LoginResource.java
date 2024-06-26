@@ -1,7 +1,5 @@
 package org.steep.Class_resources;
 
-import java.util.ArrayList;
-
 import org.steep.User.Login;
 import org.steep.User.UserAuthenticated;
 
@@ -21,9 +19,11 @@ public class LoginResource {
     public Response login(@PathParam("username") String username, @PathParam("password") String password) {
         try {
             Login loginClass = new Login();
-            ArrayList<UserAuthenticated> authenticatedUsers = loginClass.loginMethod(username, password);
-            // check if the Array has no entry and if the user is authenticated, receive true back
-            if (!authenticatedUsers.isEmpty() && authenticatedUsers.get(0).getIsAuthenticated()) {
+            UserAuthenticated authenticatedUsers = loginClass.loginMethod(username, password);
+            // check if the Array has no entry and if the user is authenticated, receive
+            // true back
+            if (authenticatedUsers.getIsAuthenticated() == true && !authenticatedUsers.getUsername().isEmpty()
+                    && authenticatedUsers.getUserId() != 0) {
                 return Response.status(Response.Status.OK)
                         .entity(authenticatedUsers)
                         .build();

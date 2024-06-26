@@ -47,4 +47,9 @@ public class UserAuthenticated {
                 '}';
     }
 
+    public boolean isEmpty() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
+    }
+
 }
