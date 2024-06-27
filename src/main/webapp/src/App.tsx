@@ -29,7 +29,7 @@ function App() {
     if (storedUser && storedToken) {
       setUserCredentials({ id: JSON.parse(storedUser).id, name: JSON.parse(storedUser).name, token: storedToken })
     }
-  }, []);
+  }, [])
 
   return (
     <div>

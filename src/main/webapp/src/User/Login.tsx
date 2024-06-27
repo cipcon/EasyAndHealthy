@@ -4,12 +4,12 @@ import { LoginForm } from "./components/LoginForm";
 import { useUserContext } from "../Contexts/context";
 import { generateToken } from "./components/GenerateToken";
 
-export interface UserCredentials {
+interface UserCredentials {
     username: string;
     password: string;
 }
 
-export interface LoginResponse {
+interface LoginResponse {
     isAuthenticated: boolean;
     message: string;
     status: string;
@@ -23,7 +23,6 @@ export const Login = () => {
     const [registrationError, setRegistrationError] = useState('');
     const userContext = useUserContext();
     const navigate = useNavigate();
-    const login: string = 'login';
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setCredentials({ ...credentials, username: event.target.value });
@@ -82,7 +81,7 @@ export const Login = () => {
             } else {
                 setRegistrationError(data.message || 'An error occurred during login. Please try again.');
             }
-            console.log("Login response:", data);
+            console.log("Login response:", data.message);
         } catch (error) {
             console.error("Error during login:", error);
             setRegistrationError("Login failed due to a network or server issue. Please try again.");

@@ -13,7 +13,7 @@ export function useUserContext() {
     const user = useContext(AppContext);
 
     if (user === undefined) {
-        throw new Error('useUserContext must be used with a AppContext');
+        throw new Error('useUserContext must be used with an AppContext');
     }
 
     return user;

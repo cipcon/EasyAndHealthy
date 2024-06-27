@@ -1,7 +1,8 @@
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RegisterForm } from "./components/RegisterForm";
 import { useUserContext } from "../Contexts/context";
+import { generateToken } from "./components/GenerateToken";
 
 interface UserCredentials {
     username: string;
@@ -9,8 +10,9 @@ interface UserCredentials {
 }
 
 interface RegisterResponse {
-    status: string;
+    isAuthenticated: boolean;
     message: string;
+    status: string;
     userId: number;
     username: string;
 }
@@ -21,6 +23,7 @@ export const Register = () => {
     const userContext = useUserContext();
     const navigate = useNavigate();
 
+
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setCredentials({ ...credentials, username: event.target.value });
     };
@@ -28,6 +31,15 @@ export const Register = () => {
     const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
         setCredentials({ ...credentials, password: event.target.value });
     };
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        const storedToken = localStorage.getItem('token');
+        if (storedUser && storedToken) {
+            userContext.setUserCredentials({ id: JSON.parse(storedUser).id, name: JSON.parse(storedUser).name, token: storedToken })
+            navigate('/');
+        }
+    }, [navigate, userContext]);
 
     const handleForm = async (event: FormEvent) => {
         event.preventDefault();
@@ -53,11 +65,19 @@ export const Register = () => {
 
             const data: RegisterResponse = await response.json();
 
-            if (!response.ok) {
-                setRegistrationError(data.message);
+            if (response.ok) {
+                if (data.isAuthenticated) {
+                    const token = generateToken(data.userId);
+                    userContext.setUserCredentials({ id: data.userId, name: data.username, token });
+                    localStorage.setItem('user', JSON.stringify({ id: data.userId, name: data.username }))
+                    localStorage.setItem('token', token);
+                    navigate('/');
+                } else {
+                    setRegistrationError(data.message || 'Registration failed. Please check your credentials.');
+                }
+
             } else {
-                userContext.setUserCredentials({ id: data.userId, name: data.username, token: '' });
-                navigate('/');
+                setRegistrationError(data.message || 'An error occurred during registration. Please try again.');
             }
         } catch (error) {
             console.error("Error during registration:", error);

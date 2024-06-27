@@ -6,7 +6,7 @@ export const Home = () => {
     return (
         <h1>{user.userCredentials.name === '' ?
             "Welcome to the Home page" :
-            "Hello " + user.userCredentials.name + ", you are successfully registered"}
+            "Hello " + user.userCredentials.name + ", how are you today"}
         </h1>
     )
 }
