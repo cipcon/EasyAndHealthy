@@ -1,12 +1,12 @@
 import { createContext, useContext } from 'react';
-import { User } from './App';
+import { User } from '../App';
 
 interface AppContextType {
     userCredentials: User;
     setUserCredentials: React.Dispatch<React.SetStateAction<User>>;
 }
 
-export const AppContext = createContext<AppContextType | undefined>(undefined);
+export const AppContext = createContext<AppContextType>({} as AppContextType);
 
 // Check if the user was defined
 export function useUserContext() {

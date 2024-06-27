@@ -1,7 +1,7 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginForm } from "./components/LoginForm";
-import { useUserContext } from "../context";
+import { useUserContext } from "../Contexts/context";
 
 interface UserCredentials {
     username: string;
@@ -9,10 +9,15 @@ interface UserCredentials {
 }
 
 interface LoginResponse {
-    username: string;
-    userId: number;
     isAuthenticated: boolean;
     message: string;
+    status: string;
+    userId: number;
+    username: string;
+}
+
+const generateToken = (userId: number) => {
+    return `${userId}-${Math.random().toString(36).substring(2)}`
 }
 
 export const Login = () => {
@@ -29,33 +34,48 @@ export const Login = () => {
         setCredentials({ ...credentials, password: event.target.value });
     };
 
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        const storedToken = localStorage.getItem('token');
+        if (storedUser && storedToken) {
+            userContext.setUserCredentials({ id: JSON.parse(storedUser).id, name: JSON.parse(storedUser).name, token: storedToken });
+            navigate('/');
+        }
+    }, [navigate, userContext]);
+
     const handleForm = async (event: FormEvent) => {
         event.preventDefault();
 
         // Validation logic
         if (!credentials.username) {
             setRegistrationError('Username is required');
+            return;
         }
 
         if (!credentials.password) {
             setRegistrationError('Password is required');
+            return;
         }
 
         try {
-            const response = await fetch(`/login/`, {
+            const response = await fetch(`/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                // what i send to the api
                 body: JSON.stringify(credentials) // sending credentials in the request body (username and passowrd to api)
             });
 
-            const data: LoginResponse = await response.json()
+            // what i receive from the api
+            const data: LoginResponse = await response.json();
 
             if (response.ok) {
-                const data: LoginResponse = await response.json();
                 if (data.isAuthenticated) {
-                    userContext.setUserCredentials({ id: data.userId, name: data.username });
+                    const token = generateToken(data.userId);
+                    userContext.setUserCredentials({ id: data.userId, name: data.username, token });
+                    localStorage.setItem('user', JSON.stringify({ id: data.userId, name: data.username }));
+                    localStorage.setItem('token', token)
                     navigate('/');
                 } else {
                     setRegistrationError(data.message || 'Authentication failed. Please check your credentials.');

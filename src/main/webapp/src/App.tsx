@@ -6,12 +6,13 @@ import { Login } from './User/Login';
 import { Register } from './User/Register';
 import { Profile } from './User/Profile';
 import { Allrecipes } from './Recipes/AllRecipes';
-import { useState } from 'react';
-import { AppContext } from './context';
+import { useEffect, useState } from 'react';
+import { AppContext } from './Contexts/context';
 
 export interface User {
   id: number;
   name: string;
+  token: string | null;
 }
 
 interface AppContextType {
@@ -20,7 +21,15 @@ interface AppContextType {
 }
 
 function App() {
-  const [userCredentials, setUserCredentials] = useState<User>({ id: 0, name: '' });
+  const [userCredentials, setUserCredentials] = useState<User>({ id: 0, name: '', token: '' });
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem('token');
+    if (storedUser && storedToken) {
+      setUserCredentials({ id: JSON.parse(storedUser).id, name: JSON.parse(storedUser).name, token: storedToken })
+    }
+  }, []);
 
   return (
     <div>

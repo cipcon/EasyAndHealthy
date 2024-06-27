@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RegisterForm } from "./components/RegisterForm";
-import { useUserContext } from "../context";
+import { useUserContext } from "../Contexts/context";
 
 interface UserCredentials {
     username: string;
@@ -56,7 +56,7 @@ export const Register = () => {
             if (!response.ok) {
                 setRegistrationError(data.message);
             } else {
-                userContext.setUserCredentials({ id: data.userId, name: data.username });
+                userContext.setUserCredentials({ id: data.userId, name: data.username, token: '' });
                 navigate('/');
             }
         } catch (error) {
