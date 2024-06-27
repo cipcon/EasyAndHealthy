@@ -2,13 +2,14 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginForm } from "./components/LoginForm";
 import { useUserContext } from "../Contexts/context";
+import { generateToken } from "./components/GenerateToken";
 
-interface UserCredentials {
+export interface UserCredentials {
     username: string;
     password: string;
 }
 
-interface LoginResponse {
+export interface LoginResponse {
     isAuthenticated: boolean;
     message: string;
     status: string;
@@ -16,15 +17,13 @@ interface LoginResponse {
     username: string;
 }
 
-const generateToken = (userId: number) => {
-    return `${userId}-${Math.random().toString(36).substring(2)}`
-}
 
 export const Login = () => {
     const [credentials, setCredentials] = useState<UserCredentials>({ username: "", password: "" });
     const [registrationError, setRegistrationError] = useState('');
     const userContext = useUserContext();
     const navigate = useNavigate();
+    const login: string = 'login';
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setCredentials({ ...credentials, username: event.target.value });

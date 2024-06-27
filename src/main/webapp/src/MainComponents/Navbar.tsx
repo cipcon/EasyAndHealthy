@@ -19,7 +19,14 @@ export const Navbar = () => {
                             <img src="logo.png" alt="Easy and healthy" width="60" height="40" style={{ marginLeft: -16 }} />
                         </a>
                         <Link to={'/'} className=' nav-link '>Home</Link>
-                        {userCredentials.name === '' ? <><Link to={'/register'} className=' nav-link '>Register</Link><Link to={'/login'} className=' nav-link '>Login</Link></> : ''}
+                        {/* If the user is logged in, then no register and login links */}
+                        {userCredentials.name === '' ?
+                            <>
+                                <Link to={'/register'} className=' nav-link '>Register</Link>
+                                <Link to={'/login'} className=' nav-link '>Login</Link>
+                            </>
+                            : ''
+                        }
                         <Link to={'/profile'} className=' nav-link '>Profile</Link>
                         <Link to={'/allRecipes'} className=' nav-link '>Recipes</Link>
                         <Logout />

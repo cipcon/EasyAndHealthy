@@ -16,14 +16,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Login {
     public RegisterResponse loginMethod(String username, String password) {
+        String message = "";
 
         // Establishing connection
         try (Connection connection = DatabaseManagement.connectToDB()) {
             int userId = getUserId(username);
 
             if (username.isEmpty() && password.isEmpty()) {
-                System.out.println("Password or username are empty");
-                return new RegisterResponse(false, "Password empty or null", RegisterStatus.EXPECTATION_FAILED, 0,
+                message = "Password or username are empty";
+                System.out.println(message);
+                return new RegisterResponse(false, message, RegisterStatus.EXPECTATION_FAILED, 0,
                         username);
             }
 
@@ -35,26 +37,31 @@ public class Login {
                         if (resultSet.next()) {
                             String hashedPassword = resultSet.getString("passwort");
                             if (BCrypt.checkpw(password, hashedPassword)) {
-                                System.out.println(username + " successfully logged in");
-                                return new RegisterResponse(true, "Successfully logged in", RegisterStatus.SUCCESS,
+                                message = "Successfully logged in";
+                                System.out.println(username + " " + message);
+                                return new RegisterResponse(true, message, RegisterStatus.SUCCESS,
                                         userId,
                                         username);
                             } else {
-                                System.out.println("Invalid password.");
+                                message = "Invalid password.";
+                                System.out.println(message);
                             }
                         } else {
-                            System.out.println("No user found, please check your input and try again");
+                            message = "No user found, please check your input and try again";
+                            System.out.println(message);
                         }
                     }
                 }
             } else {
-                System.out.println("User login failed: User not found.");
+                message = "No user found, please check your input and try again";
+                System.out.println(message);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         // Login failed, return object with unauthenticated status
-        return new RegisterResponse(false, "User login failed: User not found.", RegisterStatus.ERROR, 0, username);
+        return new RegisterResponse(false, message, RegisterStatus.ERROR, 0, username);
     }
 
     public static int getUserId(String username) {
