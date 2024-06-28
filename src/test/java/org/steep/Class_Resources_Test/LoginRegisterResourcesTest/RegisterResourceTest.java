@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.steep.Class_resources.RegisterResource;
 import org.steep.Requests.CredentialsRequest;
+import org.steep.User.DeleteAccount;
 import org.steep.User.Login;
 import org.steep.User.Register;
 
@@ -33,7 +34,7 @@ public class RegisterResourceTest {
     void testRegisterSuccess() {
         response = registerResource.register(requestSuccess);
         assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-        Register.deleteUser(Login.getUserId(requestSuccess.getUsername()));
+        DeleteAccount.deleteUser(Login.getUserId(requestSuccess.getUsername()));
     }
 
     @Test

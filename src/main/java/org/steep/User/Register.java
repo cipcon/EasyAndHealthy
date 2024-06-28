@@ -8,12 +8,12 @@ import java.sql.SQLException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import org.steep.Database.DatabaseManagement;
-import org.steep.User.RegisterStatusAndResponse.RegisterResponse;
+import org.steep.User.RegisterStatusAndResponse.UserResponse;
 import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
 
 public class Register {
 
-    public RegisterResponse registerMethod(String user, String pass) {
+    public UserResponse registerMethod(String user, String pass) {
         String hashedPassword = "";
         boolean existingUser = true;
         String username = user;
@@ -21,7 +21,7 @@ public class Register {
 
         if (pass.isEmpty() || pass.isEmpty()) {
             System.out.println("Password equal null or empty");
-            return new RegisterResponse(false, "Password empty or null", RegisterStatus.EXPECTATION_FAILED, 0,
+            return new UserResponse(false, "Password empty or null", RegisterStatus.EXPECTATION_FAILED, 0,
                     username);
         }
 
@@ -31,7 +31,7 @@ public class Register {
             statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new RegisterResponse(false, "Username already exists, please choose another one",
+                    return new UserResponse(false, "Username already exists, please choose another one",
                             RegisterStatus.USERNAME_EXISTS,
                             0, username);
                 } else {
@@ -40,7 +40,7 @@ public class Register {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return new RegisterResponse(false, "An unexpected error has occurred!", RegisterStatus.ERROR, 0, username);
+            return new UserResponse(false, "An unexpected error has occurred!", RegisterStatus.ERROR, 0, username);
         }
 
         if (!existingUser) {
@@ -51,36 +51,17 @@ public class Register {
                 insertStatement.setString(1, username);
                 insertStatement.setString(2, hashedPassword);
                 insertStatement.executeUpdate();
-                return new RegisterResponse(true, "User registered successfully",
+                return new UserResponse(true, "User registered successfully",
                         RegisterStatus.SUCCESS, Login.getUserId(username), username);
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                return new RegisterResponse(false, "An unexpected error has occurred!", RegisterStatus.ERROR, 0,
+                return new UserResponse(false, "An unexpected error has occurred!", RegisterStatus.ERROR, 0,
                         username);
             }
         }
 
-        return new RegisterResponse(false, "An unexpected error has occurred!", RegisterStatus.ERROR, 0, username);
+        return new UserResponse(false, "An unexpected error has occurred!", RegisterStatus.ERROR, 0, username);
     }
 
-    public static int deleteUser(int userId) {
-        int rowsDeleted = 0;
-
-        if (userId == 0) {
-            System.out.println("UserId = 0");
-            return rowsDeleted;
-        }
-
-        try (Connection connection = DatabaseManagement.connectToDB();
-                PreparedStatement statement = connection
-                        .prepareStatement("DELETE FROM benutzer WHERE benutzer_id = ?")) {
-            statement.setInt(1, userId);
-            rowsDeleted = statement.executeUpdate();
-            return rowsDeleted;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rowsDeleted;
-    }
 }

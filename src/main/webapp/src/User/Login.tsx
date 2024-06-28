@@ -53,7 +53,6 @@ export const Login = () => {
 
             // what i receive from the api
 
-
             if (response.ok) {
                 const data: LoginResponse = await response.json();
                 const token = generateToken(data.userId);

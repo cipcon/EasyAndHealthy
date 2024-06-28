@@ -2,7 +2,7 @@ package org.steep.Class_resources;
 
 import org.steep.Requests.CredentialsRequest;
 import org.steep.User.Login;
-import org.steep.User.RegisterStatusAndResponse.RegisterResponse;
+import org.steep.User.RegisterStatusAndResponse.UserResponse;
 import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
 
 import jakarta.ws.rs.Consumes;
@@ -18,7 +18,7 @@ public class LoginResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(CredentialsRequest request) {
         Login loginClass = new Login();
-        RegisterResponse loginResponse = loginClass.loginMethod(request.getUsername(), request.getPassword());
+        UserResponse loginResponse = loginClass.loginMethod(request.getUsername(), request.getPassword());
 
         if (loginResponse.getStatus() == RegisterStatus.SUCCESS) {
             return Response.status(Response.Status.OK).entity(loginResponse).build();

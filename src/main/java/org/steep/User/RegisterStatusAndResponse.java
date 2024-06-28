@@ -9,14 +9,14 @@ public class RegisterStatusAndResponse {
         EXPECTATION_FAILED
     }
 
-    public static class RegisterResponse {
+    public static class UserResponse {
         private boolean isAuthenticated;
         private String message;
         private RegisterStatus status;
         private int userId;
         private String username;
 
-        public RegisterResponse(boolean isAuthenticated, String message, RegisterStatus status, int userId,
+        public UserResponse(boolean isAuthenticated, String message, RegisterStatus status, int userId,
                 String username) {
             this.isAuthenticated = isAuthenticated;
             this.message = message;

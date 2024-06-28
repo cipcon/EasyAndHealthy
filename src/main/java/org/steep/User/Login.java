@@ -8,14 +8,15 @@ import java.sql.SQLException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import org.steep.Database.DatabaseManagement;
-import org.steep.User.RegisterStatusAndResponse.RegisterResponse;
 import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
+import org.steep.User.RegisterStatusAndResponse.UserResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.Response.Status;
 
 @ApplicationScoped
 public class Login {
-    public RegisterResponse loginMethod(String username, String password) {
+    public UserResponse loginMethod(String username, String password) {
         String message = "";
 
         // Establishing connection
@@ -25,7 +26,7 @@ public class Login {
             if (username.isEmpty() && password.isEmpty()) {
                 message = "Password or username are empty";
                 System.out.println(message);
-                return new RegisterResponse(false, message, RegisterStatus.EXPECTATION_FAILED, 0,
+                return new UserResponse(false, message, RegisterStatus.EXPECTATION_FAILED, 0,
                         username);
             }
 
@@ -39,7 +40,7 @@ public class Login {
                             if (BCrypt.checkpw(password, hashedPassword)) {
                                 message = "Successfully logged in";
                                 System.out.println(username + " " + message);
-                                return new RegisterResponse(true, message, RegisterStatus.SUCCESS,
+                                return new UserResponse(true, message, RegisterStatus.SUCCESS,
                                         userId,
                                         username);
                             } else {
@@ -61,7 +62,7 @@ public class Login {
             e.printStackTrace();
         }
         // Login failed, return object with unauthenticated status
-        return new RegisterResponse(false, message, RegisterStatus.ERROR, 0, username);
+        return new UserResponse(false, message, RegisterStatus.ERROR, 0, username);
     }
 
     public static int getUserId(String username) {
@@ -84,5 +85,10 @@ public class Login {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Status OK: " + Status.OK.getStatusCode());
+        System.out.println("Status ACCEPTED: " + Status.ACCEPTED.getStatusCode());
     }
 }

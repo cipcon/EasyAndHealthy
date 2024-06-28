@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
+import org.steep.Requests.RecipeRequest;
 import org.steep.Stock.CurrentStock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,7 +76,7 @@ public class CrudRecipeResource {
     @Path("/recipesFromUser/{userId}")
     public Response recipesFromUser(@PathParam("userId") int userId) {
         try {
-            ArrayList<String> recipes = CrudRecipe.recipesFromUser(userId);
+            ArrayList<RecipeRequest> recipes = CrudRecipe.recipesFromUser(userId);
             return Response.ok(recipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -149,7 +150,8 @@ public class CrudRecipeResource {
     @Path("/deleteFromRecipeIngredientTable")
     public Response deleteOnlyOneIngredientFromRecipeIngredientTable(CrudRecipeRequest request) {
         try {
-            CrudRecipe.deleteOnlyOneIngredientFromRecipeIngredientTable(request.getIngredientId(), request.getRecipeId());
+            CrudRecipe.deleteOnlyOneIngredientFromRecipeIngredientTable(request.getIngredientId(),
+                    request.getRecipeId());
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
