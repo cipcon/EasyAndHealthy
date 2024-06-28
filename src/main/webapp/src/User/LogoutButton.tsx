@@ -1,14 +1,13 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../Contexts/context";
 
-export const Logout = () => {
+export const LogoutButton: React.FC = () => {
     const navigate = useNavigate();
-    const userContext = useUserContext();
+    const { logout } = useUserContext();
 
     const handleLogout = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        userContext.setUserCredentials({ id: 0, name: '', token: '' });
+        logout();
         navigate('/');
     };
 

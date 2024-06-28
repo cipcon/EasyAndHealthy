@@ -6,7 +6,7 @@ interface LoginFormProps {
     handlePasswordChange: (event: ChangeEvent<HTMLInputElement>) => void;
     username: string;
     password: string;
-    registrationError: string;
+    loginError: string;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
@@ -15,7 +15,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     handlePasswordChange,
     username,
     password,
-    registrationError
+    loginError
 }) => {
     return (
         <form onSubmit={handleForm}>
@@ -44,7 +44,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 </div>
             </div>
             <button type="submit" className="btn btn-primary">Sign in</button>
-            <p>{registrationError}</p>
+            <p>{loginError}</p>
         </form>
     )
 }

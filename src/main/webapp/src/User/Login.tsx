@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginForm } from "./components/LoginForm";
 import { useUserContext } from "../Contexts/context";
@@ -20,8 +20,8 @@ interface LoginResponse {
 
 export const Login = () => {
     const [credentials, setCredentials] = useState<UserCredentials>({ username: "", password: "" });
-    const [registrationError, setRegistrationError] = useState('');
-    const userContext = useUserContext();
+    const [loginError, setLoginError] = useState('');
+    const { setUserCredentials } = useUserContext();
     const navigate = useNavigate();
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -32,26 +32,12 @@ export const Login = () => {
         setCredentials({ ...credentials, password: event.target.value });
     };
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        const storedToken = localStorage.getItem('token');
-        if (storedUser && storedToken) {
-            userContext.setUserCredentials({ id: JSON.parse(storedUser).id, name: JSON.parse(storedUser).name, token: storedToken });
-            navigate('/');
-        }
-    }, [navigate, userContext]);
-
     const handleForm = async (event: FormEvent) => {
         event.preventDefault();
 
         // Validation logic
-        if (!credentials.username) {
-            setRegistrationError('Username is required');
-            return;
-        }
-
-        if (!credentials.password) {
-            setRegistrationError('Password is required');
+        if (!credentials.username && !credentials.password) {
+            setLoginError('Username and password are required');
             return;
         }
 
@@ -66,25 +52,19 @@ export const Login = () => {
             });
 
             // what i receive from the api
-            const data: LoginResponse = await response.json();
+
 
             if (response.ok) {
-                if (data.isAuthenticated) {
-                    const token = generateToken(data.userId);
-                    userContext.setUserCredentials({ id: data.userId, name: data.username, token });
-                    localStorage.setItem('user', JSON.stringify({ id: data.userId, name: data.username }));
-                    localStorage.setItem('token', token)
-                    navigate('/');
-                } else {
-                    setRegistrationError(data.message || 'Authentication failed. Please check your credentials.');
-                }
+                const data: LoginResponse = await response.json();
+                const token = generateToken(data.userId);
+                setUserCredentials({ id: data.userId, name: data.username, token })
+                navigate('/');
             } else {
-                setRegistrationError(data.message || 'An error occurred during login. Please try again.');
+                setLoginError('Authentication failed. Please check your credentials.');
             }
-            console.log("Login response:", data.message);
         } catch (error) {
             console.error("Error during login:", error);
-            setRegistrationError("Login failed due to a network or server issue. Please try again.");
+            setLoginError("Login failed due to a network or server issue. Please try again.");
         }
     };
 
@@ -95,7 +75,7 @@ export const Login = () => {
             handlePasswordChange={handlePasswordChange}
             username={credentials.username}
             password={credentials.password}
-            registrationError={registrationError}
+            loginError={loginError}
         />
     );
 };

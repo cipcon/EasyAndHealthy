@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RegisterForm } from "./components/RegisterForm";
 import { useUserContext } from "../Contexts/context";
