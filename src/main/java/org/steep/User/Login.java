@@ -4,22 +4,31 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import org.mindrot.jbcrypt.BCrypt;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
+import org.steep.User.RegisterStatusAndResponse.UserResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.Response.Status;
 
 @ApplicationScoped
 public class Login {
-    public ArrayList<UserAuthenticated> loginMethod(String username, String password) {
-        ArrayList<UserAuthenticated> authenticatedUser = new ArrayList<>();
+    public UserResponse loginMethod(String username, String password) {
+        String message = "";
 
         // Establishing connection
         try (Connection connection = DatabaseManagement.connectToDB()) {
             int userId = getUserId(username);
+
+            if (username.isEmpty() && password.isEmpty()) {
+                message = "Password or username are empty";
+                System.out.println(message);
+                return new UserResponse(false, message, RegisterStatus.EXPECTATION_FAILED, 0,
+                        username);
+            }
 
             if (userId != 0) {
                 String checkPass = "SELECT passwort FROM benutzer WHERE benutzer_id = ?";
@@ -29,23 +38,31 @@ public class Login {
                         if (resultSet.next()) {
                             String hashedPassword = resultSet.getString("passwort");
                             if (BCrypt.checkpw(password, hashedPassword)) {
-                                authenticatedUser.add(new UserAuthenticated(username, userId, true));
-                                return authenticatedUser;
+                                message = "Successfully logged in";
+                                System.out.println(username + " " + message);
+                                return new UserResponse(true, message, RegisterStatus.SUCCESS,
+                                        userId,
+                                        username);
                             } else {
-                                System.out.println("Invalid password.");
+                                message = "Invalid password.";
+                                System.out.println(message);
                             }
                         } else {
-                            System.out.println("No user found, please check your input and try again");
+                            message = "No user found, please check your input and try again";
+                            System.out.println(message);
                         }
                     }
                 }
             } else {
-                System.out.println("User login failed: User not found.");
+                message = "No user found, please check your input and try again";
+                System.out.println(message);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return authenticatedUser;
+        // Login failed, return object with unauthenticated status
+        return new UserResponse(false, message, RegisterStatus.ERROR, 0, username);
     }
 
     public static int getUserId(String username) {
@@ -68,5 +85,10 @@ public class Login {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Status OK: " + Status.OK.getStatusCode());
+        System.out.println("Status ACCEPTED: " + Status.ACCEPTED.getStatusCode());
     }
 }

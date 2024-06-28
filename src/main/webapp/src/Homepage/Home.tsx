@@ -1,12 +1,12 @@
-import { useUserContext } from "../context"
+import { useUserContext } from "../Contexts/context"
 
 export const Home = () => {
 
-    const user = useUserContext();
+    const { userCredentials } = useUserContext();
     return (
-        <h1>{user.userCredentials.name === '' ?
+        <h1>{userCredentials.name === '' ?
             "Welcome to the Home page" :
-            "Hello " + user.userCredentials.name + ", you are successfully registered"}
+            "Hello " + userCredentials.name + ", how are you today"}
         </h1>
     )
 }

@@ -1,15 +1,27 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginForm } from "./components/LoginForm";
+import { useUserContext } from "../Contexts/context";
+import { generateToken } from "./components/GenerateToken";
 
 interface UserCredentials {
     username: string;
     password: string;
 }
 
+interface LoginResponse {
+    isAuthenticated: boolean;
+    message: string;
+    status: string;
+    userId: number;
+    username: string;
+}
+
+
 export const Login = () => {
     const [credentials, setCredentials] = useState<UserCredentials>({ username: "", password: "" });
-    const [wrongCredentials, setWrongCredentials] = useState('');
+    const [loginError, setLoginError] = useState('');
+    const { setUserCredentials } = useUserContext();
     const navigate = useNavigate();
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -22,28 +34,36 @@ export const Login = () => {
 
     const handleForm = async (event: FormEvent) => {
         event.preventDefault();
+
+        // Validation logic
+        if (!credentials.username && !credentials.password) {
+            setLoginError('Username and password are required');
+            return;
+        }
+
         try {
-            const response = await fetch(`/login/${credentials.username}/${credentials.password}`, {
+            const response = await fetch(`/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                // what i send to the api
+                body: JSON.stringify(credentials) // sending credentials in the request body (username and passowrd to api)
             });
 
-            if (!response.ok) {
-                setWrongCredentials('Wrong username or Password, please try again');
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                setWrongCredentials('');
+            // what i receive from the api
+
+            if (response.ok) {
+                const data: LoginResponse = await response.json();
+                const token = generateToken(data.userId);
+                setUserCredentials({ id: data.userId, name: data.username, token })
                 navigate('/');
+            } else {
+                setLoginError('Authentication failed. Please check your credentials.');
             }
-
-            const data = await response.text(); // Change to response.text() for a plain text response
-            console.log("Login response:", data);
-
-
         } catch (error) {
             console.error("Error during login:", error);
+            setLoginError("Login failed due to a network or server issue. Please try again.");
         }
     };
 
@@ -54,7 +74,7 @@ export const Login = () => {
             handlePasswordChange={handlePasswordChange}
             username={credentials.username}
             password={credentials.password}
-            wrongCredentials={wrongCredentials}
+            loginError={loginError}
         />
     );
 };

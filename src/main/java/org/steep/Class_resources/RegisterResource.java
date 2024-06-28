@@ -1,9 +1,9 @@
 package org.steep.Class_resources;
 
-import org.steep.Requests.RegisterRequest;
+import org.steep.Requests.CredentialsRequest;
 import org.steep.User.Register;
-import org.steep.User.Register.RegisterResponse;
-import org.steep.User.Register.RegisterStatus;
+import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
+import org.steep.User.RegisterStatusAndResponse.UserResponse;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -16,9 +16,9 @@ public class RegisterResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response register(RegisterRequest request) {
+    public Response register(CredentialsRequest request) {
         Register registerClass = new Register();
-        RegisterResponse registerResponse = registerClass.registerMethod(request.getUsername(), request.getPassword());
+        UserResponse registerResponse = registerClass.registerMethod(request.getUsername(), request.getPassword());
 
         if (registerResponse.getStatus() == RegisterStatus.SUCCESS) {
             return Response.status(Response.Status.CREATED).entity(registerResponse).build();

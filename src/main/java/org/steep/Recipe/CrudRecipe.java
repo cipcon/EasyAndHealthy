@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.Requests.RecipeRequest;
 import org.steep.Stock.CurrentStock;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -170,10 +171,10 @@ public class CrudRecipe {
     // Not sure yet if i need this function
     // Return a ArrayList with the recipes the user saved in his recipe list
     // If the ArrayList is empty, sth went wrong
-    public static ArrayList<String> recipesFromUser(int userId) {
-        ArrayList<String> recipeList = new ArrayList<>();
+    public static ArrayList<RecipeRequest> recipesFromUser(int userId) {
+        ArrayList<RecipeRequest> recipeList = new ArrayList<>();
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String readUsersRecipes = "SELECT r.rezept_name " +
+            String readUsersRecipes = "SELECT r.rezept_name, r.rezept_id " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_benutzer rz ON rz.rezept_id = r.rezept_id " +
                     "WHERE rz.benutzer_id = ? " +
@@ -183,18 +184,12 @@ public class CrudRecipe {
                 statement.setInt(1, userId);
 
                 ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    do {
-                        String recipe = resultSet.getString("r.rezept_name");
-                        recipeList.add(recipe);
-                        System.out.println(recipe);
-                    } while (resultSet.next());
-                    return recipeList;
-                } else {
-                    System.out.println("Hello, you don't have any recipe in your list");
+                while (resultSet.next()) {
+                    String recipeName = resultSet.getString("rezept_name");
+                    int recipeId = resultSet.getInt("rezept_id");
+                    RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId);
+                    recipeList.add(recipeRequest);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();

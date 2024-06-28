@@ -1,10 +1,10 @@
 package org.steep.Requests;
 
-public class RegisterRequest {
+public class CredentialsRequest {
     private String username;
     private String password;
 
-    public RegisterRequest(String username, String password) {
+    public CredentialsRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }
