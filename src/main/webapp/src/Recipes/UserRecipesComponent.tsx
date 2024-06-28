@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { RecipeRequest } from "./UserRecipes";
 
 interface UserRecipesProps {
@@ -5,7 +6,11 @@ interface UserRecipesProps {
 }
 
 export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) => {
+    const navigate = useNavigate();
 
+    const handleClick = async (event: any) => {
+        navigate('/recipe');
+    }
     return (
         <div>
             <ul>
@@ -14,13 +19,10 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
                     :
                     recipes.map((recipe) => (
                         <li key={recipe.recipeId}>
-                            <p>{recipe.recipeName}</p>
+                            <a href="" className="recipes" onClick={handleClick}>{recipe.recipeName}</a>
                         </li>
-
-
                     ))
                 }
-
             </ul>
         </div>
     )

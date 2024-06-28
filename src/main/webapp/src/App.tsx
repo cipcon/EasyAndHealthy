@@ -8,6 +8,7 @@ import { Profile } from './User/Profile';
 import { Allrecipes } from './Recipes/AllRecipes';
 import { useCallback, useEffect, useState } from 'react';
 import { AppContext } from './Contexts/context';
+import { Recipe } from './Recipes/Recipe';
 
 export interface User {
   id: number;
@@ -71,6 +72,7 @@ const App: React.FC = () => {
               <Route path='/profile' element={<Profile />} />
               <Route path='/allRecipes' element={<Allrecipes />} />
               <Route path='*' element={<h1>You are out of the page</h1>} />
+              <Route path='/recipe' element={<Recipe />} />
             </Routes>
           </main>
           <footer>

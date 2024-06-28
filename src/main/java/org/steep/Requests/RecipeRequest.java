@@ -24,4 +24,5 @@ public class RecipeRequest {
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
     }
+
 }

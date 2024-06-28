@@ -1,12 +1,11 @@
 package org.steep.Class_resources;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
+2
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
+import org.steep.Requests.RecipeIngredientsRequest;
 import org.steep.Requests.RecipeRequest;
-import org.steep.Stock.CurrentStock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -64,7 +63,7 @@ public class CrudRecipeResource {
     @Path("/readAllRecipes")
     public Response readAllRecipes() {
         try {
-            HashMap<String, CurrentStock> allRecipes = CrudRecipe.readAllRecipes();
+            ArrayList<RecipeIngredientsRequest> allRecipes = CrudRecipe.readAllRecipes();
             return Response.ok(allRecipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

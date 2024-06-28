@@ -27,3 +27,12 @@ footer {
   margin-left: 10px;
   text-align: center;
 }
+
+.recipes {
+  text-decoration: none;
+  color: black;
+}
+
+.recipes:hover {
+  color: darkgreen;
+}

@@ -7,11 +7,10 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.Requests.RecipeIngredientsRequest;
 import org.steep.Requests.RecipeRequest;
-import org.steep.Stock.CurrentStock;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -124,48 +123,33 @@ public class CrudRecipe {
     // not sure if i need this function
     // output only the recipes that has ingredients
     // return a HashMap in a HashMap. CurrentStock is a HashMap
-    public static HashMap<String, CurrentStock> readAllRecipes() {
-        HashMapShoppingList hashMapShoppingList = new HashMapShoppingList();
+    public static ArrayList<RecipeIngredientsRequest> readAllRecipes() {
+        ArrayList<RecipeIngredientsRequest> recipeContains = new ArrayList<>();
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String readRecipes = "SELECT r.rezept_name, z.zutat_name, rz.menge " +
+            String readRecipes = "SELECT r.rezept_name, z.zutat_name, rz.menge, z.einheit " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
                     "INNER JOIN zutaten z ON rz.zutat_id = z.zutat_id " +
                     "ORDER BY r.rezept_name";
 
-            String recipe = "";
-            String ingredient = "";
-            int quantity = 0;
-
             try (PreparedStatement statement = connection.prepareStatement(readRecipes)) {
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    recipe = resultSet.getString("r.rezept_name");
-                    ingredient = resultSet.getString("z.zutat_name");
-                    quantity = resultSet.getInt("rz.menge");
-
-                    // Check if the recipe already exists in the HashMap
-                    if (hashMapShoppingList.getRecipeData().containsKey(recipe)) {
-                        // If it exists, retrieve its stock and add ingredients to it
-                        CurrentStock stock = hashMapShoppingList.getRecipeData().get(recipe);
-                        stock.addIngredientAndQuantity(ingredient, quantity);
-                    } else {
-                        // If it doesn't exist, create a new CurrentStock object and add ingredients to
-                        // it
-                        CurrentStock stock = new CurrentStock();
-                        stock.addIngredientAndQuantity(ingredient, quantity);
-                        ;
-                        hashMapShoppingList.setRecipeData(recipe, stock);
-                    }
+                    String recipeName = resultSet.getString("rezept_name");
+                    String ingredient = resultSet.getString("zutat_name");
+                    int quantity = resultSet.getInt("menge");
+                    String unit = resultSet.getString("einheit");
+                    RecipeIngredientsRequest recipeIngredients = new RecipeIngredientsRequest(recipeName, ingredient,
+                            quantity, unit);
+                    recipeContains.add(recipeIngredients);
                 }
-                return hashMapShoppingList.getRecipeData();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return hashMapShoppingList.getRecipeData();
+        return recipeContains;
     }
 
     // Not sure yet if i need this function
