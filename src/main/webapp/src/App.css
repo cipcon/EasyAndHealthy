@@ -36,3 +36,17 @@ footer {
 .recipes:hover {
   color: darkgreen;
 }
+
+.removeButton {
+  margin-left: 5px;
+  margin-top: 5px;
+  color: white;
+  background-color: brown;
+}
+
+.addButton {
+  margin-left: 5px;
+  margin-top: 5px;
+  color: black;
+  background-color: green;
+}

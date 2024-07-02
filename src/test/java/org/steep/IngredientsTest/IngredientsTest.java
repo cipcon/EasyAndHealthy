@@ -3,12 +3,12 @@ package org.steep.IngredientsTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.steep.Ingredients.Ingredients;
 import org.steep.Ingredients.UnitEnum;
 import org.steep.Recipe.CrudRecipe;
+import org.steep.Requests.RecipeIngredients.IngredientRequest;
 
 public class IngredientsTest {
     @Test
@@ -65,18 +65,19 @@ public class IngredientsTest {
     void readRecipeIngredientsCheckIfMatch() {
         String recipe = "Cashewmilch";
         int recipeId = CrudRecipe.recipeId(recipe);
-        HashMap<String, Double> recipeIngredientsHashMap = Ingredients.readRecipeIngredients(recipeId);
+        ArrayList<IngredientRequest> recipeIngredientsHashMap = Ingredients.readRecipeIngredients(recipeId);
         ArrayList<String> cashewmilchIngredientsCheck = new ArrayList<>();
         ArrayList<String> cashewmilchIngredients = new ArrayList<>();
 
         cashewmilchIngredientsCheck.add("Cashewkerne");
         cashewmilchIngredientsCheck.add("Wasser");
 
-        for (String i : recipeIngredientsHashMap.keySet()) {
-            String ingredient = i;
-            cashewmilchIngredients.add(ingredient);
-        }
-
+        /*
+         * for (String i : recipeIngredientsHashMap.keySet()) {
+         * String ingredient = i;
+         * cashewmilchIngredients.add(ingredient);
+         * }
+         */
         // return true if the Ingredients match
         assertTrue(cashewmilchIngredients.containsAll(cashewmilchIngredientsCheck));
 
@@ -114,7 +115,6 @@ public class IngredientsTest {
     @Test
     void updateGlobalIngredientSuccessfully() {
 
-
         // add the ingredient
         Ingredients.createIngredient("Eier", "stück");
 
@@ -148,7 +148,6 @@ public class IngredientsTest {
         String ei = "Ei";
         Ingredients.createIngredient(ei, "stuck");
         int eiId = Ingredients.ingredientId(ei);
-
 
         // try if successfully delete
         boolean globalIngredientDeleted = Ingredients.deleteGlobalIngredient(eiId);

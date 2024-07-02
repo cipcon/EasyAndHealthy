@@ -5,11 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.steep.Database.DatabaseManagement;
 import org.steep.Recipe.CrudRecipe;
-import org.steep.Recipe.HashMapShoppingList;
+import org.steep.Requests.RecipeIngredients.IngredientRequest;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -87,41 +86,42 @@ public class Ingredients {
     }
 
     // Read the ingredients of a recipe, save them in a HashMap and return them
-    public static HashMap<String, Double> readRecipeIngredients(int recipeId) {
-        HashMapShoppingList hashMapShoppingList = new HashMapShoppingList();
-
+    public static ArrayList<IngredientRequest> readRecipeIngredients(int recipeId) {
         boolean recipeIdExist = CrudRecipe.existingGlobalRecipe(recipeId);
-
-        if (recipeIdExist == true) {
-            String readRecipesIngredients = "SELECT z.zutat_name, rz.menge " +
+        if (recipeIdExist) {
+            String readRecipesIngredients = "SELECT z.zutat_name, z.zutat_id, rz.menge, z.einheit " +
                     "FROM zutaten z " +
                     "INNER JOIN rezept_zutat rz ON z.zutat_id = rz.zutat_id " +
                     "WHERE rezept_id = ? " +
                     "ORDER BY z.zutat_name";
 
+            ArrayList<IngredientRequest> ingredients = new ArrayList<>();
+
             try (Connection connection = DatabaseManagement.connectToDB();
                     PreparedStatement statement = connection.prepareStatement(readRecipesIngredients)) {
                 statement.setInt(1, recipeId);
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        do {
-                            String ingredient = resultSet.getString("z.zutat_name");
-                            int quantity = resultSet.getInt("rz.menge");
-                            hashMapShoppingList.setRecipeIngredients(ingredient, quantity);
-                        } while (resultSet.next());
-                    } else {
+                    while (resultSet.next()) {
+                        String ingredient = resultSet.getString("z.zutat_name");
+                        int ingredientId = resultSet.getInt("z.zutat_id");
+                        int quantity = resultSet.getInt("rz.menge");
+                        String unit = resultSet.getString("z.einheit");
+                        IngredientRequest ingredientRequest = new IngredientRequest(ingredient, ingredientId, quantity,
+                                unit);
+                        ingredients.add(ingredientRequest);
+                    }
+                    if (ingredients.isEmpty()) {
                         System.out.println("No ingredients found for recipeId: " + recipeId);
                     }
                 }
-                return hashMapShoppingList.getRecipeIngredients();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            return ingredients;
         } else {
             System.out.println("Recipe doesn't exist");
+            return new ArrayList<>(); // Return an empty list if the recipe doesn't exist
         }
-
-        return hashMapShoppingList.getRecipeIngredients();
     }
 
     // get the id of an ingredient
@@ -259,4 +259,13 @@ public class Ingredients {
         return ingredientExist;
     }
 
+    public static void main(String[] args) {
+        ArrayList<IngredientRequest> ingredientRequests = Ingredients.readRecipeIngredients(1);
+        for (IngredientRequest i : ingredientRequests) {
+            System.out.println(i.getIngredient());
+            System.out.println(i.getQuantity());
+            System.out.println(i.getUnit());
+        }
+
+    }
 }

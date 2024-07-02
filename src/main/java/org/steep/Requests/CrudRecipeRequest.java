@@ -10,8 +10,9 @@ public class CrudRecipeRequest {
 
     // Konstruktor
 
-    public CrudRecipeRequest() {
-
+    public CrudRecipeRequest(int recipeId, int userId) {
+        this.recipeId = recipeId;
+        this.userId = userId;
     }
 
     // set methods

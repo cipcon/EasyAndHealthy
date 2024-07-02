@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.steep.Class_resources.IngredientsResource;
 import org.steep.Ingredients.Ingredients;
 import org.steep.Ingredients.UnitEnum;
-import org.steep.Requests.IngredientRequest;
+import org.steep.Requests.RecipeIngredients.IngredientRequest;
 
 import jakarta.inject.Inject;
 import io.quarkus.test.junit.QuarkusTest;

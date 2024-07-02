@@ -3,14 +3,13 @@ package org.steep.RecipeTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 
 import org.steep.Ingredients.Ingredients;
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.UserRequest;
-import org.steep.Stock.CurrentStock;
+import org.steep.Requests.RecipeIngredients.RecipeRequest;
 
 public class CrudRecipeTest {
     private UserRequest user() {
@@ -66,7 +65,7 @@ public class CrudRecipeTest {
 
     @Test
     void readAllRecipesCheckRecipesNames() {
-        HashMap<String, CurrentStock> recipeIngredients = CrudRecipe.readAllRecipes();
+        ArrayList<RecipeRequest> recipeIngredients = CrudRecipe.readAllRecipes();
         ArrayList<String> existingRecipes = new ArrayList<>();
         ArrayList<String> existingRecipesCheck = new ArrayList<>();
 
@@ -74,9 +73,8 @@ public class CrudRecipeTest {
         existingRecipesCheck.add("Cashewmilch");
         existingRecipesCheck.add("Ofenkartoffeln");
 
-        for (String i : recipeIngredients.keySet()) {
-            String recipe = i;
-            existingRecipes.add(recipe);
+        for (RecipeRequest i : recipeIngredients) {
+            existingRecipes.add(i.getRecipeName());
         }
         assertTrue(existingRecipes.containsAll(existingRecipesCheck));
 
@@ -84,13 +82,20 @@ public class CrudRecipeTest {
 
     @Test
     void recipesFromUserListMatch() {
-        ArrayList<String> checkRecipe = new ArrayList<>();
+        ArrayList<RecipeRequest> checkRecipe = new ArrayList<>();
 
-        checkRecipe.add("Bruschetta");
-        checkRecipe.add("Griechischer Joghurt mit Honig und Nüssen");
-        // checkRecipe.add("Omelett");
-        checkRecipe.add("Ofenkartoffeln");
-        checkRecipe.add("Caprese Salat");
+        RecipeRequest recipe = new RecipeRequest("Bruschetta", CrudRecipe.recipeId("Bruschetta"));
+        checkRecipe.add(recipe);
+
+        recipe = new RecipeRequest("Griechischer Joghurt mit Honig und Nüssen",
+                CrudRecipe.recipeId("Griechischer Joghurt mit Honig und Nüssen"));
+        checkRecipe.add(recipe);
+
+        recipe = new RecipeRequest("Ofenkartoffeln", CrudRecipe.recipeId("Ofenkartoffeln"));
+        checkRecipe.add(recipe);
+
+        recipe = new RecipeRequest("Caprese Salat", CrudRecipe.recipeId("Caprese Salat"));
+        checkRecipe.add(recipe);
 
         assertTrue(CrudRecipe.recipesFromUser(user().getId()).containsAll(checkRecipe));
     }

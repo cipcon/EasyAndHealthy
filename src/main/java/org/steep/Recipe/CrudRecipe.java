@@ -7,10 +7,12 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.steep.Database.DatabaseManagement;
-import org.steep.Requests.RecipeIngredientsRequest;
-import org.steep.Requests.RecipeRequest;
+import org.steep.Requests.RecipeIngredients.IngredientRequest;
+import org.steep.Requests.RecipeIngredients.RecipeRequest;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -123,10 +125,12 @@ public class CrudRecipe {
     // not sure if i need this function
     // output only the recipes that has ingredients
     // return a HashMap in a HashMap. CurrentStock is a HashMap
-    public static ArrayList<RecipeIngredientsRequest> readAllRecipes() {
-        ArrayList<RecipeIngredientsRequest> recipeContains = new ArrayList<>();
+    public static ArrayList<RecipeRequest> readAllRecipes() {
+        ArrayList<RecipeRequest> recipes = new ArrayList<>();
+        HashMap<Integer, RecipeRequest> recipeMap = new HashMap<>();
+
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String readRecipes = "SELECT r.rezept_name, z.zutat_name, rz.menge, z.einheit " +
+            String readRecipes = "SELECT r.rezept_name, r.rezept_id, z.zutat_name, z.zutat_id, rz.menge, z.einheit " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
                     "INNER JOIN zutaten z ON rz.zutat_id = z.zutat_id " +
@@ -136,20 +140,36 @@ public class CrudRecipe {
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     String recipeName = resultSet.getString("rezept_name");
-                    String ingredient = resultSet.getString("zutat_name");
+                    int recipeId = resultSet.getInt("rezept_id");
+                    String ingredientName = resultSet.getString("zutat_name");
+                    int ingredientId = resultSet.getInt("zutat_id");
                     int quantity = resultSet.getInt("menge");
                     String unit = resultSet.getString("einheit");
-                    RecipeIngredientsRequest recipeIngredients = new RecipeIngredientsRequest(recipeName, ingredient,
-                            quantity, unit);
-                    recipeContains.add(recipeIngredients);
+
+                    IngredientRequest ingredient = new IngredientRequest(ingredientName, ingredientId, quantity, unit);
+
+                    if (recipeMap.containsKey(recipeId)) {
+                        // If the recipe already exists, add the ingredient to it
+                        recipeMap.get(recipeId).addIngredient(ingredient);
+                    } else {
+                        // If the recipe does not exist, create a new RecipeRequest
+                        List<IngredientRequest> ingredients = new ArrayList<>();
+                        ingredients.add(ingredient);
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, ingredients);
+                        recipeMap.put(recipeId, recipeRequest);
+                    }
                 }
+
+                // Add all recipes from the map to the list
+                recipes.addAll(recipeMap.values());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return recipeContains;
+
+        return recipes;
     }
 
     // Not sure yet if i need this function
@@ -157,11 +177,16 @@ public class CrudRecipe {
     // If the ArrayList is empty, sth went wrong
     public static ArrayList<RecipeRequest> recipesFromUser(int userId) {
         ArrayList<RecipeRequest> recipeList = new ArrayList<>();
+        HashMap<Integer, RecipeRequest> recipeMap = new HashMap<>();
+
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String readUsersRecipes = "SELECT r.rezept_name, r.rezept_id " +
+            String readUsersRecipes = "SELECT r.rezept_name, r.rezept_id, z.zutat_name, z.zutat_id, rz.menge, z.einheit "
+                    +
                     "FROM rezept r " +
-                    "INNER JOIN rezept_benutzer rz ON rz.rezept_id = r.rezept_id " +
-                    "WHERE rz.benutzer_id = ? " +
+                    "INNER JOIN rezept_benutzer rb ON rb.rezept_id = r.rezept_id " +
+                    "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
+                    "INNER JOIN zutaten z ON rz.zutat_id = z.zutat_id " +
+                    "WHERE rb.benutzer_id = ? " +
                     "ORDER BY r.rezept_name";
 
             try (PreparedStatement statement = connection.prepareStatement(readUsersRecipes)) {
@@ -171,13 +196,34 @@ public class CrudRecipe {
                 while (resultSet.next()) {
                     String recipeName = resultSet.getString("rezept_name");
                     int recipeId = resultSet.getInt("rezept_id");
-                    RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId);
-                    recipeList.add(recipeRequest);
+                    String ingredientName = resultSet.getString("zutat_name");
+                    int ingredientId = resultSet.getInt("zutat_id");
+                    int quantity = resultSet.getInt("menge");
+                    String unit = resultSet.getString("einheit");
+
+                    IngredientRequest ingredient = new IngredientRequest(ingredientName, ingredientId, quantity, unit);
+
+                    if (recipeMap.containsKey(recipeId)) {
+                        // If the recipe already exists, add the ingredient to it
+                        recipeMap.get(recipeId).addIngredient(ingredient);
+                    } else {
+                        // If the recipe does not exist, create a new RecipeRequest
+                        List<IngredientRequest> ingredients = new ArrayList<>();
+                        ingredients.add(ingredient);
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, ingredients);
+                        recipeMap.put(recipeId, recipeRequest);
+                    }
                 }
+
+                // Add all recipes from the map to the list
+                recipeList.addAll(recipeMap.values());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return recipeList;
     }
 

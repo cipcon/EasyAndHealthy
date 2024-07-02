@@ -1,11 +1,9 @@
 package org.steep.Class_resources;
 
 import java.util.ArrayList;
-2
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
-import org.steep.Requests.RecipeIngredientsRequest;
-import org.steep.Requests.RecipeRequest;
+import org.steep.Requests.RecipeIngredients.RecipeRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -63,7 +61,7 @@ public class CrudRecipeResource {
     @Path("/readAllRecipes")
     public Response readAllRecipes() {
         try {
-            ArrayList<RecipeIngredientsRequest> allRecipes = CrudRecipe.readAllRecipes();
+            ArrayList<RecipeRequest> allRecipes = CrudRecipe.readAllRecipes();
             return Response.ok(allRecipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -110,7 +108,8 @@ public class CrudRecipeResource {
     }
 
     @POST
-    @Path("/deleteFromRecipeUserTable")
+    @Path("/deleteFromRecipeUserTable/")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteFromRecipeUserTable(CrudRecipeRequest request) {
         try {
             CrudRecipe.deleteFromRecipeUserTable(request.getRecipeId(), request.getUserId());

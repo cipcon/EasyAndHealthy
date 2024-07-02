@@ -1,16 +1,48 @@
 import { useNavigate } from "react-router-dom";
-import { RecipeRequest } from "./UserRecipes";
+import { Recipe } from "./AllRecipes";
+import { useUserContext } from "../Contexts/context";
+import { useState } from "react";
 
 interface UserRecipesProps {
-    recipes: RecipeRequest[];
+    recipes: Recipe[];
+}
+
+interface DeleteUserProps {
+    userId: number;
+    recipeId: number;
 }
 
 export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) => {
     const navigate = useNavigate();
+    const { userCredentials } = useUserContext();
+    const [remove, setRemove] = useState<DeleteUserProps | null>(null);
+    const [successDelete, setSuccessDelete] = useState('');
 
-    const handleClick = async (event: any) => {
-        navigate('/recipe');
+
+    const handleClick = (recipe: Recipe) => {
+        navigate('/recipeDetails', { state: { recipe } });
     }
+
+    const removeRecipe = async (recipeId: number, userId: number) => {
+        setRemove({ recipeId, userId });
+        try {
+            const response = await fetch('/deleteRecipeFromAllUsersLists', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application.json'
+                },
+                body: JSON.stringify(remove)
+            });
+            if (response.ok) {
+                setSuccessDelete('Successfully deleted');
+            } else {
+                console.error("Error deleting recipe:");
+            }
+        } catch (error) {
+            console.error("Error deleting recipe:", error);
+        }
+    }
+
     return (
         <div>
             <ul>
@@ -19,10 +51,14 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
                     :
                     recipes.map((recipe) => (
                         <li key={recipe.recipeId}>
-                            <a href="" className="recipes" onClick={handleClick}>{recipe.recipeName}</a>
+                            <a href="/recipeDetails" className="recipes" onClick={() => handleClick(recipe)}>
+                                {recipe.recipeName}
+                            </a>
+                            <button className="removeButton" type="button" onClick={() => removeRecipe(recipe.recipeId, userCredentials.id)}>Löschen</button>
                         </li>
                     ))
                 }
+                <p>{successDelete}</p>
             </ul>
         </div>
     )

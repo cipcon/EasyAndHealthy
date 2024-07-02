@@ -1,65 +1,57 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface IngredientQuantity {
+export interface Ingredient {
     ingredient: string;
+    ingredientId: number;
     quantity: number;
+    unit: string;
 }
 
-interface Recipe {
+export interface Recipe {
     recipeName: string;
-    ingredientAndQuantity: IngredientQuantity[];
+    recipeId: number;
+    ingredients: Ingredient[];
 }
 
-interface ApiResponse {
-    [recipeName: string]: {
-        ingredientAndQuantity: {
-            [ingredient: string]: number;
-        };
-    };
-}
-
-export const Allrecipes = () => {
-    const [recipe, setRecipe] = useState<Recipe[]>([]);
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch('/recipe/readAllRecipes');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data: ApiResponse = await response.json();
-
-            // Transform the data into the expected format
-            const transformedData: Recipe[] = Object.entries(data).map(([recipeName, value]) => {
-                const ingredientAndQuantity = Object.entries(value.ingredientAndQuantity).map(([ingredient, quantity]) => ({
-                    ingredient,
-                    quantity
-                }));
-                return { recipeName, ingredientAndQuantity };
-            });
-
-            setRecipe(transformedData);
-        } catch (error) {
-            console.error("Error fetching recipes:", error);
-        }
-    };
+export const AllRecipes: React.FC = () => {
+    const [recipes, setRecipe] = useState<Recipe[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData();
     }, []);
 
+    const fetchData = async () => {
+        try {
+            const response = await fetch('/recipe/readAllRecipes');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data: Recipe[] = await response.json();
+            setRecipe(data);
+        } catch (error) {
+            console.error("Error fetching recipes:", error);
+        }
+    };
+
+    const handleClick = (recipe: Recipe) => {
+        navigate('/recipeDetails', { state: { recipe } });
+    }
+
     return (
         <div>
             <ul>
-                {recipe.map((list) => (
-                    <div key={list.recipeName}>
-                        <li><strong>{list.recipeName}</strong></li>
-                        <ul>
-                            {list.ingredientAndQuantity.map((item) => (
-                                <li key={item.ingredient}>{item.ingredient}: {item.quantity}</li>
-                            ))}
-                        </ul>
-                    </div>
+                {recipes.map((recipe) => (
+                    <li key={recipe.recipeId}>
+                        <div>
+                            <a href="/recipeDetails" className="recipes" onClick={() => handleClick(recipe)}>
+                                {recipe.recipeName}
+                            </a>
+                        </div>
+                    </li>
                 ))}
             </ul>
         </div>

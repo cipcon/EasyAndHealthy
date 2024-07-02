@@ -5,10 +5,10 @@ import { Home } from './Homepage/Home';
 import { Login } from './User/Login';
 import { Register } from './User/Register';
 import { Profile } from './User/Profile';
-import { Allrecipes } from './Recipes/AllRecipes';
+import { AllRecipes } from './Recipes/AllRecipes';
 import { useCallback, useEffect, useState } from 'react';
 import { AppContext } from './Contexts/context';
-import { Recipe } from './Recipes/Recipe';
+import { RecipeDetails } from './Recipes/RecipeDetails';
 
 export interface User {
   id: number;
@@ -70,9 +70,9 @@ const App: React.FC = () => {
               <Route path='/login' element={<Login />} />
               <Route path='/register' element={<Register />} />
               <Route path='/profile' element={<Profile />} />
-              <Route path='/allRecipes' element={<Allrecipes />} />
+              <Route path='/allRecipes' element={<AllRecipes />} />
               <Route path='*' element={<h1>You are out of the page</h1>} />
-              <Route path='/recipe' element={<Recipe />} />
+              <Route path='/recipeDetails' element={<RecipeDetails />} />
             </Routes>
           </main>
           <footer>

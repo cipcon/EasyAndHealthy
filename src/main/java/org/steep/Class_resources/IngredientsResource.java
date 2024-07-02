@@ -1,11 +1,10 @@
 package org.steep.Class_resources;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.steep.Ingredients.Ingredients;
 import org.steep.Ingredients.UnitEnum;
-import org.steep.Requests.IngredientRequest;
+import org.steep.Requests.RecipeIngredients.IngredientRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -14,6 +13,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -89,13 +89,11 @@ public class IngredientsResource {
     }
 
     @GET
-    @Path("/RecipeIngredients/{recipeId:\\d+}")
-    public Response readRecipeIngredients(int recipeId) {
+    @Path("/recipeIngredients/{recipeId}")
+    public Response readRecipeIngredients(@PathParam("recipeId") int recipeId) {
         try {
-            HashMap<String, Double> ingredientsFound = Ingredients.readRecipeIngredients(recipeId);
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writeValueAsString(ingredientsFound);
-            return Response.ok(json).build();
+            ArrayList<IngredientRequest> ingredientRequest = Ingredients.readRecipeIngredients(recipeId);
+            return Response.ok(ingredientRequest).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error retrieving ingredients: " + e.getMessage()).build();

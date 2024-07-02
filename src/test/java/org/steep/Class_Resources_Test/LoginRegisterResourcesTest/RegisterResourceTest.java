@@ -7,7 +7,6 @@ import org.steep.Class_resources.RegisterResource;
 import org.steep.Requests.CredentialsRequest;
 import org.steep.User.DeleteAccount;
 import org.steep.User.Login;
-import org.steep.User.Register;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
