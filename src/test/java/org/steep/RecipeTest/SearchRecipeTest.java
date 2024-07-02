@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Recipe.SearchRecipe;
-import org.steep.Requests.UserRequest;
+import org.steep.Requests.User.UserRequest;
 
 public class SearchRecipeTest {
     SearchRecipe searchRecipe = new SearchRecipe();

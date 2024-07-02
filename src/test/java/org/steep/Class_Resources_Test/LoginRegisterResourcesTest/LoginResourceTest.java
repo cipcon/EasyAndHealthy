@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.steep.Class_resources.LoginResource;
-import org.steep.Requests.CredentialsRequest;
+import org.steep.Requests.User.CredentialsRequest;
 
 import jakarta.inject.Inject;
 

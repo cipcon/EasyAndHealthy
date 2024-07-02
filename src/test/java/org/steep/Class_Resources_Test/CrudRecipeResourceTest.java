@@ -9,7 +9,7 @@ import org.steep.Class_resources.CrudRecipeResource;
 import org.steep.Ingredients.Ingredients;
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
-import org.steep.Requests.UserRequest;
+import org.steep.Requests.User.UserRequest;
 
 import jakarta.inject.Inject;
 import io.quarkus.test.junit.QuarkusTest;

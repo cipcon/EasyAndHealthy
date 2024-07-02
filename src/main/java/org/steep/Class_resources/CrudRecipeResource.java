@@ -108,7 +108,7 @@ public class CrudRecipeResource {
     }
 
     @POST
-    @Path("/deleteFromRecipeUserTable/")
+    @Path("/deleteFromRecipeUserTable")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteFromRecipeUserTable(CrudRecipeRequest request) {
         try {

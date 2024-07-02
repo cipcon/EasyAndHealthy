@@ -1,4 +1,4 @@
-package org.steep.Requests;
+package org.steep.Requests.User;
 
 public class UserRequest {
     // java will automatically create a default constructor based on the attributes

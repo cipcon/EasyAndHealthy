@@ -1,6 +1,6 @@
 package org.steep.Class_resources;
 
-import org.steep.Requests.CredentialsRequest;
+import org.steep.Requests.User.CredentialsRequest;
 import org.steep.User.Login;
 import org.steep.User.RegisterStatusAndResponse.UserResponse;
 import org.steep.User.RegisterStatusAndResponse.RegisterStatus;

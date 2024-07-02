@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Recipe } from "./AllRecipes";
 import { useUserContext } from "../Contexts/context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface UserRecipesProps {
     recipes: Recipe[];
@@ -19,24 +19,26 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
     const [successDelete, setSuccessDelete] = useState('');
 
 
+
     const handleClick = (recipe: Recipe) => {
         navigate('/recipeDetails', { state: { recipe } });
     }
 
+
     const removeRecipe = async (recipeId: number, userId: number) => {
         setRemove({ recipeId, userId });
         try {
-            const response = await fetch('/deleteRecipeFromAllUsersLists', {
+            const response = await fetch('recipe/deleteFromRecipeUserTable', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application.json'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(remove)
             });
             if (response.ok) {
                 setSuccessDelete('Successfully deleted');
             } else {
-                console.error("Error deleting recipe:");
+                console.error("Error deleting recipe");
             }
         } catch (error) {
             console.error("Error deleting recipe:", error);
@@ -54,7 +56,7 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
                             <a href="/recipeDetails" className="recipes" onClick={() => handleClick(recipe)}>
                                 {recipe.recipeName}
                             </a>
-                            <button className="removeButton" type="button" onClick={() => removeRecipe(recipe.recipeId, userCredentials.id)}>Löschen</button>
+                            <button className="removeButton" type="button" onClick={() => removeRecipe(recipe.recipeId, userCredentials.id)}>Remove</button>
                         </li>
                     ))
                 }

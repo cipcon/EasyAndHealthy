@@ -10,7 +10,7 @@ import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 
 import org.steep.Ingredients.Ingredients;
-import org.steep.Requests.UserRequest;
+import org.steep.Requests.User.UserRequest;
 import org.steep.Stock.ManageStock;
 
 public class ManageStockTest {

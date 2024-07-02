@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import org.steep.Ingredients.Ingredients;
 import org.steep.Recipe.CrudRecipe;
-import org.steep.Requests.UserRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
+import org.steep.Requests.User.UserRequest;
 
 public class CrudRecipeTest {
     private UserRequest user() {

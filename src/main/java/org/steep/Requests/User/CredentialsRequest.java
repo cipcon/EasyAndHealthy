@@ -1,4 +1,4 @@
-package org.steep.Requests;
+package org.steep.Requests.User;
 
 public class CredentialsRequest {
     private String username;
