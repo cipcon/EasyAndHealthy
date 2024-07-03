@@ -5,12 +5,7 @@ import { Recipe } from "./AllRecipes";
 
 export const UserRecipes: React.FC = () => {
     const [recipes, setRecipe] = useState<Recipe[]>([]);
-
     const { userCredentials } = useUserContext();
-
-    useEffect(() => {
-        fetchUserData();
-    }, [userCredentials.id]);
 
     const fetchUserData = async () => {
         try {
@@ -29,10 +24,18 @@ export const UserRecipes: React.FC = () => {
         }
     }
 
+    useEffect(() => {
+        fetchUserData();
+    }, [userCredentials.id]);
+
+    const handleRecipeRemoved = () => {
+        fetchUserData();
+    }
+
     return (
         <div>
             <h1>Your saved recipes</h1>
-            <UserRecipesComponent recipes={recipes} />
+            <UserRecipesComponent recipes={recipes} onRecipeRemoved={handleRecipeRemoved} />
         </div>
     )
 }

@@ -5,19 +5,18 @@ import { useEffect, useState } from "react";
 
 interface UserRecipesProps {
     recipes: Recipe[];
+    onRecipeRemoved: () => void;
 }
 
-interface DeleteUserProps {
-    userId: number;
-    recipeId: number;
-}
-
-export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) => {
+export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes, onRecipeRemoved }) => {
     const navigate = useNavigate();
     const { userCredentials } = useUserContext();
-    const [remove, setRemove] = useState<DeleteUserProps | null>(null);
-    const [successDelete, setSuccessDelete] = useState('');
+    const [message, setMessage] = useState('');
+    const [localRecipes, setLocalRecipes] = useState<Recipe[]>(recipes);
 
+    useEffect(() => {
+        setLocalRecipes(recipes);
+    }, [recipes]);
 
 
     const handleClick = (recipe: Recipe) => {
@@ -26,32 +25,35 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
 
 
     const removeRecipe = async (recipeId: number, userId: number) => {
-        setRemove({ recipeId, userId });
         try {
             const response = await fetch('recipe/deleteFromRecipeUserTable', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(remove)
+                body: JSON.stringify({ recipeId, userId })
             });
             if (response.ok) {
-                setSuccessDelete('Successfully deleted');
+                setMessage('Successfully deleted');
+                setLocalRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.recipeId !== recipeId));
+                onRecipeRemoved();
             } else {
                 console.error("Error deleting recipe");
+                setMessage('Failed to delete recipe');
             }
         } catch (error) {
             console.error("Error deleting recipe:", error);
+            setMessage('Failed to delete recipe');
         }
     }
 
     return (
         <div>
             <ul>
-                {recipes.length === 0 ?
+                {localRecipes.length === 0 ?
                     <p>No saved recipes found.</p>
                     :
-                    recipes.map((recipe) => (
+                    localRecipes.map((recipe) => (
                         <li key={recipe.recipeId}>
                             <a href="/recipeDetails" className="recipes" onClick={() => handleClick(recipe)}>
                                 {recipe.recipeName}
@@ -60,7 +62,7 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
                         </li>
                     ))
                 }
-                <p>{successDelete}</p>
+                <p style={{ color: "green" }}>{message}</p>
             </ul>
         </div>
     )
