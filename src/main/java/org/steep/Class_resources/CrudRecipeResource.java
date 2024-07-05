@@ -3,6 +3,7 @@ package org.steep.Class_resources;
 import java.util.ArrayList;
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
+import org.steep.Requests.RecipeIngredients.AddRecipeToUserRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
 import org.steep.Requests.User.UserRequest;
 
@@ -37,11 +38,12 @@ public class CrudRecipeResource {
     @Path("/addRecipeToUser")
     public Response addRecipeToUser(CrudRecipeRequest request) {
         try {
-            CrudRecipe.addRecipeToUser(request.getRecipeId(), request.getUserId());
-            return Response.status(Response.Status.OK).build();
+            AddRecipeToUserRequest addRecipeToUserRequest = CrudRecipe.addRecipeToUser(request.getRecipeId(),
+                    request.getUserId());
+            return Response.status(Response.Status.OK).entity(addRecipeToUserRequest).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+                    .entity(new AddRecipeToUserRequest(false, e.getMessage())).build();
         }
     }
 

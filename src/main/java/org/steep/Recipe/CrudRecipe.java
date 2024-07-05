@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.Requests.RecipeIngredients.AddRecipeToUserRequest;
 import org.steep.Requests.RecipeIngredients.IngredientRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
 
@@ -48,43 +49,45 @@ public class CrudRecipe {
     // Add an existing recipe to the user's recipe list
     // Returns 1 if the recipe is added successfully, 0 if it already exists in the
     // user's list,
-    public static int addRecipeToUser(int recipeId, int userId) {
-        int rowsAffected = 0;
+    public static AddRecipeToUserRequest addRecipeToUser(int recipeId, int userId) {
+        boolean recipeAdded = false;
+        String message = "";
+
         if (recipeId == 0 || userId == 0) {
-            System.out.println("Invalid input: recipe or user is null.");
-            return rowsAffected;
+            message = "Invalid input: recipe or user is null.";
+            return new AddRecipeToUserRequest(recipeAdded, message);
         }
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
             Boolean recipeExists = recipeExistsInUsersList(recipeId, userId);
 
             if (recipeExists == true) {
-                System.out.println("Recipe already exists in your list.");
-                return rowsAffected;
+                message = " already exists in your list.";
+                return new AddRecipeToUserRequest(recipeAdded, message);
             }
 
             String addRecipeToUser = "INSERT INTO rezept_benutzer(benutzer_id, rezept_id) VALUES (?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(addRecipeToUser)) {
                 statement.setInt(1, userId);
                 statement.setInt(2, recipeId);
-                rowsAffected = statement.executeUpdate();
+                int rowsAffected = statement.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("Recipe added to user's list successfully");
+                    message = " added successfully to your list";
+                    recipeAdded = true;
                 } else {
-                    System.out.println("Failed to add recipe to user.");
+                    message = "failed to add to your list.";
                 }
             } catch (SQLIntegrityConstraintViolationException e) {
-                System.out.println("Recipe or user doesn't exist");
+                message = "recipe or user doesn't exist";
             } catch (Exception e) {
-                System.out.println("An error occurred while executing the SQL query.");
+                message = "An error occurred while executing the SQL query.";
                 e.printStackTrace();
             }
-
         } catch (SQLException e) {
-            System.out.println("An error occurred while establishing a database connection.");
+            message = "An error occurred while establishing a database connection.";
             e.printStackTrace();
         }
-        return rowsAffected;
+        return new AddRecipeToUserRequest(recipeAdded, message);
     }
 
     // Adds an ingredient to a recipe in the database.
