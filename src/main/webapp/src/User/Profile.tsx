@@ -1,11 +1,14 @@
 import { UserRecipes } from "../Recipes/UserRecipes";
+import { DeleteAccount } from "./DeleteAccount";
 
 
 export const Profile = () => {
 
     return (
-        <div>
+        <>
             <UserRecipes />
-        </div>
+            <hr />
+            <DeleteAccount />
+        </>
     )
 }

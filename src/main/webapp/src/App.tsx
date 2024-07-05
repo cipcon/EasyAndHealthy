@@ -1,31 +1,32 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Navbar } from './MainComponents/Navbar';
 import { Home } from './Homepage/Home';
 import { Login } from './User/Login';
 import { Register } from './User/Register';
 import { Profile } from './User/Profile';
 import { AllRecipes } from './Recipes/AllRecipes';
 import { useCallback, useEffect, useState } from 'react';
-import { AppContext } from './Contexts/context';
+import { AppContext } from './Contexts/Context';
 import { RecipeDetails } from './Recipes/RecipeDetails';
+import { Navbar } from './components/Navbar';
 
-export interface User {
+export interface UserProps {
   id: number;
   name: string;
   token: string | null;
 }
 
 export interface AppContextType {
-  userCredentials: User;
-  setUserCredentials: React.Dispatch<React.SetStateAction<User>>;
-  logout: () => void;
+  userCredentials: UserProps;
+  setUserCredentials: React.Dispatch<React.SetStateAction<UserProps>>;
+  onLogout: () => void;
 }
 
 const App: React.FC = () => {
-  const [userCredentials, setUserCredentials] = useState<User>({ id: 0, name: '', token: null });
+  const [userCredentials, setUserCredentials] = useState<UserProps>({ id: 0, name: '', token: null });
 
   // the code inside this function changes only when sth is passed in the second parameter. The second parameter is an array that can take more inputs
+
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -47,18 +48,18 @@ const App: React.FC = () => {
     }
   }, [userCredentials]);
 
-  const logout = useCallback(() => {
+  const onLogout = useCallback(() => {
     setUserCredentials({ id: 0, name: '', token: null })
   }, []);
 
   const contextValue: AppContextType = {
     userCredentials,
     setUserCredentials,
-    logout
+    onLogout
   };
 
   return (
-    <div>
+    <>
       <AppContext.Provider value={contextValue}>
         <Router>
           <header>
@@ -79,7 +80,7 @@ const App: React.FC = () => {
           </footer>
         </Router>
       </AppContext.Provider>
-    </div>
+    </>
   );
 }
 

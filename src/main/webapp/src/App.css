@@ -16,7 +16,6 @@ header {
 
 main {
   padding: 10px;
-  background-color: wheat;
 }
 
 footer {
@@ -37,16 +36,30 @@ footer {
   color: darkgreen;
 }
 
-.removeButton {
-  margin-left: 5px;
-  margin-top: 5px;
-  color: white;
-  background-color: brown;
-}
-
 .addButton {
   margin-left: 5px;
   margin-top: 5px;
   color: black;
   background-color: green;
+}
+
+.link-margin-top {
+  margin-bottom: 10px;
+}
+
+.button-margin-left {
+  margin-left: 10px;
+}
+
+.same-line {
+  display: flex;
+}
+
+.vertical-center-align {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.profile-ul {
+  padding: 0;
 }

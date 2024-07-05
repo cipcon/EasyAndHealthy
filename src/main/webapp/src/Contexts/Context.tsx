@@ -1,10 +1,10 @@
 import { createContext, useContext } from 'react';
-import { User } from '../App';
+import { UserProps } from '../App';
 
 interface AppContextType {
-    userCredentials: User;
-    setUserCredentials: React.Dispatch<React.SetStateAction<User>>;
-    logout: () => void;
+    userCredentials: UserProps;
+    setUserCredentials: React.Dispatch<React.SetStateAction<UserProps>>;
+    onLogout: () => void;
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);

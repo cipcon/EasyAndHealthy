@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
+import org.steep.Requests.User.UserRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,7 +12,6 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -69,15 +69,18 @@ public class CrudRecipeResource {
         }
     }
 
-    @GET
-    @Path("/recipesFromUser/{userId}")
-    public Response recipesFromUser(@PathParam("userId") int userId) {
+    @POST
+    @Path("/recipesFromUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response recipesFromUser(UserRequest userRequest) {
         try {
+            int userId = userRequest.getId();
             ArrayList<RecipeRequest> recipes = CrudRecipe.recipesFromUser(userId);
             return Response.ok(recipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error retrieving ingredients: " + e.getMessage()).build();
+                    .entity("Error retrieving recipes: " + e.getMessage()).build();
         }
     }
 

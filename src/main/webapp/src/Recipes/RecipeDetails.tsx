@@ -4,13 +4,12 @@ import { Ingredient } from "./AllRecipes";
 export const RecipeDetails = () => {
     const location = useLocation();
     const { recipe } = location.state || {};
-
     if (!recipe) {
         return <h1>No recipe data available</h1>;
     }
 
     return (
-        <div>
+        <>
             <h1>{recipe.recipeName}</h1>
             <ul>
                 {recipe.ingredients.map((ingredient: Ingredient) =>
@@ -19,6 +18,6 @@ export const RecipeDetails = () => {
                     </li>
                 )}
             </ul>
-        </div>
+        </>
     )
 }

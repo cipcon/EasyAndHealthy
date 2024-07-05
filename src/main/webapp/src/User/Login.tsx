@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginForm } from "./components/LoginForm";
-import { useUserContext } from "../Contexts/context";
-import { generateToken } from "./components/GenerateToken";
+import { LoginForm } from "../components/LoginForm";
+import { useUserContext } from "../Contexts/Context";
+import { generateToken } from "../components/GenerateToken";
 
 interface UserCredentials {
     username: string;
@@ -42,7 +42,7 @@ export const Login = () => {
         }
 
         try {
-            const response = await fetch(`/login`, {
+            const response = await fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -68,13 +68,16 @@ export const Login = () => {
     };
 
     return (
-        <LoginForm
-            handleForm={handleForm}
-            handleUsernameChange={handleUsernameChange}
-            handlePasswordChange={handlePasswordChange}
-            username={credentials.username}
-            password={credentials.password}
-            loginError={loginError}
-        />
+        <div>
+            <h2>Login</h2>
+            <LoginForm
+                handleForm={handleForm}
+                handleUsernameChange={handleUsernameChange}
+                handlePasswordChange={handlePasswordChange}
+                username={credentials.username}
+                password={credentials.password}
+                loginError={loginError}
+            />
+        </div>
     );
 };

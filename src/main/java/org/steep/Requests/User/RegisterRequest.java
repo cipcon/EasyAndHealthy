@@ -1,6 +1,6 @@
-package org.steep.User;
+package org.steep.Requests.User;
 
-public class RegisterStatusAndResponse {
+public class RegisterRequest {
 
     public enum RegisterStatus {
         SUCCESS,

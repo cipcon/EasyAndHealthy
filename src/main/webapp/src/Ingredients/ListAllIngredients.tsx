@@ -15,7 +15,7 @@ export const ListAllIngredients = () => {
     }, []);
 
     return (
-        <div>
+        <>
             <h1 className='header-center-align'>Existing ingredients</h1>
             <div>
                 <ol role='row'>
@@ -24,7 +24,7 @@ export const ListAllIngredients = () => {
                     )}
                 </ol>
             </div>
-        </div>
+        </>
     );
 
 }

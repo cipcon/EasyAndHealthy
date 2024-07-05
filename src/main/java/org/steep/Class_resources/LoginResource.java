@@ -1,9 +1,9 @@
 package org.steep.Class_resources;
 
 import org.steep.Requests.User.CredentialsRequest;
+import org.steep.Requests.User.RegisterRequest.RegisterStatus;
+import org.steep.Requests.User.RegisterRequest.UserResponse;
 import org.steep.User.Login;
-import org.steep.User.RegisterStatusAndResponse.UserResponse;
-import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;

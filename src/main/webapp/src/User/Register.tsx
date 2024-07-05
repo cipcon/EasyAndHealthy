@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RegisterForm } from "./components/RegisterForm";
-import { useUserContext } from "../Contexts/context";
-import { generateToken } from "./components/GenerateToken";
+import { RegisterForm } from "../components/RegisterForm";
+import { useUserContext } from "../Contexts/Context";
+import { generateToken } from "../components/GenerateToken";
 
 interface UserCredentials {
     username: string;

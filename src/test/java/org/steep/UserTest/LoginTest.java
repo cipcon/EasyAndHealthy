@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
+import org.steep.Requests.User.RegisterRequest.UserResponse;
 import org.steep.User.Login;
-import org.steep.User.RegisterStatusAndResponse.UserResponse;
 import org.steep.User.UserAuthenticated;
 
 public class LoginTest {

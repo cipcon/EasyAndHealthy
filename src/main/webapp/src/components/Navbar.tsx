@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useUserContext } from "../Contexts/context";
-import { LogoutButton } from "../User/LogoutButton";
+import { useUserContext } from "../Contexts/Context";
+import { LogoutButton } from "./LogoutButton";
 
 
 
@@ -8,15 +8,12 @@ export const Navbar = () => {
     const { userCredentials } = useUserContext();
 
     return (
-        <div className="">
+        <>
             <nav className="navbar sticky-top navbar-expand-lg " >
                 <div className="container-fluid"  >
                     <div className="collapse navbar-collapse" >
                         <a className="navbar-brand" href="/">
-                            <img src="favicon.png" alt="Easy and healthy" width="40" height="40" />
-                        </a>
-                        <a className="navbar-brand" href="/">
-                            <img src="logo.png" alt="Easy and healthy" width="60" height="40" style={{ marginLeft: -16 }} />
+                            <img src="logoCompleted.png" alt="Easy and healthy Logo" width={100} height={45} style={{ borderRadius: 10 }} />
                         </a>
 
                         <Link to={'/'} className=' nav-link '>Home</Link>
@@ -33,6 +30,7 @@ export const Navbar = () => {
 
                         <Link to={'/allRecipes'} className=' nav-link '>Recipes</Link>
 
+                        {/* No Profile Link, if no user */}
                         {
                             userCredentials.token === null ?
                                 '' :
@@ -46,7 +44,7 @@ export const Navbar = () => {
                     </div>
                 </div>
             </nav>
-        </div>
+        </>
     )
 
 }

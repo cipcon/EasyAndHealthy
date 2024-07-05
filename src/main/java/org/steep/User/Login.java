@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import org.steep.Database.DatabaseManagement;
-import org.steep.User.RegisterStatusAndResponse.RegisterStatus;
-import org.steep.User.RegisterStatusAndResponse.UserResponse;
+import org.steep.Requests.User.RegisterRequest.RegisterStatus;
+import org.steep.Requests.User.RegisterRequest.UserResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response.Status;

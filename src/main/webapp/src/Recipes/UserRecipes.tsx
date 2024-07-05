@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react"
-import { UserRecipesComponent } from "./UserRecipesComponent";
-import { useUserContext } from "../Contexts/context";
+import React, { useEffect, useState } from "react";
+import { UserRecipesComponent } from "../components/UserRecipesComponent";
+import { useUserContext } from "../Contexts/Context";
 import { Recipe } from "./AllRecipes";
 
 export const UserRecipes: React.FC = () => {
     const [recipes, setRecipe] = useState<Recipe[]>([]);
     const { userCredentials } = useUserContext();
 
-    const fetchUserData = async () => {
+    const fetchUserData = async (id: number) => {
         try {
-            if (!userCredentials.id) {
-                return
+            if (!id) {
+                return;
             }; // Don't fetch if there's no user id
 
-            const response = await fetch(`/recipe/recipesFromUser/${userCredentials.id}`);
+            const response = await fetch('/recipe/recipesFromUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id })
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -25,17 +31,15 @@ export const UserRecipes: React.FC = () => {
     }
 
     useEffect(() => {
-        fetchUserData();
+        fetchUserData(userCredentials.id);
     }, [userCredentials.id]);
 
-    const handleRecipeRemoved = () => {
-        fetchUserData();
-    }
+
 
     return (
-        <div>
+        <>
             <h1>Your saved recipes</h1>
-            <UserRecipesComponent recipes={recipes} onRecipeRemoved={handleRecipeRemoved} />
-        </div>
+            <UserRecipesComponent recipes={recipes} />
+        </>
     )
 }

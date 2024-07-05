@@ -9,6 +9,15 @@ public class UserRequest {
     public UserRequest() {
     }
 
+    public UserRequest(String currentUsername, int id) {
+        this.currentUsername = currentUsername;
+        this.id = id;
+    }
+
+    public UserRequest(int id) {
+        this.id = id;
+    }
+
     // Getter
     public String getCurrentUsername() {
         return currentUsername;

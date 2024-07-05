@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { AddRecipeComponent } from "../components/AddRecipeComponent";
 
 export interface Ingredient {
     ingredient: string;
@@ -16,7 +16,6 @@ export interface Recipe {
 
 export const AllRecipes: React.FC = () => {
     const [recipes, setRecipe] = useState<Recipe[]>([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData();
@@ -37,23 +36,9 @@ export const AllRecipes: React.FC = () => {
         }
     };
 
-    const handleClick = (recipe: Recipe) => {
-        navigate('/recipeDetails', { state: { recipe } });
-    }
-
     return (
-        <div>
-            <ul>
-                {recipes.map((recipe) => (
-                    <li key={recipe.recipeId}>
-                        <div>
-                            <a href="/recipeDetails" className="recipes" onClick={() => handleClick(recipe)}>
-                                {recipe.recipeName}
-                            </a>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <>
+            <AddRecipeComponent recipes={recipes} />
+        </>
     );
 }
