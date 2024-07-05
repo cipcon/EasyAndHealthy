@@ -36,6 +36,7 @@ export const Navbar = () => {
                                 '' :
                                 <>
                                     <Link to={'/profile'} className=' nav-link '>Profile</Link>
+                                    <Link to={'/favoriteRecipes'} className=" nav-link">Favorite</Link>
                                     <LogoutButton />
                                 </>
 

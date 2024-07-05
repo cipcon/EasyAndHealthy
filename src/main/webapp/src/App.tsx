@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppContext } from './Contexts/Context';
 import { RecipeDetails } from './Recipes/RecipeDetails';
 import { Navbar } from './components/Navbar';
+import FavoriteRecipes from './Recipes/FavoriteRecipes';
 
 export interface UserProps {
   id: number;
@@ -72,6 +73,7 @@ const App: React.FC = () => {
               <Route path='/register' element={<Register />} />
               <Route path='/profile' element={<Profile />} />
               <Route path='/allRecipes' element={<AllRecipes />} />
+              <Route path='/favoriteRecipes' element={<FavoriteRecipes />} />
               <Route path='*' element={<h1>You are out of the page</h1>} />
               <Route path='/recipeDetails' element={<RecipeDetails />} />
             </Routes>

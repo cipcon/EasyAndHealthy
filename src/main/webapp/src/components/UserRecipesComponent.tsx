@@ -52,6 +52,7 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
 
     return (
         <>
+            <h2>Saved recipes</h2>
             <ul className="profile-ul">
                 {localRecipes.length === 0 ?
                     <p>No saved recipes found.</p>

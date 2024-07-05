@@ -9,44 +9,22 @@ export interface DeleteAccountProps {
     message: string;
 }
 
-export const DeleteAccount: React.FC = () => {
-    const { userCredentials, setUserCredentials } = useUserContext();
-    const [apiResponse, setApiResponse] = useState<DeleteAccountProps | null>(null);
-    const navigate = useNavigate();
-    const [alertVisible, setAlertVisibility] = useState(false);
+interface Props {
+    onClick: () => void;
+    alertVisible: boolean;
+    apiResponse: DeleteAccountProps | null;
+    setAlertVisibility: React.Dispatch<React.SetStateAction<boolean>>;
 
-    const removeUser = async () => {
-        try {
-            const response = await fetch('/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userCredentials.id)
-            });
-            console.log("API response status:", response.status);
+}
 
-            const data: DeleteAccountProps = await response.json();
-            console.log("API response data:", data);
-            setApiResponse(data);
-            setAlertVisibility(true);
-
-            if (data.deleted) {
-                setUserCredentials({ id: 0, name: '', token: '' });
-                navigate('/', { state: { apiResponse: data } });
-            }
-        } catch (error) {
-            console.error("Error during deletion:", error);
-            setApiResponse({ deleted: false, message: 'There was an error processing your request. Please try again later.' });
-            setAlertVisibility(true);
-        }
-    };
+export const DeleteAccount: React.FC<Props> = ({ alertVisible, apiResponse, onClick, setAlertVisibility }) => {
 
     return (
         <>
+            <h2>Your Profile</h2>
             <div className="same-line" style={{ marginBottom: 10 }}>
                 <p className="vertical-center-align">Delete Account</p>
-                <Button color="danger" onClick={removeUser} type="Delete" />
+                <Button color="danger" onClick={onClick} type="Delete" />
             </div>
             {alertVisible && apiResponse && (
                 <Alert

@@ -38,7 +38,6 @@ export const UserRecipes: React.FC = () => {
 
     return (
         <>
-            <h1>Your saved recipes</h1>
             <UserRecipesComponent recipes={recipes} />
         </>
     )
