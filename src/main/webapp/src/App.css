@@ -27,15 +27,6 @@ footer {
   text-align: center;
 }
 
-.recipes {
-  text-decoration: none;
-  color: black;
-}
-
-.recipes:hover {
-  color: darkgreen;
-}
-
 .addButton {
   margin-left: 5px;
   margin-top: 5px;
@@ -60,6 +51,7 @@ footer {
   margin-bottom: auto;
 }
 
-.profile-ul {
-  padding: 0;
+.profile {
+  display: grid;
+  justify-content: center;
 }

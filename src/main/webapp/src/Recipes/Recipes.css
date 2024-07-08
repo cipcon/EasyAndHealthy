@@ -1,0 +1,44 @@
+.center-h1 {
+    text-align: center;
+}
+
+.recipes {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 10px;
+}
+
+.recipes li {
+    background-color: darkkhaki;
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    list-style-type: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.recipe-name {
+    background-color: darkkhaki;
+    text-decoration: none;
+    color: black;
+}
+
+.recipe:hover {
+    color: darkgreen;
+}
+
+.align-header {
+    text-align: center;
+    margin: 0 auto;
+}

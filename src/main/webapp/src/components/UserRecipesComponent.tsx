@@ -52,21 +52,21 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
 
     return (
         <>
-            <h2>Saved recipes</h2>
-            <ul className="profile-ul">
+            <h2 className='center-h1'>Saved recipes</h2>
+            {alertVisible && <Alert message={message} onClose={() => setAlertVisibility(false)} recipe={recipe} type="success"></Alert>}
+            <ul className="recipes">
                 {localRecipes.length === 0 ?
                     <p>No saved recipes found.</p>
                     :
                     localRecipes.map((recipe) => (
-                        <li key={recipe.recipeId} className="same-line link-margin-top">
-                            <a href="/recipeDetails" className="recipes vertical-center-align" onClick={() => handleClick(recipe)}>
+                        <li key={recipe.recipeId}>
+                            <a href="/recipeDetails" className="recipe-name" onClick={() => handleClick(recipe)}>
                                 {recipe.recipeName}
                             </a>
                             <Button color='danger' onClick={() => removeRecipe(recipe.recipeId, userCredentials.id, recipe.recipeName)} type='Remove' ></Button>
                         </li>
                     ))
                 }
-                {alertVisible && <Alert message={message} onClose={() => setAlertVisibility(false)} recipe={recipe} type="success"></Alert>}
             </ul>
         </>
     )

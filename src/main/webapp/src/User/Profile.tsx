@@ -39,8 +39,8 @@ export const Profile = () => {
     };
 
     return (
-        <>
+        <div className="profile">
             <DeleteAccount alertVisible={alertVisible} apiResponse={apiResponse} onClick={() => removeUser()} setAlertVisibility={setAlertVisibility} />
-        </>
+        </div>
     );
 }

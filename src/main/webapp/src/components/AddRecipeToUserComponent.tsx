@@ -1,3 +1,4 @@
+import '../Recipes/Recipes.css'
 import React, { useState } from "react";
 import { Recipe } from "../Recipes/AllRecipes"
 import { useNavigate } from "react-router-dom";
@@ -54,22 +55,20 @@ export const AddRecipeComponent: React.FC<Props> = ({ recipes }) => {
 
 
     return (
-        <>
-            <h2>Recipes</h2>
-            <ul className="profile-ul">
-                {alertVisible && <Alert message={apiResponse.message} onClose={() => setAlertVisibility(false)} recipe={recipeName} type="success" />}
+        <div>
+            <h2 className='center-h1'>Recipes</h2>
+            {alertVisible && <Alert message={apiResponse.message} onClose={() => setAlertVisibility(false)} recipe={recipeName} type="success" />}
+            <ul className="recipes">
                 {recipes.map((recipe) => (
-                    <li key={recipe.recipeId} className="same-line link-margin-top">
-                        <div>
-                            <a href="/recipeDetails" className="recipes vertical-center-align" onClick={() => handleClick(recipe)}>
-                                {recipe.recipeName}
-                            </a>
-                            <Button color='success' onClick={() => handleRecipeAdd(recipe.recipeId, userCredentials.id, recipe.recipeName)} type="Add" />
-                        </div>
+                    <li key={recipe.recipeId} >
+                        <a href="/recipeDetails" className="recipe-name" onClick={() => handleClick(recipe)}>
+                            {recipe.recipeName}
+                        </a>
+                        <Button color='success' onClick={() => handleRecipeAdd(recipe.recipeId, userCredentials.id, recipe.recipeName)} type="Add" />
                     </li>
                 ))}
             </ul>
 
-        </>
+        </div>
     )
 }

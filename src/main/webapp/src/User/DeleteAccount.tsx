@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { useUserContext } from "../Contexts/Context";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import { Alert } from "../components/Alert";
 import Button from "../components/Button";
 
@@ -22,7 +20,7 @@ export const DeleteAccount: React.FC<Props> = ({ alertVisible, apiResponse, onCl
     return (
         <>
             <h2>Your Profile</h2>
-            <div className="same-line" style={{ marginBottom: 10 }}>
+            <div className="same-line" style={{ marginBottom: 10 }} >
                 <p className="vertical-center-align">Delete Account</p>
                 <Button color="danger" onClick={onClick} type="Delete" />
             </div>
