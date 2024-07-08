@@ -1,29 +1,39 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import internal from "stream";
+import { UserIngredients } from "./UserIngredients";
 
-export const ListAllIngredients = () => {
-    const [ingredients, setIngredients] = useState([])
+export interface Ingredient {
+    ingredientName: string;
+    ingredientId: number;
+    unit: string;
+}
 
-    const fetchData = () => {
-        fetch('/ingredients/getAllIngredients')
-            .then(res => res.json())
-            .then((data) => setIngredients(data))
-            .catch(console.error);
-    }
+export const ListAllIngredients: React.FC = () => {
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
     useEffect(() => {
         fetchData();
     }, []);
 
+    const fetchData = async () => {
+        try {
+            const response = await fetch('/ingredients/getAllIngredients');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data: Ingredient[] = await response.json();
+            const sortedData = data.sort((a, b) => a.ingredientName.localeCompare(b.ingredientName));
+            setIngredients(sortedData);
+        } catch (error) {
+            console.error("Error fetching recipes: ", error);
+        }
+    }
+
     return (
         <>
-            <h1 className='header-center-align'>Existing ingredients</h1>
-            <div>
-                <ol role='row'>
-                    {ingredients.map((ingredient) =>
-                        <li data-label="Ingredient name">{ingredient}</li>
-                    )}
-                </ol>
-            </div>
+            <UserIngredients ingredients={ingredients} />
         </>
     );
 

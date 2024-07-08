@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { UserRecipesComponent } from "../components/UserRecipesComponent";
 import { useUserContext } from "../Contexts/Context";
 import { Recipe } from "./AllRecipes";
+import { UserRecipesComponent } from "./Components/UserRecipesComponent";
 
 export const UserRecipes: React.FC = () => {
     const [recipes, setRecipe] = useState<Recipe[]>([]);

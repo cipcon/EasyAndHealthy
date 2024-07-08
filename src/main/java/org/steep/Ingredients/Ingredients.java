@@ -46,15 +46,18 @@ public class Ingredients {
 
     // read all ingredients ant their unit
     // return a list filled with the ingredients if works, an empty list if doesn't
-    public static ArrayList<String> getAllIngredients() {
-        ArrayList<String> allIngredients = new ArrayList<>();
-        String sqlReadAllIngredients = "SELECT zutat_name FROM zutaten";
+    public static ArrayList<IngredientRequest> getAllIngredients() {
+        ArrayList<IngredientRequest> allIngredients = new ArrayList<>();
+        String sqlReadAllIngredients = "SELECT zutat_name, zutat_id, einheit FROM zutaten";
         try (Connection connection = DatabaseManagement.connectToDB();
                 PreparedStatement statement = connection.prepareStatement(sqlReadAllIngredients);
                 ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
-                String ingredient = resultSet.getString("zutat_name");
-                allIngredients.add(ingredient);
+                String ingredientName = resultSet.getString("zutat_name");
+                int ingredientId = resultSet.getInt("zutat_id");
+                String unit = resultSet.getString("einheit");
+                IngredientRequest ingredientRequest = new IngredientRequest(ingredientName, ingredientId, unit);
+                allIngredients.add(ingredientRequest);
             }
             return allIngredients;
         } catch (SQLException e) {
@@ -66,16 +69,19 @@ public class Ingredients {
     // read ingredients based on the letters they contain
     // return a list with ingredients based on the letters they contain
     // return an empty list if wth went wrong or no ingredients founded
-    public static ArrayList<String> searchIngredient(String ingredientName) {
-        ArrayList<String> ingredients = new ArrayList<>();
-        String sqlReadIngredients = "SELECT zutat_name FROM zutaten WHERE zutat_name LIKE ?";
+    public static ArrayList<IngredientRequest> searchIngredient(String ingredientName) {
+        ArrayList<IngredientRequest> ingredients = new ArrayList<>();
+        String sqlReadIngredients = "SELECT zutat_name, zutat_id, einheit FROM zutaten WHERE zutat_name LIKE ?";
         try (Connection connection = DatabaseManagement.connectToDB();
                 PreparedStatement statement = connection.prepareStatement(sqlReadIngredients)) {
             statement.setString(1, "%" + ingredientName + "%");
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     String ingredient = resultSet.getString("zutat_name");
-                    ingredients.add(ingredient);
+                    int ingredientId = resultSet.getInt("zutat_id");
+                    String unit = resultSet.getString("einheit");
+                    IngredientRequest ingredientRequest = new IngredientRequest(ingredient, ingredientId, unit);
+                    ingredients.add(ingredientRequest);
                 }
             }
             return ingredients;
@@ -257,15 +263,5 @@ public class Ingredients {
             e.printStackTrace();
         }
         return ingredientExist;
-    }
-
-    public static void main(String[] args) {
-        ArrayList<IngredientRequest> ingredientRequests = Ingredients.readRecipeIngredients(1);
-        for (IngredientRequest i : ingredientRequests) {
-            System.out.println(i.getIngredient());
-            System.out.println(i.getQuantity());
-            System.out.println(i.getUnit());
-        }
-
     }
 }

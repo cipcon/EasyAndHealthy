@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.steep.Database.DatabaseManagement;
-import org.steep.Requests.RecipeIngredients.AddRecipeToUserRequest;
+import org.steep.Requests.RecipeIngredients.AddToUserRequest;
 import org.steep.Requests.RecipeIngredients.IngredientRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
 
@@ -49,13 +49,13 @@ public class CrudRecipe {
     // Add an existing recipe to the user's recipe list
     // Returns 1 if the recipe is added successfully, 0 if it already exists in the
     // user's list,
-    public static AddRecipeToUserRequest addRecipeToUser(int recipeId, int userId) {
+    public static AddToUserRequest addRecipeToUser(int recipeId, int userId) {
         boolean recipeAdded = false;
         String message = "";
 
         if (recipeId == 0 || userId == 0) {
             message = "Invalid input: recipe or user is null.";
-            return new AddRecipeToUserRequest(recipeAdded, message);
+            return new AddToUserRequest(recipeAdded, message);
         }
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
@@ -63,7 +63,7 @@ public class CrudRecipe {
 
             if (recipeExists == true) {
                 message = " already exists in your list.";
-                return new AddRecipeToUserRequest(recipeAdded, message);
+                return new AddToUserRequest(recipeAdded, message);
             }
 
             String addRecipeToUser = "INSERT INTO rezept_benutzer(benutzer_id, rezept_id) VALUES (?, ?)";
@@ -87,7 +87,7 @@ public class CrudRecipe {
             message = "An error occurred while establishing a database connection.";
             e.printStackTrace();
         }
-        return new AddRecipeToUserRequest(recipeAdded, message);
+        return new AddToUserRequest(recipeAdded, message);
     }
 
     // Adds an ingredient to a recipe in the database.

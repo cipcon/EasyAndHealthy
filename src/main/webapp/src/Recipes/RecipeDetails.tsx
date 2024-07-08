@@ -9,15 +9,15 @@ export const RecipeDetails = () => {
     }
 
     return (
-        <>
+        <div style={{ textAlign: "center" }}>
             <h1>{recipe.recipeName}</h1>
-            <ul>
+            <ul style={{ listStyleType: "none", padding: 0 }}>
                 {recipe.ingredients.map((ingredient: Ingredient) =>
                     <li key={ingredient.ingredientId}>
                         {ingredient.ingredient}: {ingredient.quantity} {ingredient.unit}
                     </li>
                 )}
             </ul>
-        </>
+        </div>
     )
 }

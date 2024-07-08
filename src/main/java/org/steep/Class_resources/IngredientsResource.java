@@ -27,7 +27,7 @@ public class IngredientsResource {
     @Path("/createIngredient")
     public Response createIngredient(IngredientRequest request) {
         try {
-            Ingredients.createIngredient(request.getIngredient(), request.getUnit());
+            Ingredients.createIngredient(request.getIngredientName(), request.getUnit());
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -49,7 +49,7 @@ public class IngredientsResource {
     @Path("/getAllIngredients")
     public Response getAllIngredients() {
         try {
-            ArrayList<String> allIngredients = Ingredients.getAllIngredients();
+            ArrayList<IngredientRequest> allIngredients = Ingredients.getAllIngredients();
             ObjectMapper mapper = new ObjectMapper(); // Create an ObjectMapper instance
             String json = mapper.writeValueAsString(allIngredients); // Convert list to JSON string
             return Response.ok(json).build();
@@ -63,7 +63,7 @@ public class IngredientsResource {
     @Path("/{name}")
     public Response searchIngredient(String name) {
         try {
-            ArrayList<String> ingredientsFound = Ingredients.searchIngredient(name);
+            ArrayList<IngredientRequest> ingredientsFound = Ingredients.searchIngredient(name);
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(ingredientsFound);
             return Response.ok(json).build();
@@ -134,5 +134,11 @@ public class IngredientsResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error deleting ingredient: " + e.getMessage()).build();
         }
+    }
+
+    public static void main(String[] args) {
+        IngredientsResource ingredientsResource = new IngredientsResource();
+        Response ingredientsResponse = ingredientsResource.getAllIngredients();
+        System.out.println(ingredientsResponse.getEntity());
     }
 }

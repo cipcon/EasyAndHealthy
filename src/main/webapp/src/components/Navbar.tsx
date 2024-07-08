@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useUserContext } from "../Contexts/Context";
-import { LogoutButton } from "./LogoutButton";
+import { LogoutButton } from "../User/Components/LogoutButton";
 
 
 
@@ -37,6 +37,7 @@ export const Navbar = () => {
                                 <>
                                     <Link to={'/profile'} className=' nav-link '>Profile</Link>
                                     <Link to={'/favoriteRecipes'} className=" nav-link">Favorite</Link>
+                                    <Link to={'/ingredients'} className=" nav-link">Ingredients</Link>
                                     <LogoutButton />
                                 </>
 

@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RegisterForm } from "../components/RegisterForm";
+import { RegisterForm } from "./Components/RegisterForm";
 import { useUserContext } from "../Contexts/Context";
 import { generateToken } from "../components/GenerateToken";
 

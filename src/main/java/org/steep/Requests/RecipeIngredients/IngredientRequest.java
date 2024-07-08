@@ -19,7 +19,7 @@ public class IngredientRequest {
         this.unit = unit;
     }
 
-    public String getIngredient() {
+    public String getIngredientName() {
         return this.ingredientName;
     }
 

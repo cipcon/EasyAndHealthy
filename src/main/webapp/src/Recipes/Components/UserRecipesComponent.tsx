@@ -1,9 +1,11 @@
+import '../Recipes.css'
 import { useNavigate } from "react-router-dom";
-import { Recipe } from "../Recipes/AllRecipes";
-import { useUserContext } from "../Contexts/Context";
 import { useEffect, useState } from "react";
-import Button from "./Button";
-import { Alert } from "./Alert";
+import { Recipe } from "../AllRecipes";
+import { useUserContext } from "../../Contexts/Context";
+import { Alert } from "../../components/Alert";
+import Button from "../../components/Button";
+
 
 export interface UserRecipesProps {
     recipes: Recipe[];

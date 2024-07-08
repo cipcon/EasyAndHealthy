@@ -7,13 +7,21 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.Requests.RecipeIngredients.AddToUserRequest;
 
 public class ManageStock {
 
     // CRUD (Instead of Create - Add)
     // Add ingredients to the user's list
-    public int addIngredientToUserList(int ingredientId, int quantity, int userId) {
-        int rowsAffected = 0;
+    public AddToUserRequest addIngredientToUserList(int ingredientId, int quantity, int userId) {
+        boolean ingredientAdded = false;
+        String message = "";
+
+        if (ingredientId == 0 || quantity == 0 || userId == 0) {
+            message = "Invalid input: ingredientID, quantity or userId is null";
+            return new AddToUserRequest(ingredientAdded, message);
+        }
+
         try (Connection connection = DatabaseManagement.connectToDB()) {
 
             String insertNewIngredient = "INSERT INTO vorrat VALUES (?, ?, ?)";
@@ -23,18 +31,25 @@ public class ManageStock {
                     statement.setInt(1, userId);
                     statement.setInt(2, ingredientId);
                     statement.setInt(3, quantity);
-                    rowsAffected = statement.executeUpdate();
+                    int rowsAffected = statement.executeUpdate();
+                    if (rowsAffected == 1) {
+                        message = "ingredient added successfully";
+                        ingredientAdded = true;
+                    } else {
+                        message = "failed to add to your list.";
+                    }
                 } else {
-                    System.out.println("Ingredient already exists. Please add another ingredient or update this one");
+                    message = "Ingredient already exists. Please add another ingredient or update this one";
                 }
-                return rowsAffected;
             } catch (SQLException e) {
                 e.printStackTrace();
+                message = e.getMessage();
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            message = e.getMessage();
         }
-        return rowsAffected;
+        return new AddToUserRequest(ingredientAdded, message);
     }
 
     // Read ingredients from the user's list
@@ -43,11 +58,11 @@ public class ManageStock {
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
             String readStock = "SELECT z.zutat_name, v.menge " +
-                "FROM benutzer b " +
-                "INNER JOIN vorrat v ON b.benutzer_id = v.benutzer_id " +
-                "INNER JOIN zutaten z ON z.zutat_id = v.zutat_id " +
-                "WHERE b.benutzer_id = ? " +
-                "ORDER BY z.zutat_name ASC";
+                    "FROM benutzer b " +
+                    "INNER JOIN vorrat v ON b.benutzer_id = v.benutzer_id " +
+                    "INNER JOIN zutaten z ON z.zutat_id = v.zutat_id " +
+                    "WHERE b.benutzer_id = ? " +
+                    "ORDER BY z.zutat_name ASC";
 
             try (PreparedStatement statement = connection.prepareStatement(readStock)) {
                 statement.setInt(1, userId);
@@ -72,9 +87,9 @@ public class ManageStock {
         try (Connection connection = DatabaseManagement.connectToDB()) {
 
             String updateIngredient = "UPDATE vorrat " +
-                "SET menge = ? " +
-                "WHERE benutzer_id = ? AND " +
-                "zutat_id = ?";
+                    "SET menge = ? " +
+                    "WHERE benutzer_id = ? AND " +
+                    "zutat_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(updateIngredient)) {
                 statement.setInt(1, quantity);
@@ -94,8 +109,8 @@ public class ManageStock {
         int rowsDeleted = 0;
         try (Connection connection = DatabaseManagement.connectToDB()) {
             try (PreparedStatement statement = connection.prepareStatement("DELETE FROM vorrat " +
-                "WHERE benutzer_id = ? AND " +
-                "zutat_id = ?")) {
+                    "WHERE benutzer_id = ? AND " +
+                    "zutat_id = ?")) {
                 statement.setInt(1, userId);
                 statement.setInt(2, ingredientId);
                 rowsDeleted = statement.executeUpdate();

@@ -1,10 +1,10 @@
-import '../Recipes/Recipes.css'
+import '../Recipes.css'
 import React, { useState } from "react";
-import { Recipe } from "../Recipes/AllRecipes"
 import { useNavigate } from "react-router-dom";
-import Button from "./Button";
-import { Alert } from "./Alert";
-import { useUserContext } from "../Contexts/Context";
+import { Recipe } from '../AllRecipes';
+import { useUserContext } from '../../Contexts/Context';
+import { Alert } from '../../components/Alert';
+import Button from '../../components/Button';
 
 interface Props {
     recipes: Recipe[];

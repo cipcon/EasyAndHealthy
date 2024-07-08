@@ -18,6 +18,7 @@ public class DeleteAccount {
         try (Connection connection = DatabaseManagement.connectToDB();
                 PreparedStatement statement = connection
                         .prepareStatement("DELETE FROM benutzer WHERE benutzer_id = ?")) {
+            deleteSavedRecipes(userId);
             statement.setInt(1, userId);
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted == 1) {
@@ -28,6 +29,19 @@ public class DeleteAccount {
         } catch (Exception e) {
             e.printStackTrace();
             return new DeleteRequest(false, "Error occurred while deleting user: " + e.getMessage());
+        }
+    }
+
+    public static int deleteSavedRecipes(int userId) {
+        try (Connection connection = DatabaseManagement.connectToDB();
+                PreparedStatement statement = connection
+                        .prepareStatement("DELETE FROM rezept_benutzer WHERE benutzer_id = ?")) {
+            statement.setInt(1, userId);
+            int rowsDeleted = statement.executeUpdate();
+            return rowsDeleted;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 
@@ -56,12 +70,5 @@ public class DeleteAccount {
             this.message = message;
         }
 
-    }
-
-    public static void main(String[] args) {
-
-        DeleteAccount deleteAccount = new DeleteAccount();
-        DeleteAccount.DeleteRequest deleteRequest = deleteAccount.deleteUser(6894);
-        System.out.println(deleteRequest.deleted + " " + deleteRequest.getMessage());
     }
 }
