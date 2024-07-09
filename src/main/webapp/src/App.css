@@ -15,31 +15,12 @@ header {
 }
 
 main {
-  padding: 10px;
-}
-
-footer {
-  background-color: wheat;
+  padding: 20px;
 }
 
 .nav-link {
   margin-left: 10px;
   text-align: center;
-}
-
-.addButton {
-  margin-left: 5px;
-  margin-top: 5px;
-  color: black;
-  background-color: green;
-}
-
-.link-margin-top {
-  margin-bottom: 10px;
-}
-
-.button-margin-left {
-  margin-left: 10px;
 }
 
 .same-line {

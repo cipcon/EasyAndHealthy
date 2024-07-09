@@ -5,6 +5,7 @@ public class IngredientRequest {
     private String ingredientName;
     private int quantity;
     private String unit;
+    private int userId;
 
     public IngredientRequest(String ingredientName, int ingredientId, int quantity, String unit) {
         this.ingredientName = ingredientName;
@@ -17,6 +18,12 @@ public class IngredientRequest {
         this.ingredientName = ingredientName;
         this.ingredientId = ingredientId;
         this.unit = unit;
+    }
+
+    public IngredientRequest(int ingredientId, int quantity, int userId) {
+        this.ingredientId = ingredientId;
+        this.quantity = quantity;
+        this.userId = userId;
     }
 
     public String getIngredientName() {
@@ -49,5 +56,13 @@ public class IngredientRequest {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public int getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

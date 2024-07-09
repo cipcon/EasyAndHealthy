@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import internal from "stream";
-import { UserIngredients } from "./UserIngredients";
+import { useState, useEffect } from "react";
+import { AddIngredient } from "./AddIngredients";
+import { ListUserIngredients } from "./ListUserIngredients";
+
 
 export interface Ingredient {
     ingredientName: string;
@@ -8,7 +9,7 @@ export interface Ingredient {
     unit: string;
 }
 
-export const ListAllIngredients: React.FC = () => {
+export const Ingredients: React.FC = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
     useEffect(() => {
@@ -18,7 +19,6 @@ export const ListAllIngredients: React.FC = () => {
     const fetchData = async () => {
         try {
             const response = await fetch('/ingredients/getAllIngredients');
-
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -33,7 +33,8 @@ export const ListAllIngredients: React.FC = () => {
 
     return (
         <>
-            <UserIngredients ingredients={ingredients} />
+            <AddIngredient ingredients={ingredients} />
+            <ListUserIngredients />
         </>
     );
 

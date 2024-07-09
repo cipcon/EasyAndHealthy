@@ -10,8 +10,7 @@ import { AppContext } from './Contexts/Context';
 import { RecipeDetails } from './Recipes/RecipeDetails';
 import { Navbar } from './components/Navbar';
 import FavoriteRecipes from './Recipes/FavoriteRecipes';
-import { UserIngredients } from './Ingredients/UserIngredients';
-import { ListAllIngredients } from './Ingredients/ListAllIngredients';
+import { Ingredients } from './Ingredients/Ingredients';
 
 export interface UserProps {
   id: number;
@@ -78,7 +77,7 @@ const App: React.FC = () => {
               <Route path='/favoriteRecipes' element={<FavoriteRecipes />} />
               <Route path='*' element={<h1>You are out of the page</h1>} />
               <Route path='/recipeDetails' element={<RecipeDetails />} />
-              <Route path='/ingredients' element={<ListAllIngredients />} />
+              <Route path='/ingredients' element={<Ingredients />} />
             </Routes>
           </main>
           <footer>

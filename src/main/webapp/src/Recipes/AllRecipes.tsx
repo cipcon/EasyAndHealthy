@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AddRecipeComponent } from "./Components/AddRecipeToUserComponent";
 
 export interface Ingredient {
-    ingredient: string;
+    ingredientName: string;
     ingredientId: number;
     quantity: number;
     unit: string;

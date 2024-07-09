@@ -14,7 +14,7 @@ export const RecipeDetails = () => {
             <ul style={{ listStyleType: "none", padding: 0 }}>
                 {recipe.ingredients.map((ingredient: Ingredient) =>
                     <li key={ingredient.ingredientId}>
-                        {ingredient.ingredient}: {ingredient.quantity} {ingredient.unit}
+                        {ingredient.ingredientName}: {ingredient.quantity} {ingredient.unit}
                     </li>
                 )}
             </ul>

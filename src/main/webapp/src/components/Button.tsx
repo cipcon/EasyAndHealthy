@@ -1,14 +1,22 @@
+import React from 'react';
 
 interface Props {
     color?: 'success' | 'warning' | 'danger';
-    onClick: () => void;
-    type: string;
+    onClick?: () => void;
+    type?: 'button' | 'submit';
+    children: React.ReactNode;
 }
 
-const Button = ({ color, onClick, type }: Props) => {
+const Button: React.FC<Props> = ({ color, onClick, type, children }) => {
     return (
-        <button className={"btn btn-" + color} type="button" onClick={onClick} >{type}</button>
+        <button
+            className={`button-margin-left col-auto btn btn-${color}`}
+            type={type}
+            onClick={onClick}
+        >
+            {children}
+        </button>
     )
 }
 
-export default Button
+export default Button;

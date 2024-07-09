@@ -1,20 +1,20 @@
 package org.steep.Requests.RecipeIngredients;
 
 public class AddToUserRequest {
-    private boolean recipeAdded;
+    private boolean added;
     private String message;
 
-    public AddToUserRequest(boolean recipeAdded, String message) {
-        this.recipeAdded = recipeAdded;
+    public AddToUserRequest(boolean added, String message) {
+        this.added = added;
         this.message = message;
     }
 
-    public boolean isRecipeAdded() {
-        return this.recipeAdded;
+    public boolean isAdded() {
+        return this.added;
     }
 
-    public void setRecipeAdded(boolean recipeAdded) {
-        this.recipeAdded = recipeAdded;
+    public void setAdded(boolean added) {
+        this.added = added;
     }
 
     public String getMessage() {

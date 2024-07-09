@@ -38,9 +38,9 @@ public class CrudRecipeResource {
     @Path("/addRecipeToUser")
     public Response addRecipeToUser(CrudRecipeRequest request) {
         try {
-            AddToUserRequest AddToUserRequest = CrudRecipe.addRecipeToUser(request.getRecipeId(),
+            AddToUserRequest addToUserRequest = CrudRecipe.addRecipeToUser(request.getRecipeId(),
                     request.getUserId());
-            return Response.status(Response.Status.OK).entity(AddToUserRequest).build();
+            return Response.status(Response.Status.OK).entity(addToUserRequest).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(new AddToUserRequest(false, e.getMessage())).build();

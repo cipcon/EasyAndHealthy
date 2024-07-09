@@ -4,10 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.steep.Database.DatabaseManagement;
 import org.steep.Requests.RecipeIngredients.AddToUserRequest;
+import org.steep.Requests.RecipeIngredients.IngredientRequest;
 
 public class ManageStock {
 
@@ -53,11 +54,11 @@ public class ManageStock {
     }
 
     // Read ingredients from the user's list
-    public HashMap<String, Double> readUserStock(int userId) {
-        HashMap<String, Double> ingredientQuantity = new HashMap<>();
+    public ArrayList<IngredientRequest> readUserStock(int userId) {
+        ArrayList<IngredientRequest> ingredientRequestList = new ArrayList<>();
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String readStock = "SELECT z.zutat_name, v.menge " +
+            String readStock = "SELECT z.zutat_id, z.zutat_name, z.einheit, v.menge " +
                     "FROM benutzer b " +
                     "INNER JOIN vorrat v ON b.benutzer_id = v.benutzer_id " +
                     "INNER JOIN zutaten z ON z.zutat_id = v.zutat_id " +
@@ -66,19 +67,21 @@ public class ManageStock {
 
             try (PreparedStatement statement = connection.prepareStatement(readStock)) {
                 statement.setInt(1, userId);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        String ingredient = resultSet.getString("z.zutat_name");
-                        double quantity = resultSet.getInt("v.menge");
-                        ingredientQuantity.put(ingredient, quantity);
-                    }
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    String ingredientName = resultSet.getString("zutat_name");
+                    int ingredientId = resultSet.getInt("zutat_id");
+                    String unit = resultSet.getString("einheit");
+                    int quantity = resultSet.getInt("menge");
+                    IngredientRequest ingredientRequest = new IngredientRequest(ingredientName, ingredientId, quantity,
+                            unit);
+                    ingredientRequestList.add(ingredientRequest);
                 }
             }
-            return ingredientQuantity;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ingredientQuantity;
+        return ingredientRequestList;
     }
 
     // update the user's stock list
@@ -149,9 +152,4 @@ public class ManageStock {
         return ingredientExist;
     }
 
-    public static void main(String[] args) {
-        ManageStock manageStock = new ManageStock();
-
-        System.out.println(manageStock.readUserStock(6737));
-    }
 }
