@@ -59,8 +59,8 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
 
     return (
         <>
-            <h2 className='center-h1'>Saved recipes</h2>
-            {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} recipe={recipe} type='button'></Alert>}
+            <h2 className='center-h1'>Favorite recipes</h2>
+            {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} children={recipe} type='button'></Alert>}
             <ul className="recipes" style={{ gap: 50 }}>
                 {localRecipes.length === 0 ?
                     <p>No saved recipes found.</p>

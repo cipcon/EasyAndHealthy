@@ -10,7 +10,7 @@ interface Props {
 const Button: React.FC<Props> = ({ color, onClick, type, children }) => {
     return (
         <button
-            className={`button-margin-left col-auto btn btn-${color}`}
+            className={`col-auto btn btn-${color}`}
             type={type}
             onClick={onClick}
         >

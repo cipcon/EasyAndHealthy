@@ -85,8 +85,9 @@ public class ManageStock {
     }
 
     // update the user's stock list
-    public int updateUserStock(int ingredientId, int quantity, int userId) {
+    public boolean updateUserStock(int ingredientId, int quantity, int userId) {
         int rowsUpdated = 0;
+        boolean updated = false;
         try (Connection connection = DatabaseManagement.connectToDB()) {
 
             String updateIngredient = "UPDATE vorrat " +
@@ -99,16 +100,19 @@ public class ManageStock {
                 statement.setInt(2, userId);
                 statement.setInt(3, ingredientId);
                 rowsUpdated = statement.executeUpdate();
-                return rowsUpdated;
+                if (rowsUpdated == 1) {
+                    updated = true;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rowsUpdated;
+        return updated;
     }
 
     // delete from user's stock list
-    public int deleteStock(int ingredientId, int userId) {
+    public boolean removeIngredientFromUserList(int ingredientId, int userId) {
+        boolean removed = false;
         int rowsDeleted = 0;
         try (Connection connection = DatabaseManagement.connectToDB()) {
             try (PreparedStatement statement = connection.prepareStatement("DELETE FROM vorrat " +
@@ -117,13 +121,17 @@ public class ManageStock {
                 statement.setInt(1, userId);
                 statement.setInt(2, ingredientId);
                 rowsDeleted = statement.executeUpdate();
-                System.out.println("Rows deleted: " + rowsDeleted);
-                return rowsDeleted;
+                if (rowsDeleted == 1) {
+                    System.out.println("Ingredient successfully deleted");
+                    removed = true;
+                } else {
+                    System.out.println("Ingredient doesn't exist");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rowsDeleted;
+        return removed;
     }
 
     // Check if the inserting ingredient already exist in the user's stock

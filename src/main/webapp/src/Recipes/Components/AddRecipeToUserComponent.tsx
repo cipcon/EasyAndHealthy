@@ -62,7 +62,7 @@ export const AddRecipeComponent: React.FC<Props> = ({ recipes }) => {
     return (
         <div>
             <h2 className='center-h1'>Recipes</h2>
-            {alertVisible && <Alert color={alertColor} message={apiResponse.message} onClose={() => setAlertVisibility(false)} recipe={recipeName} type='button' />}
+            {alertVisible && <Alert color={alertColor} message={apiResponse.message} onClose={() => setAlertVisibility(false)} children={recipeName} type='button' />}
             <ul className="recipes" style={{ gap: 50 }}>
                 {recipes.map((recipe) => (
                     <li key={recipe.recipeId} className='row g-3'>

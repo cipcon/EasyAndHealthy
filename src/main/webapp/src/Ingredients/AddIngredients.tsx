@@ -29,12 +29,12 @@ export const AddIngredient: React.FC<Props> = ({ ingredients }) => {
     const handleAddIngredient = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const payload = {
+        const request = {
             ingredientId: dataSend.ingredientId,
             quantity: dataSend.quantity,
             userId: userCredentials.id
         }
-        console.log('Payload', JSON.stringify(payload));
+        console.log('Payload', JSON.stringify(request));
 
         try {
             const response = await fetch('/manageStock/addIngredientToUser', {
@@ -42,7 +42,7 @@ export const AddIngredient: React.FC<Props> = ({ ingredients }) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(request)
             });
 
             if (!response.ok) {

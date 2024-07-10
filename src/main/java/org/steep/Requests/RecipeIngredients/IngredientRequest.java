@@ -20,12 +20,6 @@ public class IngredientRequest {
         this.unit = unit;
     }
 
-    public IngredientRequest(int ingredientId, int quantity, int userId) {
-        this.ingredientId = ingredientId;
-        this.quantity = quantity;
-        this.userId = userId;
-    }
-
     public String getIngredientName() {
         return this.ingredientName;
     }
