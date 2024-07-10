@@ -13,6 +13,11 @@ public class RecipeRequest {
         this.ingredients = ingredients;
     }
 
+    public RecipeRequest(String recipeName, int recipeId) {
+        this.recipeName = recipeName;
+        this.recipeId = recipeId;
+    }
+
     public String getRecipeName() {
         return this.recipeName;
     }

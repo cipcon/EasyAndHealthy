@@ -5,48 +5,52 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.Requests.RecipeIngredients.IngredientRequest;
+import org.steep.Requests.RecipeIngredients.RecipeRequest;
 import org.steep.Stock.ManageStock;
 
 public class SearchRecipe {
 
     // This function searches the database for recipes that contain the provided
-    // recipeIngredientName. It searches both recipe names and ingredient names
+    // recipeContainsIngredient. It searches both recipe names and ingredient names
     // within the recipe.
     // Returns an ArrayList<String> containing the names of recipes that include the
     // ingredient name (case-insensitive search).
     // Returns and empty ArrayList if the parameter is empty or no recipe found
-    public ArrayList<String> recipeSearch(String recipeIngredientName) {
-        ArrayList<String> recipes = new ArrayList<>();
+    public ArrayList<RecipeRequest> recipeSearch(String recipeContainsIngredient) {
+        ArrayList<RecipeRequest> recipes = new ArrayList<>();
 
-        if (recipeIngredientName.isEmpty()) {
+        if (recipeContainsIngredient.isEmpty()) {
             System.out.println("String is empty");
             return recipes;
         }
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String sqlRecipeSearch = "SELECT DISTINCT r.rezept_name " +
+            String sqlRecipeSearch = "SELECT DISTINCT r.rezept_name, r.rezept_id " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
                     "INNER JOIN zutaten z ON rz.zutat_id = z.zutat_id " +
                     "WHERE r.rezept_name LIKE ? " +
                     "OR z.zutat_name LIKE ?";
             try (PreparedStatement statement = connection.prepareStatement(sqlRecipeSearch)) {
-                statement.setString(1, "%" + recipeIngredientName + "%");
-                statement.setString(2, "%" + recipeIngredientName + "%");
+                statement.setString(1, "%" + recipeContainsIngredient + "%");
+                statement.setString(2, "%" + recipeContainsIngredient + "%");
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) { // Check for results
                         do {
-                            String recipe = resultSet.getString("r.rezept_name");
-                            recipes.add(recipe);
+                            String recipeName = resultSet.getString("r.rezept_name");
+                            int recipeId = resultSet.getInt("rezept_id");
+                            RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId);
+                            recipes.add(recipeRequest);
                         } while (resultSet.next());
-                        return recipes;
                     } else {
-                        System.out.println("No recipes found for " + recipeIngredientName);
+                        System.out.println("No recipes found for " + recipeContainsIngredient);
                     }
                 } catch (Exception e) {
                     System.out.println("An error occurred in ResultSet block.");
@@ -63,22 +67,22 @@ public class SearchRecipe {
         return recipes;
     }
 
-    // Based on the parameters and the ingredients of a recipe
-    // return an empty HashMap if sth went wrong
-    // or a HashMap that contains the ingredients and quantity needed for the recipe
-    public HashMap<String, Double> cookingPlan(int portions, int recipeId) {
-        HashMap<String, Double> cookingPlan = new HashMap<>();
+    // Based on the portion and recipeId parameters
+    // return an empty List if sth went wrong
+    // or a List that contains the ingredients and quantities needed for the recipe
+    public ArrayList<IngredientRequest> cookingPlan(int portions, int recipeId) {
+        ArrayList<IngredientRequest> cookingPlan = new ArrayList<>();
 
-        if (recipeId == 0) {
-            System.out.println("Recipe parameter zero");
+        if (recipeId == 0 || portions == 0) {
+            System.out.println("Recipe parameters are zero");
             return cookingPlan;
         }
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            double xPortions = 0;
-            double onePortion = 0;
+            int standardPortions;
+            int onePortion;
 
-            String sqlCookingPlan = "SELECT z.zutat_name, rz.menge, r.portionen " +
+            String sqlCookingPlan = "SELECT z.zutat_name, z.einheit, z.zutat_id, rz.menge, r.portionen " +
                     "FROM zutaten z " +
                     "INNER JOIN rezept_zutat rz ON z.zutat_id = rz.zutat_id " +
                     "INNER JOIN rezept r ON r.rezept_id = rz.rezept_id " +
@@ -87,24 +91,21 @@ public class SearchRecipe {
 
             try (PreparedStatement statement = connection.prepareStatement(sqlCookingPlan)) {
                 statement.setInt(1, recipeId);
-
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        do {
-                            String ingredient = resultSet.getString("z.zutat_name");
-                            xPortions = resultSet.getInt("r.portionen");
-                            onePortion = portions / xPortions;
-                            double quantity = resultSet.getInt("rz.menge") * onePortion;
-                            cookingPlan.put(ingredient, quantity);
-                        } while (resultSet.next());
-                        return cookingPlan;
-                    } else {
-                        System.out.println("No ingredients found for recipe: " + recipeId);
-                        return cookingPlan;
-                    }
-                } catch (Exception e) {
-                    System.out.println("An error occurred in ResultSet block.");
-                    e.printStackTrace();
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    do {
+                        String ingredientName = resultSet.getString("zutat_name");
+                        int ingredientId = resultSet.getInt("zutat_id");
+                        String unit = resultSet.getString("einheit");
+                        standardPortions = resultSet.getInt("portionen");
+                        onePortion = portions / standardPortions;
+                        int quantity = resultSet.getInt("menge") * onePortion;
+                        IngredientRequest ingredientRequest = new IngredientRequest(ingredientName, ingredientId,
+                                quantity, unit);
+                        cookingPlan.add(ingredientRequest);
+                    } while (resultSet.next());
+                } else {
+                    System.out.println("No ingredients found for recipe: " + recipeId);
                 }
             } catch (Exception e) {
                 System.out.println("An error occurred in PreparedStatement block.");
@@ -117,54 +118,70 @@ public class SearchRecipe {
     }
 
     // Based on the ingredients and quantity a user has in his list
-    // return a HashMap filled with what still needed for the recipe
-    // or an empty hashMap if sth went wrong
-    public HashMap<String, Double> shoppingList(int portions, int recipeId, int userId) {
+    // return an ArrayList filled with objects containing what still needed for the
+    // recipe(ingredient, quantity and unit)
+    // or an empty List if sth went wrong
+    public ArrayList<IngredientRequest> shoppingList(int portions, int recipeId, int userId) {
         ManageStock manageStock = new ManageStock();
         SearchRecipe searchRecipe = new SearchRecipe();
 
-        HashMap<String, Double> recipeIngredients = searchRecipe.cookingPlan(portions, recipeId);
-        HashMap<String, Double> userIngredients = manageStock.readUserStock(userId);
+        ArrayList<IngredientRequest> recipeIngredients = searchRecipe.cookingPlan(portions, recipeId);
+        ArrayList<IngredientRequest> userIngredients = manageStock.readUserStock(userId);
 
-        HashMap<String, Double> shoppingList = new HashMap<>();
+        ArrayList<IngredientRequest> shoppingList = new ArrayList<>();
 
         if (recipeIngredients.isEmpty() || userIngredients.isEmpty()
-                || recipeId == 0) {
+                || recipeId == 0 || userId == 0) {
             System.out.println(
-                    "Sth went wrong with the recipeIngredients HashMaps, userIngredients HashMaps, user object or recipe variable is empty");
+                    "Sth went wrong with the recipeIngredients, userIngredients or user object and recipe parameters are empty");
             return shoppingList;
         }
 
-        for (String ingredient : recipeIngredients.keySet()) {
-            double recipeQuantity = recipeIngredients.get(ingredient);
+        Set<String> specialIngredients = new HashSet<>(Set.of("Salz", "Pfeffer", "Wasser"));
 
+        for (IngredientRequest ingredientFromRecipe : recipeIngredients) {
             // handle salt, pepper and water exceptions
-            if (ingredient.equals("Salz") || ingredient.equals("Pfeffer") || ingredient.equals("Wasser")) {
+            if (specialIngredients.contains(ingredientFromRecipe.getIngredientName())) {
+                continue;
+            }
 
-            } else {
-                if (userIngredients.containsKey(ingredient)) {
-                    double userQuantity = userIngredients.get(ingredient);
-                    double missingQuantity = recipeQuantity - userQuantity;
+            boolean foundInUserStock = false;
 
+            for (IngredientRequest ingredientFromUser : userIngredients) {
+                if (ingredientFromRecipe.getIngredientName().equals(ingredientFromUser.getIngredientName())) {
+                    foundInUserStock = true;
+                    int missingQuantity = ingredientFromUser.getQuantity() - ingredientFromUser.getQuantity();
                     if (missingQuantity > 0) {
-                        shoppingList.put(ingredient, missingQuantity);
+                        IngredientRequest ingredientRequest = new IngredientRequest(
+                                ingredientFromRecipe.getIngredientName(),
+                                ingredientFromRecipe.getIngredientId(),
+                                missingQuantity,
+                                ingredientFromRecipe.getUnit());
+                        shoppingList.add(ingredientRequest);
                     }
-                } else {
-                    shoppingList.put(ingredient, recipeQuantity);
+                    break; // Break inner loop since the ingredient is found in user stock
                 }
+            }
+            if (!foundInUserStock) {
+                IngredientRequest ingredientRequest = new IngredientRequest(
+                        ingredientFromRecipe.getIngredientName(),
+                        ingredientFromRecipe.getIngredientId(),
+                        ingredientFromRecipe.getQuantity(),
+                        ingredientFromRecipe.getUnit());
+                shoppingList.add(ingredientRequest);
             }
         }
         return shoppingList;
     }
 
     // Based on the ingredients and their quantities an user already has
-    // this function return a list with recommended recipes
+    // this function return a list with recommended recipes as object
     // return an empty list, if sth went wrong
-    public List<String> noIdeaMode(int userId) {
-        ArrayList<String> savedRecipes = new ArrayList<>();
+    public List<RecipeRequest> noIdeaMode(int userId) {
+        ArrayList<RecipeRequest> savedRecipes = new ArrayList<>();
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String sqlNoIdeaMode = "SELECT r.rezept_name, COUNT(rz.zutat_id) " +
+            String sqlNoIdeaMode = "SELECT r.rezept_name, r.rezept_id, COUNT(rz.zutat_id) " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
                     "INNER JOIN zutaten z ON z.zutat_id = rz.zutat_id " +
@@ -179,10 +196,11 @@ public class SearchRecipe {
                 statement.setInt(1, userId);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        String recipeName = resultSet.getString("r.rezept_name");
-                        savedRecipes.add(recipeName);
+                        String recipeName = resultSet.getString("rezept_name");
+                        int recipeId = resultSet.getInt("rezept_id");
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId);
+                        savedRecipes.add(recipeRequest);
                     }
-                    return savedRecipes;
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
