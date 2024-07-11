@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { DeleteAccount, DeleteAccountProps } from "./DeleteAccount";
 import { useState } from "react";
 import { useUserContext } from "../Contexts/Context";
-import { AlertColor } from "../Ingredients/AddIngredients";
+import { AlertColor } from "../Ingredients/Components/AddIngredients";
 
 
 export const Profile = () => {

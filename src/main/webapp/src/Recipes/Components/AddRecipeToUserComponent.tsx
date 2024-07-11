@@ -5,7 +5,7 @@ import { Recipe } from '../AllRecipes';
 import { useUserContext } from '../../Contexts/Context';
 import { Alert } from '../../components/Alert';
 import Button from '../../components/Button';
-import { AlertColor } from '../../Ingredients/AddIngredients';
+import { AlertColor } from '../../Ingredients/Components/AddIngredients';
 
 interface Props {
     recipes: Recipe[];

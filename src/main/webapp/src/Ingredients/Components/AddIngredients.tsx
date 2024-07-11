@@ -1,13 +1,15 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
-import { Alert } from "../components/Alert";
-import Button from "../components/Button";
-import { useUserContext } from "../Contexts/Context";
-import { ApiResponse } from "../Recipes/Components/AddRecipeToUserComponent";
-import { Ingredient } from "./Ingredients";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { Alert } from "../../components/Alert";
+import Button from "../../components/Button";
+import { useUserContext } from "../../Contexts/Context";
+import { ApiResponse } from "../../Recipes/Components/AddRecipeToUserComponent";
+import { Ingredient } from "../Ingredients";
+
 
 
 interface Props {
     ingredients: Ingredient[];
+    userId: number;
 }
 
 interface AddProps {
@@ -18,12 +20,12 @@ interface AddProps {
 export type AlertColor = 'success' | 'warning' | 'danger' | undefined;
 
 
-export const AddIngredient: React.FC<Props> = ({ ingredients }) => {
-    const { userCredentials } = useUserContext();
+export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
     const [dataSend, setDataSend] = useState<AddProps>({ ingredientId: 0, quantity: 0 });
     const [apiResponse, setApiResponse] = useState<ApiResponse>({ added: false, message: '' });
     const [alertVisible, setAlertVisibility] = useState(false);
     const [alertColor, setAlertColor] = useState<AlertColor>();
+
 
 
     const handleAddIngredient = async (event: FormEvent<HTMLFormElement>) => {
@@ -32,7 +34,7 @@ export const AddIngredient: React.FC<Props> = ({ ingredients }) => {
         const request = {
             ingredientId: dataSend.ingredientId,
             quantity: dataSend.quantity,
-            userId: userCredentials.id
+            userId: userId
         }
         console.log('Payload', JSON.stringify(request));
 
@@ -74,8 +76,8 @@ export const AddIngredient: React.FC<Props> = ({ ingredients }) => {
 
     return (
         <>
-            <h1 className='header-center-align'>Add Ingredient</h1>
-            <form className='row g-3' style={{ maxWidth: 1000 }} onSubmit={handleAddIngredient}>
+            <h1>Add Ingredient</h1>
+            <form className='row g-3 form-width' onSubmit={handleAddIngredient}>
                 <div className='col-auto'>
                     <label htmlFor="ingredient" className='visually-hidden'>Ingredient</label>
                     {/*  the handleIngredientId function determines the ingredientId based on the value 

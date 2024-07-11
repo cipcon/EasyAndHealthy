@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { AddIngredient } from "./AddIngredients";
-import { ListUserIngredients } from "./ListUserIngredients";
+import { AddIngredient } from "./Components/AddIngredients";
+import { ListUserIngredients } from "./Components/ListUserIngredients";
+import './Components/Ingredients.css'
+import { useUserContext } from "../Contexts/Context";
 
 
 export interface Ingredient {
@@ -9,8 +11,10 @@ export interface Ingredient {
     unit: string;
 }
 
+
 export const Ingredients: React.FC = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const { userCredentials } = useUserContext();
 
     useEffect(() => {
         fetchData();
@@ -33,8 +37,8 @@ export const Ingredients: React.FC = () => {
 
     return (
         <>
-            <AddIngredient ingredients={ingredients} />
-            <ListUserIngredients />
+            <AddIngredient ingredients={ingredients} userId={userCredentials.id} />
+            <ListUserIngredients userId={userCredentials.id} />
         </>
     );
 

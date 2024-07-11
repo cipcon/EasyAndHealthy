@@ -1,0 +1,23 @@
+.li-ingredients {
+    display: flex;
+    margin: 10px auto;
+    gap: 10px;
+    list-style-type: none; 
+    padding-left: 0px;
+}
+
+li > span {
+    align-content: center; 
+}
+
+.form-width {
+    max-width: 1000px;
+}
+
+ul {
+    padding: 0;
+}
+
+.margin-bottom {
+    margin: 0;
+}

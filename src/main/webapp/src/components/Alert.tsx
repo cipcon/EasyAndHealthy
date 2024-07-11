@@ -1,4 +1,4 @@
-import { AlertColor } from "../Ingredients/AddIngredients";
+import { AlertColor } from "../Ingredients/Components/AddIngredients";
 
 interface Props {
     message?: string;

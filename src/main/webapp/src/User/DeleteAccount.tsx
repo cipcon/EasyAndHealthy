@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Alert } from "../components/Alert";
 import Button from "../components/Button";
-import { AlertColor } from "../Ingredients/AddIngredients";
+import { AlertColor } from "../Ingredients/Components/AddIngredients";
 import { useUserContext } from "../Contexts/Context";
 
 export interface DeleteAccountProps {
