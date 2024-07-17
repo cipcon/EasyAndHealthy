@@ -6,6 +6,8 @@ public class IngredientRequest {
     private int quantity;
     private String unit;
     private int userId;
+    private String message;
+    private boolean added;
 
     public IngredientRequest(String ingredientName, int ingredientId, int quantity, String unit) {
         this.ingredientName = ingredientName;
@@ -20,6 +22,12 @@ public class IngredientRequest {
         this.unit = unit;
     }
 
+    public IngredientRequest(String message, boolean added) {
+        this.message = message;
+        this.added = added;
+    }
+
+    // ingredientName
     public String getIngredientName() {
         return this.ingredientName;
     }
@@ -28,6 +36,7 @@ public class IngredientRequest {
         this.ingredientName = ingredientName;
     }
 
+    // ingredientId
     public int getIngredientId() {
         return this.ingredientId;
     }
@@ -36,6 +45,7 @@ public class IngredientRequest {
         this.ingredientId = ingredientId;
     }
 
+    // quantity
     public int getQuantity() {
         return this.quantity;
     }
@@ -44,6 +54,7 @@ public class IngredientRequest {
         this.quantity = quantity;
     }
 
+    // unit
     public String getUnit() {
         return this.unit;
     }
@@ -52,11 +63,30 @@ public class IngredientRequest {
         this.unit = unit;
     }
 
+    // userId
     public int getUserId() {
         return this.userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    // message
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    // added
+    public boolean isAdded() {
+        return this.added;
+    }
+
+    public void setAdded(boolean added) {
+        this.added = added;
     }
 }

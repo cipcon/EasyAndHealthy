@@ -11,8 +11,9 @@ Entwickle eine Webapplikation (BackEnd: Java, Quarkus, FrontEnd: ReactJS) welche
 V - Ein Rezept hat immer mehrere Zutaten in unterschiedlichen Mengen und ist für eine bestimmte Anzahl von Personen
 V - Zutaten haben immer eine Einheit (z.B. Kartoffeln = kg, Milch = ml)
 V - Rezepte haben keine Arbeitsanweisungen ( ;-) )
-V - Rezepte können ein Foto haben
-V - Jeder Anwender hat seinen eigenen Vorrat (Benutzerkonten)
+
+- Rezepte können ein Foto haben
+  V - Jeder Anwender hat seinen eigenen Vorrat (Benutzerkonten)
 
 ## Funktionen:
 

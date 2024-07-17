@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.steep.Ingredients.Ingredients;
 import org.steep.Ingredients.UnitEnum;
+import org.steep.Requests.RecipeIngredients.CreateIngredientRequest;
 import org.steep.Requests.RecipeIngredients.IngredientRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,13 +25,13 @@ public class IngredientsResource {
 
     @POST
     @Path("/createIngredient")
-    public Response createIngredient(IngredientRequest request) {
+    public Response createIngredient(CreateIngredientRequest request) {
         try {
-            Ingredients.createIngredient(request.getIngredientName(), request.getUnit());
-            return Response.status(Response.Status.CREATED).build();
+            IngredientRequest request2 = Ingredients.createIngredient(request.getIngredientName(), request.getUnit());
+            return Response.ok(request2).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding ingredient: " + e.getMessage()).build();
+                    .entity(new IngredientRequest(e.getMessage(), false)).build();
         }
     }
 
@@ -125,7 +126,7 @@ public class IngredientsResource {
     }
 
     @DELETE
-    @Path("/deleteIngredient/{ingredientId:\\d+}")
+    @Path("/deleteIngredient")
     public Response deleteGlobalIngredient(int ingredientId) {
         try {
             Ingredients.deleteGlobalIngredient(ingredientId);
@@ -136,9 +137,16 @@ public class IngredientsResource {
         }
     }
 
-    public static void main(String[] args) {
-        IngredientsResource ingredientsResource = new IngredientsResource();
-        Response ingredientsResponse = ingredientsResource.getAllIngredients();
-        System.out.println(ingredientsResponse.getEntity());
+    @GET
+    @Path("/getUnits")
+    public Response getUnits() {
+        ArrayList<String> allUnits = new ArrayList<>();
+        try {
+            allUnits = UnitEnum.allUnits();
+            return Response.ok(allUnits).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(allUnits + e.getMessage()).build();
+        }
     }
 }

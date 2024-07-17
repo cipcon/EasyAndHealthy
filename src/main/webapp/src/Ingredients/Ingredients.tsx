@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AddIngredient } from "./Components/AddIngredients";
 import { ListUserIngredients } from "./Components/ListUserIngredients";
 import { useUserContext } from "../Contexts/Context";
+import AddNewIngredient from "./Components/AddNewIngredient";
 
 
 export interface Ingredient {
@@ -14,10 +15,11 @@ export interface Ingredient {
 export const Ingredients: React.FC = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const { userCredentials } = useUserContext();
+    const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [refreshTrigger]);
 
     const fetchData = async () => {
         try {
@@ -34,9 +36,14 @@ export const Ingredients: React.FC = () => {
         }
     }
 
+    const handleIngredientAdded = () => {
+        setRefreshTrigger(prev => !prev);
+    }
+
     return (
         <>
             <AddIngredient ingredients={ingredients} userId={userCredentials.id} />
+            <AddNewIngredient onAdded={handleIngredientAdded} />
             <ListUserIngredients userId={userCredentials.id} />
         </>
     );

@@ -16,32 +16,34 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class Ingredients {
     // Add ingredient global
     // return one if successfull, 0 if sth went wrong or ingredient already exist
-    public static int createIngredient(String ingredient, String unit) {
-        int rowsAffected = 0;
-        int ingredientId = ingredientId(ingredient);
+    public static IngredientRequest createIngredient(String ingredient, String unit) {
+        boolean ingredientExist = ingredientExist(ingredient);
+        String message = "";
+        boolean added = false;
 
-        if (ingredientId == 0) {
+        if (ingredientExist) {
+            return new IngredientRequest("Ingredient already exist", added);
+        } else {
             try (Connection connection = DatabaseManagement.connectToDB()) {
                 String addGlobalIngredient = "INSERT INTO zutaten(zutat_name, einheit) VALUES(?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(addGlobalIngredient)) {
                     statement.setString(1, ingredient);
                     statement.setString(2, unit);
-                    rowsAffected = statement.executeUpdate();
+                    int rowsAffected = statement.executeUpdate();
                     if (rowsAffected > 0) {
-                        System.out.println(ingredient + " was added Successfully");
-                        return rowsAffected;
+                        message = ingredient + " was added Successfully";
+                        added = true;
+                        return new IngredientRequest(message, added);
                     }
                 } catch (SQLException e) {
-                    System.out.println("Ingredient '" + ingredient + "' already exists! Please insert another one");
+                    message = e.getMessage();
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                message = e.getMessage();
             }
-        } else {
-            System.out.println("Ingredient already exist");
-            return rowsAffected;
         }
-        return rowsAffected;
+
+        return new IngredientRequest(message, added);
     }
 
     // read all ingredients ant their unit
@@ -133,25 +135,24 @@ public class Ingredients {
 
     // get the id of an ingredient
     // return the ingredient id if it was found or 0 if it wasn't or sth went wrong
-    public static int ingredientId(String ingredient) {
-        int ingredientId = 0;
+    public static boolean ingredientExist(String ingredient) {
+        boolean ingredientExist = false;
         String sqlIngredientId = "SELECT zutat_id FROM zutaten WHERE zutat_name = ?";
         try (Connection connection = DatabaseManagement.connectToDB();
                 PreparedStatement statement = connection.prepareStatement(sqlIngredientId)) {
             statement.setString(1, ingredient);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    ingredientId = resultSet.getInt("zutat_id");
-                    return ingredientId;
+                    System.out.println("Ingredient exist");
+                    return ingredientExist = true;
                 } else {
                     System.out.println("Ingredient doesn't exist");
-                    return ingredientId;
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ingredientId;
+        return ingredientExist;
     }
 
     // get the unit of an ingredient
@@ -264,5 +265,14 @@ public class Ingredients {
             e.printStackTrace();
         }
         return ingredientExist;
+    }
+
+    public static void main(String[] args) {
+
+        IngredientRequest request = createIngredient("Milch", "ml");
+
+        System.out.println(request.getMessage());
+        System.out.println(request.isAdded());
+
     }
 }
