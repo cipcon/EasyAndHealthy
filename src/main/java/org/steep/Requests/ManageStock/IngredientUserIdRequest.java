@@ -4,7 +4,7 @@ public class IngredientUserIdRequest {
     private int ingredientId;
     private int userId;
 
-    IngredientUserIdRequest(int ingredientId, int userId) {
+    public IngredientUserIdRequest(int ingredientId, int userId) {
         this.ingredientId = ingredientId;
         this.userId = userId;
     }

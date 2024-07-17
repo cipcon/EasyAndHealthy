@@ -1,24 +1,26 @@
-import { useLocation } from "react-router-dom"
+import { useState } from "react";
 import { useUserContext } from "../Contexts/Context"
+import { NoIdeaMode } from "./NoIdeaMode";
+
+export interface UserProps {
+    userId: number;
+    userName: string;
+}
+
 
 export const Home = () => {
-    const location = useLocation();
-    const { apiResponse } = location.state || { apiResponse: null };
     const { userCredentials } = useUserContext();
-
-    const getResponse = apiResponse && apiResponse.deleted ? (
-        <h1>{apiResponse.message}</h1>
-    ) : (
-        <h1>{userCredentials.name === '' ?
-            "Welcome to the Home page" :
-            "Hello " + userCredentials.name + ", how are you today"}
-        </h1>
-    )
-
-
     return (
         <>
-            {getResponse}
+            <div>
+                {userCredentials.name === '' ?
+                    <h4>Welcome to the Home page, please login or register</h4>
+                    :
+                    <div>
+                        <NoIdeaMode userId={userCredentials.id} userName={userCredentials.name} />
+                    </div>
+                }
+            </div>
         </>
 
     );

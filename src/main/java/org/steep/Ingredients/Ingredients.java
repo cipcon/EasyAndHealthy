@@ -108,11 +108,12 @@ public class Ingredients {
                 statement.setInt(1, recipeId);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        String ingredient = resultSet.getString("z.zutat_name");
+                        String ingredientName = resultSet.getString("z.zutat_name");
                         int ingredientId = resultSet.getInt("z.zutat_id");
                         int quantity = resultSet.getInt("rz.menge");
                         String unit = resultSet.getString("z.einheit");
-                        IngredientRequest ingredientRequest = new IngredientRequest(ingredient, ingredientId, quantity,
+                        IngredientRequest ingredientRequest = new IngredientRequest(ingredientName, ingredientId,
+                                quantity,
                                 unit);
                         ingredients.add(ingredientRequest);
                     }

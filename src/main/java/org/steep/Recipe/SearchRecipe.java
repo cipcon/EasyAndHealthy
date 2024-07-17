@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.steep.Database.DatabaseManagement;
@@ -177,11 +176,11 @@ public class SearchRecipe {
     // Based on the ingredients and their quantities an user already has
     // this function return a list with recommended recipes as object
     // return an empty list, if sth went wrong
-    public List<RecipeRequest> noIdeaMode(int userId) {
-        ArrayList<RecipeRequest> savedRecipes = new ArrayList<>();
+    public ArrayList<RecipeRequest> noIdeaMode(int userId) {
+        ArrayList<RecipeRequest> recipes = new ArrayList<>();
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String sqlNoIdeaMode = "SELECT r.rezept_name, r.rezept_id, COUNT(rz.zutat_id) " +
+            String sqlNoIdeaMode = "SELECT r.rezept_name, r.rezept_id, r.portionen, COUNT(rz.zutat_id) " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
                     "INNER JOIN zutaten z ON z.zutat_id = rz.zutat_id " +
@@ -198,8 +197,9 @@ public class SearchRecipe {
                     while (resultSet.next()) {
                         String recipeName = resultSet.getString("rezept_name");
                         int recipeId = resultSet.getInt("rezept_id");
-                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId);
-                        savedRecipes.add(recipeRequest);
+                        int servings = resultSet.getInt("portionen");
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, servings);
+                        recipes.add(recipeRequest);
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -208,6 +208,6 @@ public class SearchRecipe {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return savedRecipes;
+        return recipes;
     }
 }

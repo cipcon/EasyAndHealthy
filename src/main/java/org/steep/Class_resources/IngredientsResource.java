@@ -13,7 +13,6 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -89,14 +88,15 @@ public class IngredientsResource {
     }
 
     @GET
-    @Path("/recipeIngredients/{recipeId}")
-    public Response readRecipeIngredients(@PathParam("recipeId") int recipeId) {
+    @Path("/recipeIngredients")
+    public Response readRecipeIngredients(int recipeId) {
         try {
             ArrayList<IngredientRequest> ingredientRequest = Ingredients.readRecipeIngredients(recipeId);
             return Response.ok(ingredientRequest).build();
         } catch (Exception e) {
+            ArrayList<IngredientRequest> ingredientRequests = new ArrayList<>();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error retrieving ingredients: " + e.getMessage()).build();
+                    .entity(ingredientRequests).build();
         }
     }
 

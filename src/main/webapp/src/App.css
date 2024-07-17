@@ -25,14 +25,34 @@ main {
 
 .same-line {
   display: flex;
-}
-
-.vertical-center-align {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.profile {
-  display: grid;
   justify-content: center;
+  gap: 10px;
+}
+
+.vertical-align {
+  margin: auto 0;
+}
+
+.ul-padding {
+  padding-left: 0px;
+}
+
+.li-ingredients {
+  display: flex;
+  margin: 10px 0;
+  gap: 10px;
+  list-style-type: none; 
+  padding-left: 0px;
+}
+
+li > span {
+  align-content: center; 
+}
+
+.form-width {
+  max-width: 1000px;
+}
+
+.margin-bottom {
+  margin: 0;
 }

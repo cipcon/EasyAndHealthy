@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { AddIngredient } from "./Components/AddIngredients";
 import { ListUserIngredients } from "./Components/ListUserIngredients";
-import './Components/Ingredients.css'
 import { useUserContext } from "../Contexts/Context";
 
 

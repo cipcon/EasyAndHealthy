@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AddRecipeComponent } from "./Components/AddRecipeToUserComponent";
+import { AddRecipeComponent } from "./Components/ListRecipes";
 
 export interface Ingredient {
     ingredientName: string;
@@ -11,6 +11,7 @@ export interface Ingredient {
 export interface Recipe {
     recipeName: string;
     recipeId: number;
+    servings: number;
     ingredients: Ingredient[];
 }
 

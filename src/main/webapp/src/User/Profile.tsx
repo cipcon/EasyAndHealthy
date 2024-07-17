@@ -44,8 +44,8 @@ export const Profile = () => {
     };
 
     return (
-        <div className="profile">
+        <>
             <DeleteAccount alertVisible={alertVisible} alertColor={alertColor} apiResponse={apiResponse} onClick={() => removeUser()} setAlertVisibility={setAlertVisibility} />
-        </div>
+        </>
     );
 }

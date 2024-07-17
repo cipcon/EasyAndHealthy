@@ -3,19 +3,19 @@ package org.steep.Ingredients;
 import java.util.ArrayList;
 
 public enum UnitEnum {
-    BUND,
+    Bund,
     EL,
-    G,
-    HANDVOLL,
-    KG,
-    L,
-    ML,
-    PRISE,
-    SCHEIBE,
-    STÜCK,
+    g,
+    Handvoll,
+    kg,
+    l,
+    ml,
+    Prise,
+    Scheibe,
+    Stück,
     TL,
-    ZEHE,
-    ZWEIGE;
+    Zehe,
+    Zweige;
 
     public static ArrayList<String> allUnits() {
         ArrayList<String> units = new ArrayList<>();

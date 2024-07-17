@@ -1,11 +1,8 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Alert } from "../../components/Alert";
 import Button from "../../components/Button";
-import { useUserContext } from "../../Contexts/Context";
-import { ApiResponse } from "../../Recipes/Components/AddRecipeToUserComponent";
+import { ApiResponse } from "../../Recipes/Components/ListRecipes";
 import { Ingredient } from "../Ingredients";
-
-
 
 interface Props {
     ingredients: Ingredient[];
@@ -19,14 +16,11 @@ interface AddProps {
 
 export type AlertColor = 'success' | 'warning' | 'danger' | undefined;
 
-
 export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
     const [dataSend, setDataSend] = useState<AddProps>({ ingredientId: 0, quantity: 0 });
     const [apiResponse, setApiResponse] = useState<ApiResponse>({ added: false, message: '' });
     const [alertVisible, setAlertVisibility] = useState(false);
     const [alertColor, setAlertColor] = useState<AlertColor>();
-
-
 
     const handleAddIngredient = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();

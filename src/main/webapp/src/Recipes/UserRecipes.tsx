@@ -25,6 +25,7 @@ export const UserRecipes: React.FC = () => {
             }
             const data: Recipe[] = await response.json();
             setRecipe(data);
+            console.log(data);
         } catch (error) {
             console.error("Error fetching recipes: ", error)
         }

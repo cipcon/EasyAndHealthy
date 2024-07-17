@@ -5,7 +5,7 @@ public class IngredientUserQuantityRequest {
     private int userId;
     private int quantity;
 
-    IngredientUserQuantityRequest(int ingredientId, int userId, int quantity) {
+    public IngredientUserQuantityRequest(int ingredientId, int userId, int quantity) {
         this.ingredientId = ingredientId;
         this.userId = userId;
         this.quantity = quantity;

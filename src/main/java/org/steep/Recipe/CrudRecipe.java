@@ -133,7 +133,8 @@ public class CrudRecipe {
         HashMap<Integer, RecipeRequest> recipeMap = new HashMap<>();
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String readRecipes = "SELECT r.rezept_name, r.rezept_id, z.zutat_name, z.zutat_id, rz.menge, z.einheit " +
+            String readRecipes = "SELECT r.rezept_name, r.rezept_id, r.portionen, z.zutat_name, z.zutat_id, rz.menge, z.einheit "
+                    +
                     "FROM rezept r " +
                     "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
                     "INNER JOIN zutaten z ON rz.zutat_id = z.zutat_id " +
@@ -144,6 +145,7 @@ public class CrudRecipe {
                 while (resultSet.next()) {
                     String recipeName = resultSet.getString("rezept_name");
                     int recipeId = resultSet.getInt("rezept_id");
+                    int servings = resultSet.getInt("portionen");
                     String ingredientName = resultSet.getString("zutat_name");
                     int ingredientId = resultSet.getInt("zutat_id");
                     int quantity = resultSet.getInt("menge");
@@ -158,7 +160,7 @@ public class CrudRecipe {
                         // If the recipe does not exist, create a new RecipeRequest
                         List<IngredientRequest> ingredients = new ArrayList<>();
                         ingredients.add(ingredient);
-                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, ingredients);
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, servings, ingredients);
                         recipeMap.put(recipeId, recipeRequest);
                     }
                 }
@@ -183,7 +185,7 @@ public class CrudRecipe {
         HashMap<Integer, RecipeRequest> recipeMap = new HashMap<>();
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String readUsersRecipes = "SELECT r.rezept_name, r.rezept_id, z.zutat_name, z.zutat_id, rz.menge, z.einheit "
+            String readUsersRecipes = "SELECT r.rezept_name, r.portionen, r.rezept_id, z.zutat_name, z.zutat_id, rz.menge, z.einheit "
                     +
                     "FROM rezept r " +
                     "INNER JOIN rezept_benutzer rb ON rb.rezept_id = r.rezept_id " +
@@ -199,6 +201,7 @@ public class CrudRecipe {
                 while (resultSet.next()) {
                     String recipeName = resultSet.getString("rezept_name");
                     int recipeId = resultSet.getInt("rezept_id");
+                    int servings = resultSet.getInt("portionen");
                     String ingredientName = resultSet.getString("zutat_name");
                     int ingredientId = resultSet.getInt("zutat_id");
                     int quantity = resultSet.getInt("menge");
@@ -213,7 +216,7 @@ public class CrudRecipe {
                         // If the recipe does not exist, create a new RecipeRequest
                         List<IngredientRequest> ingredients = new ArrayList<>();
                         ingredients.add(ingredient);
-                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, ingredients);
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, servings, ingredients);
                         recipeMap.put(recipeId, recipeRequest);
                     }
                 }
