@@ -61,16 +61,16 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
         <>
             <h2 className='center-h1'>Favorite recipes</h2>
             {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} children={recipe} type='button'></Alert>}
-            <ul className="recipes" style={{ gap: 50 }}>
+            <ul className="recipes">
                 {localRecipes.length === 0 ?
                     <p>No saved recipes found.</p>
                     :
                     localRecipes.map((recipe) => (
-                        <li key={recipe.recipeId} className='row g-3'>
-                            <a href="/recipeDetails" className="recipe-name col-auto" onClick={() => handleClick(recipe)}>
+                        <li key={recipe.recipeId}>
+                            <a href="/recipeDetails" className="recipe-name" onClick={() => handleClick(recipe)}>
                                 {recipe.recipeName}
                             </a>
-                            <Button color='danger' children='Remove' onClick={() => removeRecipe(recipe.recipeId, userCredentials.id, recipe.recipeName)} type='button' ></Button>
+                            <Button color='danger' children='Remove' heart='&#x1F9E1;' onClick={() => removeRecipe(recipe.recipeId, userCredentials.id, recipe.recipeName)} type='button' ></Button>
                         </li>
                     ))
                 }

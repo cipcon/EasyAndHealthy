@@ -2,42 +2,53 @@
     text-align: center;
 }
 
+
 .recipes {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-    padding: 20px 10px;
+    padding: 40px 10px;
     gap: 50px;
 }
 
+
 .recipes li {
+    position: relative;
+    z-index: 1;
     background-color: darkkhaki;
-    width: 100%;
-    max-width: 400px;
+    width: 400px;
     height: 300px;
-    object-fit: cover;
     border-radius: 10px;
     list-style-type: none;
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .recipe-name {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    margin: 35% 0;
     background-color: darkkhaki;
     text-decoration: none;
     color: black;
+    text-align: center;
 }
 
-.recipe:hover {
+.recipe-name:hover {
     color: darkgreen;
 }
 
-.align-header {
-    text-align: center;
-    margin: 0 auto;
+.heartButton {
+    position: absolute;
+    z-index: 2;
+    right: 10px;
+    top: 5px;
+    background-color: darkkhaki;
+    font-size: 1.8rem;
+    border: none;
 }
+
+.heartButton:hover {
+    font-size: 1.7rem;
+}
+

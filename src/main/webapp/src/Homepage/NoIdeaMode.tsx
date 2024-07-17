@@ -52,7 +52,7 @@ export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
             <ul className="recipes">
                 {recipes?.map((recipe) => (
                     <li key={recipe.recipeId} className='li-ingredients'>
-                        <a href="/recipeDetails" className='recipe-name col-auto' onClick={() => handleClick(recipe)}>
+                        <a href="/recipeDetails" className='recipe-name' onClick={() => handleClick(recipe)}>
                             {recipe.recipeName}
                         </a>
                     </li>

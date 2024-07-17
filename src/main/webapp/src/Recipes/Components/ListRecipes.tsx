@@ -63,13 +63,13 @@ export const AddRecipeComponent: React.FC<Props> = ({ recipes }) => {
         <>
             <h2 className='center-h1'>Recipes</h2>
             {alertVisible && <Alert color={alertColor} message={apiResponse.message} onClose={() => setAlertVisibility(false)} children={recipeName} type='button' />}
-            <ul className="recipes" style={{ gap: 50 }}>
+            <ul className="recipes">
                 {recipes.map((recipe) => (
-                    <li key={recipe.recipeId} className='row g-3'>
-                        <a href="/recipeDetails" className="recipe-name col-auto" onClick={() => handleClick(recipe)}>
+                    <li key={recipe.recipeId}>
+                        <a href="/recipeDetails" className="recipe-name" onClick={() => handleClick(recipe)}>
                             {recipe.recipeName}
                         </a>
-                        <Button color='success' children='Add' onClick={() => handleRecipeAdd(recipe.recipeId, userCredentials.id, recipe.recipeName)} type='button' />
+                        <Button color='success' children='Add' heart='&#x1F49A;' onClick={() => handleRecipeAdd(recipe.recipeId, userCredentials.id, recipe.recipeName)} type='button' />
                     </li>
                 ))}
             </ul>
