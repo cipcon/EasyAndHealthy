@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useUserContext } from "../Contexts/Context"
 import { NoIdeaMode } from "./NoIdeaMode";
 

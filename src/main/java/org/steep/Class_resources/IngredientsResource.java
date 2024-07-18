@@ -88,7 +88,7 @@ public class IngredientsResource {
         }
     }
 
-    @GET
+    @POST
     @Path("/recipeIngredients")
     public Response readRecipeIngredients(int recipeId) {
         try {

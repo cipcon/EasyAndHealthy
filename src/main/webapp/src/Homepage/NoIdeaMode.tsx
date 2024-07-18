@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import '../Recipes/Recipes.css'
 import { useNavigate } from 'react-router-dom';
 import { UserProps } from './Home';
+import { Ingredient } from '../Recipes/AllRecipes';
 
 
 interface Recipe {
@@ -16,7 +17,8 @@ export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
 
     useEffect(() => {
         fetchData();
-    }, [userId]);
+        // eslint-disable-next-line
+    }, []);
 
     const handleClick = (recipe: Recipe) => {
         navigate('/recipeDetails', { state: { recipeDetails: recipe } });

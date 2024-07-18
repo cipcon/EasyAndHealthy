@@ -65,7 +65,6 @@ const AddNewIngredient: React.FC<AddedProps> = ({ onAdded }) => {
             }
         } catch (error) {
             console.error('Error adding ingredient: ', error);
-            let e = error;
             setApiResponse({ message: 'Error adding ingredient', added: false })
             setAlertColor('danger');
         }

@@ -2,24 +2,18 @@ import { useLocation } from "react-router-dom"
 import { Ingredient } from "./AllRecipes";
 import React, { useEffect, useState } from "react";
 
-interface RecipeDataProps {
-    ingredientId: number;
-    ingredientName: string;
-    unit: string;
-    quantity: number;
-}
-
 export const RecipeDetails: React.FC = () => {
     const location = useLocation();
     const { recipe } = location.state || {};
     const { recipeDetails } = location.state || {};
-    const [apiResponse, setApiResponse] = useState<RecipeDataProps[]>();
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
     useEffect(() => {
-        if (recipeDetails && !recipe) {
+        if (recipeDetails) {
             fetchIngredients(recipeDetails.recipeId);
         }
-    }, [recipeDetails])
+        // eslint-disable-next-line
+    }, [])
 
     if (!recipe && !recipeDetails) {
         return <h1>No recipe data available</h1>;
@@ -38,12 +32,12 @@ export const RecipeDetails: React.FC = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const data: RecipeDataProps[] = await response.json();
-            setApiResponse(data);
+            const data: Ingredient[] = await response.json();
+            setIngredients(data);
         } catch (error) {
-            console.error("Error fetching recipe data:", error)
+            console.error("Error fetching ingredients:", error)
         }
-
+        console.log(ingredients);
     }
 
     return (
@@ -67,7 +61,7 @@ export const RecipeDetails: React.FC = () => {
                         <h1>{recipeDetails.recipeName}</h1>
                         <h5>{recipeDetails.servings} Servings</h5>
                         <ul style={{ listStyleType: "none", padding: 0 }}>
-                            {apiResponse?.map((ingredient: Ingredient) =>
+                            {ingredients?.map((ingredient: Ingredient) =>
                                 <li key={ingredient.ingredientId}>
                                     {ingredient.ingredientName}: {ingredient.quantity} {ingredient.unit}
                                 </li>

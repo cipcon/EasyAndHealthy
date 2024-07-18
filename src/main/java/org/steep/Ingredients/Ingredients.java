@@ -266,13 +266,4 @@ public class Ingredients {
         }
         return ingredientExist;
     }
-
-    public static void main(String[] args) {
-
-        IngredientRequest request = createIngredient("Milch", "ml");
-
-        System.out.println(request.getMessage());
-        System.out.println(request.isAdded());
-
-    }
 }
