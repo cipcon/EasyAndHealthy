@@ -210,4 +210,14 @@ public class SearchRecipe {
         }
         return recipes;
     }
+
+    public static void main(String[] args) {
+        SearchRecipe searchRecipe = new SearchRecipe();
+        ArrayList<IngredientRequest> shoppList = searchRecipe.shoppingList(2, 1, 15);
+        for (IngredientRequest i : shoppList) {
+            System.out.println(
+                    i.getIngredientId() + " " + i.getIngredientName() + " " + i.getQuantity() + " " + i.getUnit());
+        }
+
+    }
 }
