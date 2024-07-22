@@ -19,12 +19,27 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SearchRecipeResource {
+
+    @POST
+    @Path("/recipeSearch")
+    public Response recipeSearch(String request) {
+        ArrayList<RecipeRequest> recipeRequest = new ArrayList<>();
+        SearchRecipe searchRecipe = new SearchRecipe();
+        try {
+            recipeRequest = searchRecipe.recipeSearch(request);
+            return Response.ok(recipeRequest).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(recipeRequest).build();
+        }
+    }
+
     @POST
     @Path("/noIdeaMode")
     public Response noIdeaMode(int userId) {
         ArrayList<RecipeRequest> request = new ArrayList<>();
+        SearchRecipe searchRecipe = new SearchRecipe();
         try {
-            SearchRecipe searchRecipe = new SearchRecipe();
             request = searchRecipe.noIdeaMode(userId);
             return Response.ok(request).build();
         } catch (Exception e) {
@@ -58,6 +73,16 @@ public class SearchRecipeResource {
             return Response.ok(list).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(list).build();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void main(String[] args) {
+        SearchRecipeResource resource = new SearchRecipeResource();
+        Response response = resource.recipeSearch("kar");
+        ArrayList<RecipeRequest> recipes = (ArrayList<RecipeRequest>) response.getEntity();
+        for (RecipeRequest r : recipes) {
+            System.out.println(r.getRecipeId() + " " + r.getRecipeName() + " " + r.getServings());
         }
     }
 }

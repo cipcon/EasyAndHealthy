@@ -52,3 +52,35 @@
     font-size: 1.7rem;
 }
 
+.recipe-details {
+    text-align: center;
+}
+
+.recipe-details > a {
+    text-decoration: none;
+    color: black;
+    background-color: aliceblue;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.recipe-details > a:hover {
+    background-color: rgb(207, 217, 226);
+}
+
+.change-servings {
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 0.5rem;
+}
+
+.change-servings > input {
+    max-width: 100px;
+}
+
+.list-ingredients {
+    list-style-type: none;
+    padding: 0;
+}
+
+

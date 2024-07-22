@@ -25,8 +25,8 @@ export const UserRecipesComponent: React.FC<UserRecipesProps> = ({ recipes }) =>
         setLocalRecipes(recipes);
     }, [recipes]);
 
-    const handleClick = (recipeData: Recipe) => {
-        navigate('/recipeDetails', { state: { recipeData } });
+    const handleClick = (recipeWithIngredients: Recipe) => {
+        navigate('/recipeDetails', { state: { recipeWithIngredients } });
     }
 
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { AddRecipeComponent } from "./Components/ListRecipes";
+import { AddRecipeComponent } from "./Components/AddRecipeComponent";
+import { SearchRecipe } from "./Components/SearchRecipe";
 
 export interface Ingredient {
     ingredientName: string;
@@ -39,6 +40,7 @@ export const AllRecipes: React.FC = () => {
 
     return (
         <>
+            <SearchRecipe />
             <AddRecipeComponent recipes={recipes} />
         </>
     );

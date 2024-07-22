@@ -26,8 +26,8 @@ export const AddRecipeComponent: React.FC<Props> = ({ recipes }) => {
     const [alertColor, setAlertColor] = useState<AlertColor>();
 
 
-    const handleClick = (recipeData: Recipe) => {
-        navigate('/recipeDetails', { state: { recipeData } });
+    const handleClick = (recipeWithIngredients: Recipe) => {
+        navigate('/recipeDetails', { state: { recipeWithIngredients } });
     }
 
     const handleRecipeAdd = async (recipeId: number, userId: number, recipeName: string) => {

@@ -18,9 +18,9 @@ main {
   padding: 20px;
 }
 
-.nav-link {
-  margin-left: 10px;
-  text-align: center;
+.nav-link:hover {
+  background-color: bisque;
+  border-radius: 10%;
 }
 
 .same-line {
@@ -56,3 +56,4 @@ li > span {
 .margin-bottom {
   margin: 0;
 }
+

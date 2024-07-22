@@ -3,13 +3,13 @@ package org.steep.Requests.RecipeIngredients;
 public class IngredientRequest {
     private int ingredientId;
     private String ingredientName;
-    private int quantity;
+    private double quantity;
     private String unit;
     private int userId;
     private String message;
     private boolean added;
 
-    public IngredientRequest(String ingredientName, int ingredientId, int quantity, String unit) {
+    public IngredientRequest(String ingredientName, int ingredientId, double quantity, String unit) {
         this.ingredientName = ingredientName;
         this.ingredientId = ingredientId;
         this.quantity = quantity;
@@ -46,7 +46,7 @@ public class IngredientRequest {
     }
 
     // quantity
-    public int getQuantity() {
+    public double getQuantity() {
         return this.quantity;
     }
 

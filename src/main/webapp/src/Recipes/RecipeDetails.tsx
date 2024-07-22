@@ -12,8 +12,8 @@ interface RequestLoadProps {
 export const RecipeDetails: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { recipeData } = location.state || {};
-    const { recipeDetails } = location.state || {};
+    const { recipeWithIngredients } = location.state || {};
+    const { recipeWithoutIngredients } = location.state || {};
     const { userCredentials } = useUserContext();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [recipe, setRecipe] = useState<Recipe>({ recipeName: '', recipeId: 0, servings: 0, ingredients });
@@ -22,28 +22,28 @@ export const RecipeDetails: React.FC = () => {
 
     useEffect(() => {
         const initializeForm = async () => {
-            if (recipeDetails) {
+            if (recipeWithoutIngredients) {
                 if (newQuantities) {
                     const form: Recipe = {
-                        recipeName: recipeDetails.recipeName,
-                        recipeId: recipeDetails.recipeId,
+                        recipeName: recipeWithoutIngredients.recipeName,
+                        recipeId: recipeWithoutIngredients.recipeId,
                         servings: requestLoad?.portions,
                         ingredients: newQuantities
                     }
                     setRecipe(form);
                 } else {
-                    fetchIngredients(recipeDetails.recipeId);
+                    fetchIngredients(recipeWithoutIngredients.recipeId);
                     const form: Recipe = {
-                        recipeName: recipeDetails.recipeName,
-                        recipeId: recipeDetails.recipeId,
-                        servings: recipeDetails.servings,
+                        recipeName: recipeWithoutIngredients.recipeName,
+                        recipeId: recipeWithoutIngredients.recipeId,
+                        servings: recipeWithoutIngredients.servings,
                         ingredients: ingredients
                     }
                     setRecipe(form);
                 }
 
             }
-            if (recipeData) {
+            if (recipeWithIngredients) {
                 if (newQuantities) {
                     const form: Recipe = {
                         recipeName: recipe.recipeName,
@@ -53,7 +53,7 @@ export const RecipeDetails: React.FC = () => {
                     }
                     setRecipe(form);
                 } else {
-                    setRecipe(recipeData);
+                    setRecipe(recipeWithIngredients);
                 }
             }
 
@@ -61,7 +61,7 @@ export const RecipeDetails: React.FC = () => {
 
         initializeForm();
         // eslint-disable-next-line
-    }, [ingredients, recipeData, recipeDetails, newQuantities]);
+    }, [ingredients, recipeWithIngredients, recipeWithoutIngredients, newQuantities]);
 
     const fetchIngredients = async (recipeId: number) => {
         try {
@@ -84,7 +84,7 @@ export const RecipeDetails: React.FC = () => {
     }
 
 
-    if (!recipeData && !recipeDetails) {
+    if (!recipeWithIngredients && !recipeWithoutIngredients) {
         return <h1>No recipe data available</h1>;
     }
 
@@ -126,39 +126,31 @@ export const RecipeDetails: React.FC = () => {
 
 
     return (
-        <div style={{ textAlign: "center" }}>
-            <div>
-                <h1>{recipe?.recipeName}</h1>
-                <div className="row g-3" style={{ justifyContent: "center" }}>
-                    <label
-                        htmlFor="servings"
-                        className="visually-hidden">
-                        Change Number of servings
-                    </label>
-                    <input
-                        className="form-control"
-                        id="servings"
-                        min={1}
-                        placeholder="Servings"
-                        required
-                        style={{ maxWidth: 100 }}
-                        type="number"
-                        onChange={handleServings}
-                    />
-                    <Button color='success' type='button' children='Change' onClick={changeQuantities} />
-                </div>
-                <h5>{recipe?.servings} Servings</h5>
-                <ul style={{ listStyleType: "none", padding: 0 }}>
-                    {recipe?.ingredients.map((ingredient: Ingredient) =>
-                        <li key={ingredient.ingredientId}>
-                            {ingredient.ingredientName}: {ingredient.quantity} {ingredient.unit}
-                        </li>
-                    )}
-                </ul>
-                <a href="/shoppingList" onClick={handleClick}>
-                    Shopping list for this recipe
-                </a>
+        <div className="recipe-details">
+            <h1>{recipe?.recipeName}</h1>
+            <div className="row change-servings">
+                <input
+                    className="form-control"
+                    id="servings"
+                    min={1}
+                    placeholder="Servings"
+                    required
+                    type="number"
+                    onChange={handleServings}
+                />
+                <Button color='success' type='button' children='Change' onClick={changeQuantities} />
             </div>
+            <h5>{recipe?.servings} Servings</h5>
+            <ul className="list-ingredients">
+                {recipe?.ingredients.map((ingredient: Ingredient) =>
+                    <li key={ingredient.ingredientId}>
+                        {ingredient.ingredientName}: {ingredient.quantity} {ingredient.unit}
+                    </li>
+                )}
+            </ul>
+            <a href="/shoppingList" onClick={handleClick}>
+                Show me the shopping list for this recipe
+            </a>
         </div>
     )
 }

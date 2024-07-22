@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { UserProps } from './Home';
 import Button from '../components/Button';
 import { useUserContext } from '../Contexts/Context';
-import { ApiResponse } from '../Recipes/Components/ListRecipes';
+import { ApiResponse } from '../Recipes/Components/AddRecipeComponent';
 import { AlertColor } from '../Ingredients/Components/AddIngredients';
 import { Alert } from '../components/Alert';
 
-interface Recipe {
+export interface Recipe {
     recipeName: string;
     recipeId: number;
     servings: number;
@@ -28,8 +28,8 @@ export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
         // eslint-disable-next-line
     }, []);
 
-    const handleClick = (recipeDetails: Recipe) => {
-        navigate('/recipeDetails', { state: { recipeDetails } });
+    const handleClick = (recipeWithoutIngredients: Recipe) => {
+        navigate('/recipeDetails', { state: { recipeWithoutIngredients } });
     }
 
     const fetchData = async () => {
@@ -50,6 +50,7 @@ export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
         } catch (error) {
             console.error("Error fetching recipes:", error)
         }
+        console.log(recipes);
     }
 
     const handleRecipeAdd = async (recipeId: number, userId: number, recipeName: string) => {

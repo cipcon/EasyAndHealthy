@@ -11,8 +11,8 @@ export const Navbar = () => {
         <>
             <nav className="navbar sticky-top navbar-expand-lg " >
                 <div className="container-fluid"  >
-                    <div className="collapse navbar-collapse" >
-                        <a className="navbar-brand" href="/">
+                    <div className="collapse navbar-collapse gap-3" >
+                        <a href="/" className="logo">
                             <img src="logoCompleted.png" alt="Easy and healthy Logo" width={100} height={45} style={{ borderRadius: 10 }} />
                         </a>
 
@@ -35,9 +35,10 @@ export const Navbar = () => {
                             userCredentials.token === null ?
                                 '' :
                                 <>
-                                    <Link to={'/profile'} className=' nav-link '>Profile</Link>
-                                    <Link to={'/favoriteRecipes'} className=" nav-link">Favorite</Link>
-                                    <Link to={'/ingredients'} className=" nav-link">Ingredients</Link>
+                                    <Link to={'/profile'} className="nav-link">Profile</Link>
+                                    <Link to={'/favoriteRecipes'} className="nav-link">Favorite</Link>
+                                    <Link to={'/ingredients'} className="nav-link">Ingredients</Link>
+                                    <Link to={"editOwnRecipes"} className="nav-link">Own Recipes</Link>
                                     <LogoutButton />
                                 </>
 

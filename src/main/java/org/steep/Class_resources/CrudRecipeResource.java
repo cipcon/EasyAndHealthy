@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
 import org.steep.Requests.RecipeIngredients.AddToUserRequest;
+import org.steep.Requests.RecipeIngredients.DeleteRecipeRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
-import org.steep.Requests.User.UserRequest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -62,8 +60,9 @@ public class CrudRecipeResource {
     @GET
     @Path("/readAllRecipes")
     public Response readAllRecipes() {
+        ArrayList<RecipeRequest> allRecipes = new ArrayList<>();
         try {
-            ArrayList<RecipeRequest> allRecipes = CrudRecipe.readAllRecipes();
+            allRecipes = CrudRecipe.readAllRecipes();
             return Response.ok(allRecipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -75,9 +74,8 @@ public class CrudRecipeResource {
     @Path("/recipesFromUser")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response recipesFromUser(UserRequest userRequest) {
+    public Response recipesFromUser(int userId) {
         try {
-            int userId = userRequest.getId();
             ArrayList<RecipeRequest> recipes = CrudRecipe.recipesFromUser(userId);
             return Response.ok(recipes).build();
         } catch (Exception e) {
@@ -164,7 +162,7 @@ public class CrudRecipeResource {
 
     @POST
     @Path("/deleteRecipeGlobally")
-    public Response deleteRecipeGlobally(CrudRecipeRequest request) {
+    public Response deleteRecipeGlobally(DeleteRecipeRequest request) {
         try {
             CrudRecipe.deleteRecipeGlobally(request.getRecipeId(), request.getUserId());
             return Response.status(Response.Status.OK).build();
@@ -174,17 +172,16 @@ public class CrudRecipeResource {
         }
     }
 
-    @GET
-    @Path("/recipesCreatedByUser/{userId}")
+    @POST
+    @Path("/recipesCreatedByUser")
     public Response recipesCreatedByUser(int userId) {
+        ArrayList<RecipeRequest> recipes = new ArrayList<>();
         try {
-            ArrayList<Integer> recipes = CrudRecipe.recipesCreatedByUser(userId);
-            ObjectMapper mapper = new ObjectMapper(); // Create an ObjectMapper instance
-            String json = mapper.writeValueAsString(recipes); // Convert list to JSON string
-            return Response.ok(json).build();
+            recipes = CrudRecipe.recipesCreatedByUser(userId);
+            return Response.ok(recipes).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error retrieving ingredients: " + e.getMessage()).build();
+                    .entity(recipes).build();
         }
     }
 

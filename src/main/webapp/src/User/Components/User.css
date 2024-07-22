@@ -1,0 +1,33 @@
+.own-recipes {
+    display: flex;
+    flex-direction: column;
+}
+
+  
+.edit-delete {
+    width: 100%;
+    display: flex;
+}
+
+.own-recipes > div > button {
+    background-color:rgb(173, 206, 123);
+    height: 2.5rem;
+    width: 50%;  
+    border-bottom: 1px solid black;
+}
+
+.own-recipes > div > button:hover {
+    background-color: rgb(166, 197, 119);
+}
+
+.edit {
+    border-radius: 10px 0 0 0;
+    border: none;
+    border-right: 1px solid black;
+}
+
+.delete {
+    border-radius: 0 10px 0 0;
+    border: none;
+    border-left: 1px solid black;
+}

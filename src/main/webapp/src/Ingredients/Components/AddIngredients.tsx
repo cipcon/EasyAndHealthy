@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Alert } from "../../components/Alert";
 import Button from "../../components/Button";
-import { ApiResponse } from "../../Recipes/Components/ListRecipes";
+import { ApiResponse } from "../../Recipes/Components/AddRecipeComponent";
 import { Ingredient } from "../Ingredients";
 
 interface Props {

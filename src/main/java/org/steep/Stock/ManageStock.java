@@ -72,7 +72,7 @@ public class ManageStock {
                     String ingredientName = resultSet.getString("zutat_name");
                     int ingredientId = resultSet.getInt("zutat_id");
                     String unit = resultSet.getString("einheit");
-                    int quantity = resultSet.getInt("menge");
+                    double quantity = resultSet.getInt("menge");
                     IngredientRequest ingredientRequest = new IngredientRequest(ingredientName, ingredientId, quantity,
                             unit);
                     ingredientRequestList.add(ingredientRequest);

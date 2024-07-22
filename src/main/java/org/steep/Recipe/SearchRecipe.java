@@ -16,40 +16,41 @@ import org.steep.Stock.ManageStock;
 public class SearchRecipe {
 
     // This function searches the database for recipes that contain the provided
-    // recipeContainsIngredient. It searches both recipe names and ingredient names
+    // request. It searches both recipe names and ingredient names
     // within the recipe.
     // Returns an ArrayList<String> containing the names of recipes that include the
     // ingredient name (case-insensitive search).
     // Returns and empty ArrayList if the parameter is empty or no recipe found
-    public ArrayList<RecipeRequest> recipeSearch(String recipeContainsIngredient) {
+    public ArrayList<RecipeRequest> recipeSearch(String request) {
         ArrayList<RecipeRequest> recipes = new ArrayList<>();
 
-        if (recipeContainsIngredient.isEmpty()) {
+        if (request.isEmpty()) {
             System.out.println("String is empty");
             return recipes;
         }
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String sqlRecipeSearch = "SELECT DISTINCT r.rezept_name, r.rezept_id " +
+            String sqlRecipeSearch = "SELECT DISTINCT r.rezept_name, r.rezept_id, r.portionen " +
                     "FROM rezept r " +
                     "INNER JOIN rezept_zutat rz ON r.rezept_id = rz.rezept_id " +
                     "INNER JOIN zutaten z ON rz.zutat_id = z.zutat_id " +
                     "WHERE r.rezept_name LIKE ? " +
                     "OR z.zutat_name LIKE ?";
             try (PreparedStatement statement = connection.prepareStatement(sqlRecipeSearch)) {
-                statement.setString(1, "%" + recipeContainsIngredient + "%");
-                statement.setString(2, "%" + recipeContainsIngredient + "%");
+                statement.setString(1, "%" + request + "%");
+                statement.setString(2, "%" + request + "%");
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) { // Check for results
                         do {
                             String recipeName = resultSet.getString("r.rezept_name");
                             int recipeId = resultSet.getInt("rezept_id");
-                            RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId);
+                            int servings = resultSet.getInt("portionen");
+                            RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, servings);
                             recipes.add(recipeRequest);
                         } while (resultSet.next());
                     } else {
-                        System.out.println("No recipes found for " + recipeContainsIngredient);
+                        System.out.println("No recipes found for " + request);
                     }
                 } catch (Exception e) {
                     System.out.println("An error occurred in ResultSet block.");
@@ -78,8 +79,8 @@ public class SearchRecipe {
         }
 
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            int standardPortions;
-            int onePortion;
+            double standardPortions;
+            double onePortion;
 
             String sqlCookingPlan = "SELECT z.zutat_name, z.einheit, z.zutat_id, rz.menge, r.portionen " +
                     "FROM zutaten z " +
@@ -98,7 +99,7 @@ public class SearchRecipe {
                         String unit = resultSet.getString("einheit");
                         standardPortions = resultSet.getInt("portionen");
                         onePortion = portions / standardPortions;
-                        int quantity = resultSet.getInt("menge") * onePortion;
+                        double quantity = resultSet.getInt("menge") * onePortion;
                         IngredientRequest ingredientRequest = new IngredientRequest(ingredientName, ingredientId,
                                 quantity, unit);
                         cookingPlan.add(ingredientRequest);
@@ -136,7 +137,8 @@ public class SearchRecipe {
             return shoppingList;
         }
 
-        Set<String> specialIngredients = new HashSet<>(Set.of("Salz", "Pfeffer", "Wasser"));
+        Set<String> specialIngredients = new HashSet<>(
+                Set.of("Salz", "Pfeffer", "Wasser", "Olivenöl", "Balsamico-Essig"));
 
         for (IngredientRequest ingredientFromRecipe : recipeIngredients) {
             // handle salt, pepper and water exceptions
@@ -149,7 +151,7 @@ public class SearchRecipe {
             for (IngredientRequest ingredientFromUser : userIngredients) {
                 if (ingredientFromRecipe.getIngredientName().equals(ingredientFromUser.getIngredientName())) {
                     foundInUserStock = true;
-                    int missingQuantity = ingredientFromUser.getQuantity() - ingredientFromUser.getQuantity();
+                    double missingQuantity = ingredientFromRecipe.getQuantity() - ingredientFromUser.getQuantity();
                     if (missingQuantity > 0) {
                         IngredientRequest ingredientRequest = new IngredientRequest(
                                 ingredientFromRecipe.getIngredientName(),
@@ -213,11 +215,10 @@ public class SearchRecipe {
 
     public static void main(String[] args) {
         SearchRecipe searchRecipe = new SearchRecipe();
-        ArrayList<IngredientRequest> shoppList = searchRecipe.shoppingList(2, 1, 15);
-        for (IngredientRequest i : shoppList) {
+        ArrayList<IngredientRequest> requests = searchRecipe.shoppingList(6, 1, 15);
+        for (IngredientRequest i : requests) {
             System.out.println(
                     i.getIngredientId() + " " + i.getIngredientName() + " " + i.getQuantity() + " " + i.getUnit());
         }
-
     }
 }

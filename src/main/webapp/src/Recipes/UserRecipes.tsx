@@ -22,7 +22,7 @@ export const UserRecipes: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id })
+                body: JSON.stringify(id)
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

@@ -466,10 +466,10 @@ public class CrudRecipe {
     // This function retrieves a list of recipe IDs for recipes created by the
     // current user.
     // If no recipes are found, an empty ArrayList is returned.
-    public static ArrayList<Integer> recipesCreatedByUser(int userId) {
-        ArrayList<Integer> userRecipes = new ArrayList<>();
+    public static ArrayList<RecipeRequest> recipesCreatedByUser(int userId) {
+        ArrayList<RecipeRequest> userRecipes = new ArrayList<>();
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String sqlRecipesCreatedByUser = "SELECT rezept_id FROM rezept " +
+            String sqlRecipesCreatedByUser = "SELECT rezept_id, rezept_name, portionen FROM rezept " +
                     "WHERE benutzer_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(sqlRecipesCreatedByUser)) {
                 statement.setInt(1, userId);
@@ -477,7 +477,10 @@ public class CrudRecipe {
                 if (resultSet.next()) {
                     do {
                         int recipeId = resultSet.getInt("rezept_id");
-                        userRecipes.add(recipeId);
+                        String recipeName = resultSet.getString("rezept_name");
+                        int servings = resultSet.getInt("portionen");
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, servings);
+                        userRecipes.add(recipeRequest);
                     } while (resultSet.next());
                 } else {
                     System.out.println("No recipes added by ");
@@ -622,4 +625,5 @@ public class CrudRecipe {
 
         return recipeName;
     }
+
 }
