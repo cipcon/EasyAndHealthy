@@ -31,3 +31,16 @@
     border: none;
     border-left: 1px solid black;
 }
+
+.confirm-delete {
+    width: 400px;
+    height: 200px;
+    background-color: rgb(126, 141, 141);
+    margin: auto;
+}
+
+.add-button {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}

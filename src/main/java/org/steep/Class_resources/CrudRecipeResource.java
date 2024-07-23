@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import org.steep.Recipe.CrudRecipe;
 import org.steep.Requests.CrudRecipeRequest;
 import org.steep.Requests.RecipeIngredients.AddToUserRequest;
+import org.steep.Requests.RecipeIngredients.CreateRecipeRequest;
 import org.steep.Requests.RecipeIngredients.DeleteRecipeRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
+import org.steep.Requests.RecipeIngredients.UpdateRecipeIngredientQuantity;
+import org.steep.Requests.RecipeIngredients.UpdateRecipeNameAndServingsRequest;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -22,9 +25,9 @@ public class CrudRecipeResource {
 
     @POST
     @Path("/createRecipe")
-    public Response createRecipe(CrudRecipeRequest request) {
+    public Response createRecipe(CreateRecipeRequest request) {
         try {
-            CrudRecipe.createRecipe(request.getPortions(), request.getRecipeName(), request.getUserId());
+            CrudRecipe.createRecipe(request);
             return Response.status(Response.Status.CREATED).entity("Recipe successfully created").build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -85,28 +88,30 @@ public class CrudRecipeResource {
     }
 
     @POST
-    @Path("/updateGlobalRecipe/{recipeNewName}")
-    public Response updateGlobalRecipe(String recipeNewName, CrudRecipeRequest request) {
+    @Path("/updateGlobalRecipe")
+    public Response updateGlobalRecipe(UpdateRecipeNameAndServingsRequest request) {
+        boolean recipeUpdated = false;
         try {
-            CrudRecipe.updateGlobalRecipe(recipeNewName, request.getRecipeId(), request.getPortions(),
-                    request.getUserId());
-            return Response.status(Response.Status.OK).build();
+            recipeUpdated = CrudRecipe.updateGlobalRecipe(request.getNewRecipeName(), request.getRecipeId(),
+                    request.getServings());
+            return Response.ok(recipeUpdated).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+                    .entity(recipeUpdated).build();
         }
     }
 
     @POST
-    @Path("/updateIngredientQuantity/")
-    public Response updateIngredientQuantity(CrudRecipeRequest request) {
+    @Path("/updateIngredientQuantity")
+    public Response updateIngredientQuantity(UpdateRecipeIngredientQuantity request) {
+        boolean recipeUpdated = false;
         try {
-            CrudRecipe.updateIngredientQuantity(request.getIngredientId(), request.getQuantity(), request.getRecipeId(),
-                    request.getUserId());
-            return Response.status(Response.Status.OK).build();
+            recipeUpdated = CrudRecipe.updateIngredientQuantity(request.getIngredientId(), request.getQuantity(),
+                    request.getRecipeId());
+            return Response.ok(recipeUpdated).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+                    .entity(recipeUpdated).build();
         }
     }
 
@@ -163,12 +168,12 @@ public class CrudRecipeResource {
     @POST
     @Path("/deleteRecipeGlobally")
     public Response deleteRecipeGlobally(DeleteRecipeRequest request) {
-        try {
-            CrudRecipe.deleteRecipeGlobally(request.getRecipeId(), request.getUserId());
-            return Response.status(Response.Status.OK).build();
-        } catch (Exception e) {
+        boolean deleted = CrudRecipe.deleteRecipeGlobally(request.getRecipeId(), request.getUserId());
+        if (deleted) {
+            return Response.ok(deleted).build();
+        } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+                    .entity(deleted).build();
         }
     }
 
@@ -195,5 +200,14 @@ public class CrudRecipeResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error retrieving ingredients: " + e.getMessage()).build();
         }
+    }
+
+    public static void main(String[] args) {
+        CrudRecipeResource resource = new CrudRecipeResource();
+        DeleteRecipeRequest request = new DeleteRecipeRequest();
+        request.setRecipeId(2127);
+        request.setUserId(15);
+        Response response = resource.deleteRecipeGlobally(request);
+        System.out.println(response.getStatus());
     }
 }

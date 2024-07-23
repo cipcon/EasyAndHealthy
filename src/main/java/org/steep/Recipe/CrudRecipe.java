@@ -5,13 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.steep.Database.DatabaseManagement;
 import org.steep.Requests.RecipeIngredients.AddToUserRequest;
+import org.steep.Requests.RecipeIngredients.CreateRecipeRequest;
+import org.steep.Requests.RecipeIngredients.CreateRecipeRequest.InnerCreateRecipeRequest;
 import org.steep.Requests.RecipeIngredients.IngredientRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
 
@@ -21,29 +22,67 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class CrudRecipe {
     // Create a new recipe in the database with the provided details.
     // Returns 1 if the recipe is created successfully, 0 if there's an error.
-    public static int createRecipe(int portions, String recipeName, int userId) {
-        int rowsAffected = 0;
-        int recipeId = recipeId(recipeName);
+    public static boolean createRecipe(CreateRecipeRequest request) {
+        boolean recipeAdded = false;
+        int recipeId = recipeId(request.getRecipeName());
 
         boolean recipeExist = existingGlobalRecipe(recipeId);
         if (recipeExist == true) {
             System.out.println("Recipe name already exist");
+            return recipeAdded;
         }
         try (Connection connection = DatabaseManagement.connectToDB()) {
             String createRecipe = "INSERT INTO rezept(rezept_name, portionen, benutzer_id) VALUES (?, ?, ?)";
+
             try (PreparedStatement statement = connection.prepareStatement(createRecipe)) {
-                statement.setString(1, recipeName);
-                statement.setInt(2, portions);
-                statement.setInt(3, userId);
-                rowsAffected = statement.executeUpdate();
-                return rowsAffected;
+                statement.setString(1, request.getRecipeName());
+                statement.setInt(2, request.getPortions());
+                statement.setInt(3, request.getUserId());
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected == 0) {
+                    System.out.println("Something went wrong by adding the recipe");
+                    return recipeAdded;
+                } else {
+                    recipeAdded = true;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return rowsAffected;
+
+        String addIngredientToRecipe = "INSERT INTO rezept_zutat(rezept_id, zutat_id, menge)";
+        recipeId = CrudRecipe.recipeId(request.getRecipeName());
+
+        if (request.getIngredient().isEmpty()) {
+            recipeAdded = false;
+            return recipeAdded;
+        }
+        try (Connection connection = DatabaseManagement.connectToDB()) {
+            try (PreparedStatement statement = connection.prepareStatement(addIngredientToRecipe)) {
+                int rowsAffected = 0;
+                for (InnerCreateRecipeRequest i : request.getIngredient()) {
+                    statement.setInt(1, recipeId);
+                    statement.setInt(2, i.getIngredientId());
+                    statement.setInt(3, i.getQuantity());
+                    int ingredientAdded = statement.executeUpdate();
+                    if (ingredientAdded == 1) {
+                        rowsAffected++;
+                    }
+                }
+                if (rowsAffected == 0) {
+                    System.out.println("Something went wrong by adding the ingredients");
+                    recipeAdded = false;
+                    return recipeAdded;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return recipeAdded;
     }
 
     // Add an existing recipe to the user's recipe list
@@ -235,24 +274,24 @@ public class CrudRecipe {
 
     // Updates recipe name & portions if it exists and belongs to the user.
     // Returns affected rows (1 on success, 0 otherwise).
-    public static int updateGlobalRecipe(String newRecipeName, int recipeId, int portions, int userId) {
-        int rowsAffected = 0;
+    public static boolean updateGlobalRecipe(String newRecipeName, int recipeId, int portions) {
+        boolean recipeModified = false;
         if (existingGlobalRecipe(recipeId) == false) {
             System.out.println("Recipe doesn't exist");
 
         }
         try (Connection connection = DatabaseManagement.connectToDB()) {
-            String updateGlobalRecipe = "UPDATE rezept SET rezept_name = ?, portionen = ? WHERE benutzer_id = ? and rezept_id = ?";
+            String updateGlobalRecipe = "UPDATE rezept SET rezept_name = ?, portionen = ? WHERE rezept_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(updateGlobalRecipe)) {
                 statement.setString(1, newRecipeName);
                 statement.setInt(2, portions);
-                statement.setInt(3, userId);
-                statement.setInt(4, recipeId);
-                rowsAffected = statement.executeUpdate();
+                statement.setInt(3, recipeId);
+                int rowsAffected = statement.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("Name and portions of the recipe updated successfully");
-                    return rowsAffected;
+                    recipeModified = true;
+                    return recipeModified;
                 } else {
                     System.out.println("You are allowed to update only your recipes");
                 }
@@ -262,51 +301,41 @@ public class CrudRecipe {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rowsAffected;
+        return recipeModified;
     }
 
     // Updates ingredient quantity in a recipe belonging to the user.
     // Returns affected rows (1 on success, 0 otherwise).
-    public static int updateIngredientQuantity(int ingredientId, int quantity,
-            int recipeId, int userId) {
+    public static boolean updateIngredientQuantity(int ingredientId, int quantity,
+            int recipeId) {
+        boolean ingredientUpdated = false;
 
-        int rowsUpdated = 0;
-
-        if (existingGlobalRecipe(recipeId) == true) {
-
-            try (Connection connection = DatabaseManagement.connectToDB()) {
-                String updateRecipeUserTable = "UPDATE rezept_zutat rz " +
-                        "INNER JOIN rezept r ON rz.rezept_id = r.rezept_id " +
-                        "SET menge = ? " +
-                        "WHERE rz.rezept_id = ? AND rz.zutat_id = ? " +
-                        "AND r.benutzer_id = ?";
-
-                try (PreparedStatement statement = connection.prepareStatement(updateRecipeUserTable)) {
-                    statement.setInt(1, quantity);
-                    statement.setInt(2, recipeId);
-                    statement.setInt(3, ingredientId);
-                    statement.setInt(4, userId);
-                    rowsUpdated = statement.executeUpdate();
-                    if (rowsUpdated > 0) {
-                        return rowsUpdated;
-                    } else {
-                        System.out.println("You are allowed to update only recipes you created");
-                    }
-
-                } catch (SQLSyntaxErrorException e) {
-                    System.out.println("You are not allowed to modify recipes that do not belongs to you");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } else {
+        if (!existingGlobalRecipe(recipeId)) {
             System.out.println("Recipe doesn't exist");
         }
+        try (Connection connection = DatabaseManagement.connectToDB()) {
+            String updateRecipeUserTable = "UPDATE rezept_zutat " +
+                    "SET menge = ? " +
+                    "WHERE rezept_id = ? AND zutat_id = ?";
 
-        return rowsUpdated;
+            try (PreparedStatement statement = connection.prepareStatement(updateRecipeUserTable)) {
+                statement.setInt(1, quantity);
+                statement.setInt(2, recipeId);
+                statement.setInt(3, ingredientId);
+                int rowsUpdated = statement.executeUpdate();
+                if (rowsUpdated > 0) {
+                    ingredientUpdated = true;
+                    return ingredientUpdated;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ingredientUpdated;
     }
 
     // Removes recipe from user's list if it exists. Returns affected rows (1 on
@@ -433,13 +462,13 @@ public class CrudRecipe {
     // - Deleting the recipe itself (rezept) if it belongs to the current user.
     // Returns 1 if the recipe was successfull deleted.
     // Returns 0 if the recipe doesn't exist or the user is null.
-    public static int deleteRecipeGlobally(int recipeId, int userId) {
-        int rowsDeleted = 0;
+    public static boolean deleteRecipeGlobally(int recipeId, int userId) {
+        boolean deleted = false;
         boolean recipeExist = existingGlobalRecipe(recipeId);
 
         if (recipeExist == false || userId == 0) {
             System.out.println("Recipe doesn't exist or user is null");
-            return rowsDeleted;
+            return deleted;
         }
         try (Connection connection = DatabaseManagement.connectToDB()) {
             deleteFromRecipeIngredientTable(recipeId);
@@ -451,16 +480,18 @@ public class CrudRecipe {
             try (PreparedStatement statement = connection.prepareStatement(deleteRecipeGlobally)) {
                 statement.setInt(1, recipeId);
                 statement.setInt(2, userId);
-                rowsDeleted = statement.executeUpdate();
-                return rowsDeleted;
+                int rowsDeleted = statement.executeUpdate();
+                if (rowsDeleted > 0) {
+                    deleted = true;
+                    return deleted;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return rowsDeleted;
+        return deleted;
     }
 
     // This function retrieves a list of recipe IDs for recipes created by the

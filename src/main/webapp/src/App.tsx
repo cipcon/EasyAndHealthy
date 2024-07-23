@@ -13,6 +13,8 @@ import FavoriteRecipes from './Recipes/FavoriteRecipes';
 import { Ingredients } from './Ingredients/Ingredients';
 import { ShoppingList } from './Recipes/Components/ShoppingList';
 import EditOwnRecipes from './User/Components/EditOwnRecipes';
+import { CreateRecipe } from './Recipes/Components/CreateRecipe';
+import { EditRecipe } from './Recipes/Components/EditRecipe';
 
 export interface UserProps {
   id: number;
@@ -82,6 +84,8 @@ const App: React.FC = () => {
               <Route path='/ingredients' element={<Ingredients />} />
               <Route path='/shoppingList' element={<ShoppingList />} />
               <Route path='/editOwnRecipes' element={<EditOwnRecipes />} />
+              <Route path='/create-recipe' element={<CreateRecipe />} />
+              <Route path='/edit-recipe' element={<EditRecipe />} />
             </Routes>
           </main>
           <footer>
