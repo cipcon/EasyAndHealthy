@@ -1,8 +1,7 @@
 package org.steep.Requests.RecipeIngredients;
 
-public class UpdateRecipeIngredientQuantity {
+public class deleteIngredientFromRecipeRequest {
     private int ingredientId;
-    private int quantity;
     private int recipeId;
 
     public int getIngredientId() {
@@ -13,20 +12,12 @@ public class UpdateRecipeIngredientQuantity {
         this.ingredientId = ingredientId;
     }
 
-    public int getQuantity() {
-        return this.quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public int getRecipeId() {
         return this.recipeId;
     }
 
-    public void setRecipeId(int recipeId) {
-        this.recipeId = recipeId;
+    public void setRecipeId(int userId) {
+        this.recipeId = userId;
     }
 
 }

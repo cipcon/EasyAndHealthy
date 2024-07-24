@@ -6,9 +6,10 @@ import org.steep.Requests.CrudRecipeRequest;
 import org.steep.Requests.RecipeIngredients.AddToUserRequest;
 import org.steep.Requests.RecipeIngredients.CreateRecipeRequest;
 import org.steep.Requests.RecipeIngredients.DeleteRecipeRequest;
+import org.steep.Requests.RecipeIngredients.RecipeIngredientQuantityRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
-import org.steep.Requests.RecipeIngredients.UpdateRecipeIngredientQuantity;
 import org.steep.Requests.RecipeIngredients.UpdateRecipeNameAndServingsRequest;
+import org.steep.Requests.RecipeIngredients.deleteIngredientFromRecipeRequest;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -50,13 +51,15 @@ public class CrudRecipeResource {
 
     @POST
     @Path("/addIngredientToRecipe")
-    public Response addIngredientToRecipe(CrudRecipeRequest request) {
+    public Response addIngredientToRecipe(RecipeIngredientQuantityRequest request) {
+        boolean recipeAdded = false;
         try {
-            CrudRecipe.addIngredientToRecipe(request.getIngredientId(), request.getQuantity(), request.getRecipeId());
-            return Response.status(Response.Status.OK).build();
+            recipeAdded = CrudRecipe.addIngredientToRecipe(request.getIngredientId(), request.getQuantity(),
+                    request.getRecipeId());
+            return Response.ok(recipeAdded).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+                    .entity(recipeAdded).build();
         }
     }
 
@@ -103,7 +106,7 @@ public class CrudRecipeResource {
 
     @POST
     @Path("/updateIngredientQuantity")
-    public Response updateIngredientQuantity(UpdateRecipeIngredientQuantity request) {
+    public Response updateIngredientQuantity(RecipeIngredientQuantityRequest request) {
         boolean recipeUpdated = false;
         try {
             recipeUpdated = CrudRecipe.updateIngredientQuantity(request.getIngredientId(), request.getQuantity(),
@@ -153,15 +156,16 @@ public class CrudRecipeResource {
     }
 
     @POST
-    @Path("/deleteFromRecipeIngredientTable")
-    public Response deleteOnlyOneIngredientFromRecipeIngredientTable(CrudRecipeRequest request) {
+    @Path("/deleteIngredientFromRecipe")
+    public Response deleteIngredientFromRecipe(deleteIngredientFromRecipeRequest request) {
+        boolean ingredientDeleted = false;
         try {
-            CrudRecipe.deleteOnlyOneIngredientFromRecipeIngredientTable(request.getIngredientId(),
+            ingredientDeleted = CrudRecipe.deleteIngredientFromRecipe(request.getIngredientId(),
                     request.getRecipeId());
-            return Response.status(Response.Status.OK).build();
+            return Response.ok(ingredientDeleted).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+                    .entity(ingredientDeleted).build();
         }
     }
 

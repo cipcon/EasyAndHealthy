@@ -132,12 +132,12 @@ public class CrudRecipe {
     // Adds an ingredient to a recipe in the database.
     // Returns the number of rows affected (typically 1 if successful).
     // Returns 0 if the ingredient already exists in the recipe.
-    public static int addIngredientToRecipe(int ingredientId, int quantity,
+    public static boolean addIngredientToRecipe(int ingredientId, int quantity,
             int recipeId) {
-        int rowsAffected = 0;
+        boolean recipeAdded = false;
         if (ingredientId == 0 || quantity == 0 || recipeId == 0) {
             System.out.println("Invalid input, one of the parameters is null or zero");
-            return rowsAffected;
+            return recipeAdded;
         }
         try (Connection connection = DatabaseManagement.connectToDB()) {
 
@@ -147,8 +147,12 @@ public class CrudRecipe {
                     statement.setInt(1, recipeId);
                     statement.setInt(2, ingredientId);
                     statement.setInt(3, quantity);
-                    rowsAffected = statement.executeUpdate();
-                    return rowsAffected;
+                    int rowsAffected = statement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        recipeAdded = true;
+                        return recipeAdded;
+                    }
+
                 } catch (SQLIntegrityConstraintViolationException e) {
                     System.out.println("Ingredient doesn't exist");
                 } catch (Exception e) {
@@ -160,7 +164,7 @@ public class CrudRecipe {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rowsAffected;
+        return recipeAdded;
     }
 
     // Read all recipes, their ingredients and quantity of the ingredients
@@ -423,13 +427,13 @@ public class CrudRecipe {
     // Delete only one ingredient from rezept_zutat table
     // Returns one if successfull or zero if sth went wrong or already exist
 
-    public static int deleteOnlyOneIngredientFromRecipeIngredientTable(int ingredientId, int recipeId) {
-        int rowsDeleted = 0;
+    public static boolean deleteIngredientFromRecipe(int ingredientId, int recipeId) {
+        boolean ingredientDeleted = false;
         boolean ingredientFound = ingredientFoundInRecipe(ingredientId, recipeId);
 
         if (recipeId == 0 || ingredientId == 0) {
             System.out.println("No recipe or ingredient inserted as parameter");
-            return rowsDeleted;
+            return ingredientDeleted;
         }
 
         if (ingredientFound == true) {
@@ -442,8 +446,11 @@ public class CrudRecipe {
                     statement.setInt(1, recipeId);
                     statement.setInt(2, ingredientId);
 
-                    rowsDeleted = statement.executeUpdate();
-                    return rowsDeleted;
+                    int rowsDeleted = statement.executeUpdate();
+                    if (rowsDeleted > 0) {
+                        ingredientDeleted = true;
+                        return ingredientDeleted;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -453,7 +460,7 @@ public class CrudRecipe {
         } else {
             System.out.println("Ingredient doesn't exist in the recipe's list of ingredients");
         }
-        return rowsDeleted;
+        return ingredientDeleted;
     }
 
     // Permanently deletes a recipe from the database, including:

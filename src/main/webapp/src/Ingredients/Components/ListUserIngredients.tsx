@@ -148,7 +148,6 @@ export const ListUserIngredients: React.FC<UserIdProps> = ({ userId }) => {
 
                 <div>
                     <h5 className='margin-bottom'>Your ingredients</h5>
-                    <p>{changed?.changed} {changed?.message} </p>
 
                     {/* Update Ingredient component */}
                     {updateVisible &&

@@ -1,8 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { Alert } from "../../components/Alert";
-import Button from "../../components/Button";
 import { ApiResponse } from "../../Recipes/Components/AddRecipeComponent";
 import { Ingredient } from "../Ingredients";
+import AddIngredientComponent from "./AddIngredientReturn";
 
 interface Props {
     ingredients: Ingredient[];
@@ -68,57 +67,18 @@ export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
         setDataSend({ ...dataSend, ingredientId: value });
     };
 
+
+
     return (
-        <>
-            <h1>Add Ingredient</h1>
-            <form className='row g-3 form-width' onSubmit={handleAddIngredient}>
-                <div className='col-auto'>
-                    <label htmlFor="ingredient" className='visually-hidden'>Ingredient</label>
-                    {/*  the handleIngredientId function determines the ingredientId based on the value 
-                        attribute of the <option> elements within the <select> tag.*/}
-                    <select
-                        className='form-select'
-                        id="ingredient"
-                        onChange={handleIngredientId}
-                        required
-                    >
-                        <option value="">Select an ingredient</option>
-                        {ingredients.map((ingredient) =>
-                            <option
-                                key={ingredient.ingredientId}
-                                value={ingredient.ingredientId}
-                            >
-                                {ingredient.ingredientName} ({ingredient.unit})
-                            </option>
-                        )}
-                    </select>
-                </div>
-                <div className='col-auto'>
-                    <label
-                        htmlFor="quantity"
-                        className='visually-hidden'
-                    >
-                        Quantity
-                    </label>
-                    <input
-                        className='form-control'
-                        onChange={handleQuantity}
-                        placeholder='quantity'
-                        required
-                        type='number'
-                        id='quantity'
-                        min='1'
-                    />
-                </div>
-                <div className='col-auto'>
-                    <Button color='success' type='submit' children='Add' />
-                </div>
-                <div className="col-auto">
-                    {alertVisible && <Alert color={alertColor} message={apiResponse.message} onClose={() => setAlertVisibility(false)} />}
-                </div>
-
-
-            </form>
-        </>
-    )
+        <AddIngredientComponent
+            ingredients={ingredients}
+            handleAddIngredient={handleAddIngredient}
+            handleIngredientId={handleIngredientId}
+            handleQuantity={handleQuantity}
+            alertVisible={alertVisible}
+            alertColor={alertColor}
+            apiResponse={apiResponse}
+            setAlertVisibility={setAlertVisibility}
+        />
+    );
 }
