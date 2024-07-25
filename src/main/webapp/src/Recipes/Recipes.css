@@ -83,4 +83,9 @@
     padding: 0;
 }
 
+.add-form {
+    margin: auto;
+    justify-content: center;
+    text-align: center;
+}
 

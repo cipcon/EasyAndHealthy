@@ -1,34 +1,20 @@
-import { FormEvent, ChangeEvent } from 'react';
-import { Alert } from '../../components/Alert'
-import Button from '../../components/Button'
+import React, { ChangeEvent } from "react"
 import { Ingredient } from "../Ingredients";
-import { AlertColor } from './AddIngredients';
 
-
-interface AddIngredientProps {
-    ingredients: Ingredient[];
-    handleAddIngredient: (event: FormEvent<HTMLFormElement>) => Promise<void>;
+interface Props {
     handleIngredientId: React.ChangeEventHandler<HTMLSelectElement>;
-    handleQuantity: (event: ChangeEvent<HTMLInputElement>) => void;
-    alertVisible: boolean;
-    alertColor: AlertColor;
-    message: string;
-    setAlertVisibility: (isVisible: boolean) => void;
+    allIngredients: Ingredient[];
+    handleIngredientQuantity: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const AddIngredientComponent: React.FC<AddIngredientProps> = ({
-    ingredients,
-    handleAddIngredient,
+export const IngredientComponent: React.FC<Props> = ({
     handleIngredientId,
-    handleQuantity,
-    alertVisible,
-    alertColor,
-    message,
-    setAlertVisibility
+    allIngredients,
+    handleIngredientQuantity,
+
 }) => {
-    return <>
-        <h5>Add Ingredient</h5>
-        <form className='row g-3 form-width' onSubmit={handleAddIngredient}>
+    return (
+        <div className='row g-3 form-width' style={{ margin: 'auto', justifyContent: 'center' }}>
             <div className='col-auto'>
                 <label htmlFor="ingredient" className='visually-hidden'>Ingredient</label>
                 {/*  the handleIngredientId function determines the ingredientId based on the value
@@ -40,7 +26,7 @@ const AddIngredientComponent: React.FC<AddIngredientProps> = ({
                     required
                 >
                     <option value="" hidden>Select an ingredient</option>
-                    {ingredients.map((ingredient) => <option
+                    {allIngredients.map((ingredient) => <option
                         key={ingredient.ingredientId}
                         value={ingredient.ingredientId}
                     >
@@ -58,21 +44,13 @@ const AddIngredientComponent: React.FC<AddIngredientProps> = ({
                 </label>
                 <input
                     className='form-control'
-                    onChange={handleQuantity}
+                    onChange={handleIngredientQuantity}
                     placeholder='quantity'
                     required
                     type='number'
                     id='quantity'
                     min='1' />
             </div>
-            <div className='col-auto'>
-                <Button color='success' type='submit' children='Add' />
-            </div>
-            <div className="col-auto">
-                {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} />}
-            </div>
-        </form>
-    </>;
-};
-
-export default AddIngredientComponent;
+        </div>
+    )
+}

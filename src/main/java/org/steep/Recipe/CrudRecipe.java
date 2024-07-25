@@ -22,67 +22,85 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class CrudRecipe {
     // Create a new recipe in the database with the provided details.
     // Returns 1 if the recipe is created successfully, 0 if there's an error.
-    public static boolean createRecipe(CreateRecipeRequest request) {
-        boolean recipeAdded = false;
+    public static AddToUserRequest createRecipe(CreateRecipeRequest request) {
         int recipeId = recipeId(request.getRecipeName());
-
         boolean recipeExist = existingGlobalRecipe(recipeId);
+
         if (recipeExist == true) {
-            System.out.println("Recipe name already exist");
-            return recipeAdded;
+            return new AddToUserRequest(false, "Recipe name already exist, please choose another one");
         }
+
         try (Connection connection = DatabaseManagement.connectToDB()) {
             String createRecipe = "INSERT INTO rezept(rezept_name, portionen, benutzer_id) VALUES (?, ?, ?)";
 
             try (PreparedStatement statement = connection.prepareStatement(createRecipe)) {
                 statement.setString(1, request.getRecipeName());
-                statement.setInt(2, request.getPortions());
+                statement.setInt(2, request.getServings());
                 statement.setInt(3, request.getUserId());
                 int rowsAffected = statement.executeUpdate();
-                if (rowsAffected == 0) {
-                    System.out.println("Something went wrong by adding the recipe");
-                    return recipeAdded;
-                } else {
-                    recipeAdded = true;
+                if (rowsAffected > 0) {
+                    recipeId = recipeId(request.getRecipeName());
+                    boolean ingredientAdded = addMultipleIngredientsToRecipe(request.getIngredient(), recipeId);
+                    if (ingredientAdded) {
+                        return new AddToUserRequest(true, "Recipe successfully created");
+                    } else {
+                        return new AddToUserRequest(false, "The ingredients have not been added to the database");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                System.out.println(e.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.toString());
+        }
+        return new AddToUserRequest(false, "Something went wrong by adding the recipe");
+    }
+
+    public static boolean addMultipleIngredientsToRecipe(ArrayList<InnerCreateRecipeRequest> ingredients,
+            int recipeId) {
+        boolean ingredientsAdded = false;
+
+        if (ingredients.isEmpty()) {
+            System.out.println("Please add ingredients");
+            return ingredientsAdded;
         }
 
-        String addIngredientToRecipe = "INSERT INTO rezept_zutat(rezept_id, zutat_id, menge)";
-        recipeId = CrudRecipe.recipeId(request.getRecipeName());
-
-        if (request.getIngredient().isEmpty()) {
-            recipeAdded = false;
-            return recipeAdded;
+        if (recipeId == 0) {
+            System.out.println("Something went wrong with the recipe");
+            return ingredientsAdded;
         }
+
+        String addIngredientToRecipe = "INSERT INTO rezept_zutat(rezept_id, zutat_id, menge) " +
+                "VALUES (?, ?, ?) ";
         try (Connection connection = DatabaseManagement.connectToDB()) {
             try (PreparedStatement statement = connection.prepareStatement(addIngredientToRecipe)) {
                 int rowsAffected = 0;
-                for (InnerCreateRecipeRequest i : request.getIngredient()) {
+                for (InnerCreateRecipeRequest i : ingredients) {
                     statement.setInt(1, recipeId);
                     statement.setInt(2, i.getIngredientId());
                     statement.setInt(3, i.getQuantity());
                     int ingredientAdded = statement.executeUpdate();
-                    if (ingredientAdded == 1) {
+                    if (ingredientAdded > 0) {
                         rowsAffected++;
                     }
                 }
-                if (rowsAffected == 0) {
-                    System.out.println("Something went wrong by adding the ingredients");
-                    recipeAdded = false;
-                    return recipeAdded;
+                if (rowsAffected > 0) {
+                    ingredientsAdded = true;
+                    return ingredientsAdded;
+                } else {
+                    System.out.println("Ingredients have not been added to the database");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                System.out.println(e.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.toString());
         }
-        return recipeAdded;
+        return ingredientsAdded;
     }
 
     // Add an existing recipe to the user's recipe list

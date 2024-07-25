@@ -3,7 +3,7 @@ package org.steep.Requests.RecipeIngredients;
 import java.util.ArrayList;
 
 public class CreateRecipeRequest {
-    public class InnerCreateRecipeRequest {
+    public static class InnerCreateRecipeRequest {
         private int ingredientId;
         private int quantity;
 
@@ -25,17 +25,17 @@ public class CreateRecipeRequest {
 
     }
 
-    private int portions;
-    private String recipeName;
-    private int userId;
     private ArrayList<InnerCreateRecipeRequest> ingredient;
+    private String recipeName;
+    private int servings;
+    private int userId;
 
-    public int getPortions() {
-        return this.portions;
+    public ArrayList<InnerCreateRecipeRequest> getIngredient() {
+        return this.ingredient;
     }
 
-    public void setPortions(int portions) {
-        this.portions = portions;
+    public void setIngredient(ArrayList<InnerCreateRecipeRequest> ingredient) {
+        this.ingredient = ingredient;
     }
 
     public String getRecipeName() {
@@ -46,20 +46,20 @@ public class CreateRecipeRequest {
         this.recipeName = recipeName;
     }
 
+    public int getServings() {
+        return this.servings;
+    }
+
+    public void setServings(int servings) {
+        this.servings = servings;
+    }
+
     public int getUserId() {
         return this.userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public ArrayList<InnerCreateRecipeRequest> getIngredient() {
-        return this.ingredient;
-    }
-
-    public void setIngredient(ArrayList<InnerCreateRecipeRequest> ingredient) {
-        this.ingredient = ingredient;
     }
 
 }

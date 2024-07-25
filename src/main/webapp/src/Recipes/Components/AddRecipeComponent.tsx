@@ -22,7 +22,7 @@ export const AddRecipeComponent: React.FC<Props> = ({ recipes }) => {
     const [alertVisible, setAlertVisibility] = useState(false);
     const { userCredentials } = useUserContext();
     const [recipeName, setRecipeName] = useState('');
-    const [apiResponse, setApiResponse] = useState<ApiResponse>({ added: false, message: '' });
+    const [message, setMessage] = useState<string>('');
     const [alertColor, setAlertColor] = useState<AlertColor>();
 
 
@@ -43,17 +43,17 @@ export const AddRecipeComponent: React.FC<Props> = ({ recipes }) => {
 
             if (response.ok) {
                 const data: ApiResponse = await response.json();
-                setApiResponse({ added: data.added, message: data.message });
+                setMessage(data.message);
                 setRecipeName(recipeName);
                 setAlertVisibility(true);
                 setAlertColor('success')
             } else {
-                setApiResponse({ added: false, message: 'Failed to add recipe' });
+                setMessage('Failed to add recipe');
                 setAlertColor('warning')
             }
         } catch (error) {
             console.error('Error adding recipe:', error);
-            setApiResponse({ added: false, message: 'Something went wrong, please try again later' });
+            setMessage('Something went wrong, please try again later');
             setAlertColor('warning')
         }
     }
@@ -62,7 +62,7 @@ export const AddRecipeComponent: React.FC<Props> = ({ recipes }) => {
     return (
         <>
             <h2 className='center-h1'>Recipes</h2>
-            {alertVisible && <Alert color={alertColor} message={apiResponse.message} onClose={() => setAlertVisibility(false)} children={recipeName} type='button' />}
+            {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} children={recipeName} type='button' />}
             <ul className="recipes">
                 {recipes.map((recipe) => (
                     <li key={recipe.recipeId}>

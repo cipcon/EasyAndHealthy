@@ -7,8 +7,8 @@ import { Recipe } from '../../Homepage/NoIdeaMode';
 export const SearchRecipe: React.FC = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [name, setName] = useState<string>('');
-    const [search, setSearch] = useState<boolean>(false);
     const navigate = useNavigate();
+
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -19,7 +19,8 @@ export const SearchRecipe: React.FC = () => {
         navigate('/recipeDetails', { state: { recipeWithoutIngredients } });
     }
 
-    const fetchData = async () => {
+    const fetchData = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         console.log(name);
         try {
             const response = await fetch('/searchRecipe/recipeSearch', {
@@ -37,30 +38,30 @@ export const SearchRecipe: React.FC = () => {
         } catch (error) {
             console.error("Error fetching recipes:", error)
         }
-        setSearch(true);
         console.log(recipes);
     }
 
     return (
         <div>
-            <input
-                className="form-control"
-                id='recipe'
-                placeholder='Recipe or ingredient name'
-                type="text"
-                onChange={handleChange}
-            />
-            <Button color='success' children={'Search'} type='button' onClick={fetchData} />
-            {search &&
-                <div>
-                    {recipes?.map((recipe) =>
-                        <div>
-                            <a href="/recipeDetails" onClick={() => handleClick(recipe)}>
-                                {recipe.recipeName}
-                            </a>
-                        </div>
-                    )}
-                </div>}
+            <form onSubmit={fetchData}>
+                <input
+                    className="form-control"
+                    id='recipe'
+                    placeholder='Recipe or ingredient name'
+                    type="text"
+                    onChange={handleChange}
+                />
+                <Button color='success' children={'Search'} type='submit' />
+            </form>
+            <div>
+                {recipes?.map((recipe) =>
+                    <div key={recipe.recipeId}>
+                        <a href="/recipeDetails" onClick={() => handleClick(recipe)}>
+                            {recipe.recipeName}
+                        </a>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

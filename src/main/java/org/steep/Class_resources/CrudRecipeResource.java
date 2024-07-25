@@ -27,12 +27,15 @@ public class CrudRecipeResource {
     @POST
     @Path("/createRecipe")
     public Response createRecipe(CreateRecipeRequest request) {
+        System.out.println(request);
+        AddToUserRequest response = new AddToUserRequest(false, "");
         try {
-            CrudRecipe.createRecipe(request);
-            return Response.status(Response.Status.CREATED).entity("Recipe successfully created").build();
+            response = CrudRecipe.createRecipe(request);
+            return Response.ok(response).build();
         } catch (Exception e) {
+            response.setMessage(e.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error adding recipe: " + e.getMessage()).build();
+                    .entity(response).build();
         }
     }
 

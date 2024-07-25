@@ -17,7 +17,7 @@ export type AlertColor = 'success' | 'warning' | 'danger' | undefined;
 
 export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
     const [dataSend, setDataSend] = useState<AddProps>({ ingredientId: 0, quantity: 0 });
-    const [apiResponse, setApiResponse] = useState<ApiResponse>({ added: false, message: '' });
+    const [message, setMessage] = useState<string>('');
     const [alertVisible, setAlertVisibility] = useState(false);
     const [alertColor, setAlertColor] = useState<AlertColor>();
 
@@ -46,11 +46,11 @@ export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
 
             const data: ApiResponse = await response.json();
 
-            setApiResponse({ added: data.added, message: data.message });
+            setMessage(data.message);
             setAlertColor('success');
         } catch (error) {
             console.error('Error adding ingredient:', error);
-            setApiResponse({ added: false, message: 'Something went wrong, please try again later' });
+            setMessage('Something went wrong, please try again later');
             setAlertColor('danger');
         }
 
@@ -77,7 +77,7 @@ export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
             handleQuantity={handleQuantity}
             alertVisible={alertVisible}
             alertColor={alertColor}
-            apiResponse={apiResponse}
+            message={message}
             setAlertVisibility={setAlertVisibility}
         />
     );

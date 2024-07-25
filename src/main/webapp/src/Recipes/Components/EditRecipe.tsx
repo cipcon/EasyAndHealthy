@@ -4,8 +4,9 @@ import Button from '../../components/Button';
 import { AlertColor } from '../../Ingredients/Components/AddIngredients';
 import { Alert } from '../../components/Alert';
 import { ApiResponse } from './AddRecipeComponent';
-import { fetchIngredients } from '../../Ingredients/Ingredients';
-import { Recipe } from '../../Homepage/NoIdeaMode';
+import AddIngredientComponent from '../../Ingredients/Components/AddIngredientReturn';
+import { fetchIngredients } from '../../Ingredients/Components/FetchAllIngredients';
+import { RecipeNameAndServings } from './RecipeNameAndServings';
 
 interface RecipeNameServingsProps {
     newRecipeName: string;
@@ -35,9 +36,7 @@ interface Ingredient {
 export const EditRecipe: React.FC = () => {
     const location = useLocation();
     const { recipe } = location.state || {};
-    const [updatedRecipe, setUpdatedRecipe] = useState<Recipe>({ recipeName: recipe.recipeName, recipeId: recipe.recipeId, servings: recipe.servings });
     const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
-
     const [ingredients, setIngredients] = useState<IngredientProps[]>([]);
     const [updateProps, setUpdateProps] = useState<IngredientQuantityRecipeProps>(
         { ingredientId: 0, quantity: 0, recipeId: recipe.recipeId }
@@ -46,10 +45,11 @@ export const EditRecipe: React.FC = () => {
         { ingredientId: 0, quantity: 0, recipeId: recipe.recipeId }
     );
     const [recipeNameServings, setRecipeNameServings] = useState<RecipeNameServingsProps>(
-        { newRecipeName: '', recipeId: recipe.recipeId, servings: 0 }
+        { newRecipeName: recipe.recipeName, recipeId: recipe.recipeId, servings: 0 }
     )
-    const [message, setMessage] = useState<string>();
-    const [alertVisible, setAlertVisibility] = useState(false);
+    const [message, setMessage] = useState<string>('');
+    const [alertIngredient, setAlertIngredient] = useState<boolean>(false);
+    const [alertRecipe, setAlertRecipe] = useState<boolean>(false);
     const [alertColor, setAlertColor] = useState<AlertColor>();
 
     useEffect(() => {
@@ -91,7 +91,7 @@ export const EditRecipe: React.FC = () => {
             setMessage('Something went wrong, please try again later or contact support');
             setAlertColor('danger');
         }
-        setAlertVisibility(true);
+        setAlertIngredient(true);
     };
 
     const handleIngredientId: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
@@ -149,15 +149,19 @@ export const EditRecipe: React.FC = () => {
         } catch (error) {
             console.error('Error changing recipe name and number of servings:', error);
             setMessage('Something went wrong, please try again later');
-            setAlertColor('danger')
+            setAlertColor('danger');
         }
-        setAlertVisibility(true);
+        setAlertRecipe(true);
     };
 
     // Locally save the new recipe name
     const handleRecipeName = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
-        setRecipeNameServings({ ...recipeNameServings, newRecipeName: event.target.value })
+        if (event.target.value.length === 0) {
+            setRecipeNameServings({ ...recipeNameServings, newRecipeName: recipe.recipeName })
+        } else {
+            setRecipeNameServings({ ...recipeNameServings, newRecipeName: event.target.value })
+        }
         console.log(event.target.value);
     }
 
@@ -206,15 +210,13 @@ export const EditRecipe: React.FC = () => {
             setMessage('Failed to update quantity of the ingredient, please try again later');
             setAlertColor('danger')
         }
-        setAlertVisibility(true);
+        setAlertIngredient(true);
     }
 
     useEffect(() => {
         fetchRecipeIngredients();
-        const { recipe: updatedRecipe } = location.state || {};
-        setUpdateProps(updatedRecipe);
-    }, [updateIngredient, updatedRecipe])
-
+        // eslint-disable-next-line
+    }, [updateIngredient]);
 
     // remove an ingredient
     const removeIngredient = async (ingredientId: number) => {
@@ -244,7 +246,7 @@ export const EditRecipe: React.FC = () => {
             setMessage('Failed to delete the ingredient, please try again later');
             setAlertColor('danger')
         }
-        setAlertVisibility(true);
+        setAlertIngredient(true);
     }
 
 
@@ -254,88 +256,29 @@ export const EditRecipe: React.FC = () => {
             <div style={{ maxWidth: 500 }}>
                 <h5>Change Recipe name or the number of servings</h5>
                 <div className="col-auto">
-                    {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} />}
+                    {alertRecipe && <Alert color={alertColor} message={message} onClose={() => setAlertRecipe(false)} />}
                 </div>
             </div>
             <form className='row g-3 form-width' onSubmit={handleRecipe}>
-
-                <div className='col-auto'>
-                    <label
-                        htmlFor="ingredient"
-                    >
-                        RecipeName
-                    </label>
-                    <input
-                        className='form-control'
-                        onChange={handleRecipeName}
-                        placeholder={recipe.recipeName}
-                        type='text'
-                        id='ingredient'
-                    />
-                </div>
-                <div className='col-auto'>
-                    <label
-                        htmlFor="ingredient"
-                    >
-                        Servings
-                    </label>
-                    <input
-                        className='form-control'
-                        onChange={handleServings}
-                        placeholder={recipe.servings}
-                        type='text'
-                        id='ingredient'
-                    />
-                </div>
+                <RecipeNameAndServings
+                    handleRecipeName={handleRecipeName}
+                    handleServings={handleServings} />
                 <div className='col-auto' style={{ alignContent: 'end' }}>
                     <Button color='success' type='submit' children='Change' />
                 </div>
             </form>
 
             <hr />
-            <h5>Add Ingredient</h5>
-            <form className='row g-3 form-width' onSubmit={handleAddIngredient}>
-                <div className='col-auto'>
-                    <label htmlFor="ingredient" className='visually-hidden'>Ingredient</label>
-                    {/*  the handleIngredientId function determines the ingredientId based on the value
-        attribute of the <option> elements within the <select> tag.*/}
-                    <select
-                        className='form-select'
-                        id="ingredient"
-                        onChange={handleIngredientId}
-                        required
-                    >
-                        <option value="">Select an ingredient</option>
-                        {allIngredients.map((ingredient) => <option
-                            key={ingredient.ingredientId}
-                            value={ingredient.ingredientId}
-                        >
-                            {ingredient.ingredientName} ({ingredient.unit})
-                        </option>
-                        )}
-                    </select>
-                </div>
-                <div className='col-auto'>
-                    <label
-                        htmlFor="quantity"
-                        className='visually-hidden'
-                    >
-                        Quantity
-                    </label>
-                    <input
-                        className='form-control'
-                        onChange={handleQuantitytoAdd}
-                        placeholder='quantity'
-                        required
-                        type='number'
-                        id='quantity'
-                        min='1' />
-                </div>
-                <div className='col-auto'>
-                    <Button color='success' type='submit' children='Add' />
-                </div>
-
-            </form>
+            <AddIngredientComponent
+                ingredients={allIngredients}
+                handleAddIngredient={handleAddIngredient}
+                handleIngredientId={handleIngredientId}
+                handleQuantity={handleQuantitytoAdd}
+                alertVisible={alertIngredient}
+                alertColor={alertColor}
+                message={message}
+                setAlertVisibility={setAlertIngredient}
+            />
 
             <hr />
             <h5>Change ingredients:</h5>
@@ -344,6 +287,7 @@ export const EditRecipe: React.FC = () => {
                     <div className='li-ingredients' key={ingredient.ingredientId}>
                         <div className='col-auto'>
                             <label htmlFor="ingredient" className='visually-hidden'>Ingredient</label>
+                            {/* eslint-disable-next-line */}
                             <input className="form-control input-width" id='ingredient' type="text" placeholder={ingredient.ingredientName + " " + "(" + ingredient.unit + ")"} disabled />
                         </div>
                         <div className='col-auto'>

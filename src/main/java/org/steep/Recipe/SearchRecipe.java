@@ -37,8 +37,8 @@ public class SearchRecipe {
                     "WHERE r.rezept_name LIKE ? " +
                     "OR z.zutat_name LIKE ?";
             try (PreparedStatement statement = connection.prepareStatement(sqlRecipeSearch)) {
-                statement.setString(1, "%" + request + "%");
-                statement.setString(2, "%" + request + "%");
+                statement.setString(1, "%" + request.substring(1, request.length() - 1) + "%");
+                statement.setString(2, "%" + request.substring(1, request.length() - 1) + "%");
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) { // Check for results
@@ -63,6 +63,9 @@ public class SearchRecipe {
         } catch (Exception e) {
             System.out.println("An error occurred while executing the SQL query.");
             e.printStackTrace();
+        }
+        for (RecipeRequest recipeRequest : recipes) {
+            System.out.println(recipeRequest.toString());
         }
         return recipes;
     }
@@ -211,14 +214,5 @@ public class SearchRecipe {
             e.printStackTrace();
         }
         return recipes;
-    }
-
-    public static void main(String[] args) {
-        SearchRecipe searchRecipe = new SearchRecipe();
-        ArrayList<IngredientRequest> requests = searchRecipe.shoppingList(6, 1, 15);
-        for (IngredientRequest i : requests) {
-            System.out.println(
-                    i.getIngredientId() + " " + i.getIngredientName() + " " + i.getQuantity() + " " + i.getUnit());
-        }
     }
 }
