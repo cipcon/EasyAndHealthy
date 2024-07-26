@@ -3,8 +3,6 @@ import { useState } from "react";
 import { useUserContext } from "../Contexts/Context";
 import { AlertColor } from "../Ingredients/Components/AddIngredients";
 import { DeleteAccountProps, DeleteAccount } from "./DeleteAccount";
-import Button from "../components/Button";
-
 
 export const Profile = () => {
 
@@ -14,8 +12,11 @@ export const Profile = () => {
     const [alertVisible, setAlertVisibility] = useState(false);
     const [alertColor, setAlertColor] = useState<AlertColor>();
 
-
     const removeUser = async () => {
+        const isConfirmed = window.confirm(`Are you sure you want to delete your Account? This action cannot be undone.`)
+
+        if (!isConfirmed) return;
+
         try {
             const response = await fetch('/delete', {
                 method: 'POST',
@@ -29,19 +30,20 @@ export const Profile = () => {
             const data: DeleteAccountProps = await response.json();
             console.log("API response data:", data);
             setApiResponse(data);
-            setAlertVisibility(true);
-            setAlertColor('success')
-
+            if (!data.deleted) {
+                setApiResponse({ deleted: data.deleted, message: data.message });
+                setAlertColor('warning');
+            }
             if (data.deleted) {
-                setUserCredentials({ id: 0, name: '', token: '' });
+                setUserCredentials({ id: 0, name: '', token: null });
                 navigate('/', { state: { apiResponse: data } });
             }
         } catch (error) {
             console.error("Error during deletion:", error);
             setApiResponse({ deleted: false, message: 'There was an error processing your request. Please try again later.' });
-            setAlertVisibility(true);
             setAlertColor('warning');
         }
+        setAlertVisibility(true);
     };
 
     return (

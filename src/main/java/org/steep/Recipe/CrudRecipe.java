@@ -294,6 +294,38 @@ public class CrudRecipe {
         return recipeList;
     }
 
+    // This function retrieves a list of recipe IDs for recipes created by the
+    // current user.
+    // If no recipes are found, an empty ArrayList is returned.
+    public static ArrayList<RecipeRequest> recipesCreatedByUser(int userId) {
+        ArrayList<RecipeRequest> userRecipes = new ArrayList<>();
+        try (Connection connection = DatabaseManagement.connectToDB()) {
+            String sqlRecipesCreatedByUser = "SELECT rezept_id, rezept_name, portionen FROM rezept " +
+                    "WHERE benutzer_id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sqlRecipesCreatedByUser)) {
+                statement.setInt(1, userId);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    do {
+                        int recipeId = resultSet.getInt("rezept_id");
+                        String recipeName = resultSet.getString("rezept_name");
+                        int servings = resultSet.getInt("portionen");
+                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, servings);
+                        userRecipes.add(recipeRequest);
+                    } while (resultSet.next());
+                } else {
+                    System.out.println("No recipes added by ");
+                }
+                return userRecipes;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userRecipes;
+    }
+
     // Updates recipe name & portions if it exists and belongs to the user.
     // Returns affected rows (1 on success, 0 otherwise).
     public static boolean updateGlobalRecipe(String newRecipeName, int recipeId, int portions) {
@@ -517,38 +549,6 @@ public class CrudRecipe {
             e.printStackTrace();
         }
         return deleted;
-    }
-
-    // This function retrieves a list of recipe IDs for recipes created by the
-    // current user.
-    // If no recipes are found, an empty ArrayList is returned.
-    public static ArrayList<RecipeRequest> recipesCreatedByUser(int userId) {
-        ArrayList<RecipeRequest> userRecipes = new ArrayList<>();
-        try (Connection connection = DatabaseManagement.connectToDB()) {
-            String sqlRecipesCreatedByUser = "SELECT rezept_id, rezept_name, portionen FROM rezept " +
-                    "WHERE benutzer_id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sqlRecipesCreatedByUser)) {
-                statement.setInt(1, userId);
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    do {
-                        int recipeId = resultSet.getInt("rezept_id");
-                        String recipeName = resultSet.getString("rezept_name");
-                        int servings = resultSet.getInt("portionen");
-                        RecipeRequest recipeRequest = new RecipeRequest(recipeName, recipeId, servings);
-                        userRecipes.add(recipeRequest);
-                    } while (resultSet.next());
-                } else {
-                    System.out.println("No recipes added by ");
-                }
-                return userRecipes;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return userRecipes;
     }
 
     // Return recipeId based on recipe name

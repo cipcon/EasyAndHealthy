@@ -113,17 +113,17 @@ public class ManageStock {
     // delete from user's stock list
     public boolean removeIngredientFromUserList(int ingredientId, int userId) {
         boolean removed = false;
-        int rowsDeleted = 0;
         try (Connection connection = DatabaseManagement.connectToDB()) {
             try (PreparedStatement statement = connection.prepareStatement("DELETE FROM vorrat " +
                     "WHERE benutzer_id = ? AND " +
                     "zutat_id = ?")) {
                 statement.setInt(1, userId);
                 statement.setInt(2, ingredientId);
-                rowsDeleted = statement.executeUpdate();
+                int rowsDeleted = statement.executeUpdate();
                 if (rowsDeleted == 1) {
                     System.out.println("Ingredient successfully deleted");
                     removed = true;
+                    return removed;
                 } else {
                     System.out.println("Ingredient doesn't exist");
                 }

@@ -107,6 +107,12 @@ export const CreateRecipe: React.FC = () => {
         ]);
     };
 
+    const deleteIngredient = (index: number) => {
+        setIngredientsProps(prevIngredients =>
+            prevIngredients.filter((_, i) => i !== index)
+        );
+    }
+
     return (
         <>
             <form className='row g-3 form-width add-form' onSubmit={addNewRecipe} style={{ margin: 'auto', justifyContent: 'center' }}>
@@ -121,10 +127,13 @@ export const CreateRecipe: React.FC = () => {
                     handleServings={handleServings} />
                 {ingredientsProps.map((ingredient, index) => (
                     <IngredientComponent
+                        handleDelete={() => deleteIngredient(index)}
                         key={index}
                         handleIngredientId={(e) => handleIngredientChange(index, 'ingredientId', parseInt(e.target.value, 10))}
                         allIngredients={allIngredients}
                         handleIngredientQuantity={(e) => handleIngredientChange(index, 'quantity', parseInt(e.target.value, 10))}
+                        ingredientId={ingredient.ingredientId}
+                        quantity={ingredient.quantity}
                     />
                 ))}
                 <div>
@@ -133,6 +142,7 @@ export const CreateRecipe: React.FC = () => {
                 <div>
                     <Button color='success' type='submit'>Add new Recipe</Button>
                 </div>
+
             </form>
         </>
     )
