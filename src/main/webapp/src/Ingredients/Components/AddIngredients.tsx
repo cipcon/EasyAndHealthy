@@ -6,6 +6,8 @@ import AddIngredientComponent from "./AddIngredientReturn";
 interface Props {
     ingredients: Ingredient[];
     userId: number;
+    ingredientChanged: number;
+    setIngredientChanged: React.Dispatch<React.SetStateAction<number>>
 }
 
 interface AddProps {
@@ -15,7 +17,7 @@ interface AddProps {
 
 export type AlertColor = 'success' | 'warning' | 'danger' | undefined;
 
-export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
+export const AddIngredient: React.FC<Props> = ({ ingredients, userId, ingredientChanged, setIngredientChanged }) => {
     const [dataSend, setDataSend] = useState<AddProps>({ ingredientId: 0, quantity: 0 });
     const [message, setMessage] = useState<string>('');
     const [alertVisible, setAlertVisibility] = useState(false);
@@ -41,19 +43,21 @@ export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
             });
 
             if (!response.ok) {
+                setMessage('Something went wrong, please try again later');
+                setAlertColor('warning');
                 throw new Error('Failed to add ingredient');
+            } else {
+                const data: ApiResponse = await response.json();
+                setMessage(data.message);
+                !data.added ? setAlertColor('warning') : setAlertColor('success');
+                data.added && setIngredientChanged(prev => prev + 1);  // Update state to trigger re-render
             }
 
-            const data: ApiResponse = await response.json();
-
-            setMessage(data.message);
-            setAlertColor('success');
         } catch (error) {
             console.error('Error adding ingredient:', error);
             setMessage('Something went wrong, please try again later');
-            setAlertColor('danger');
+            setAlertColor('warning');
         }
-
         setAlertVisibility(true);
     };
 
@@ -71,6 +75,7 @@ export const AddIngredient: React.FC<Props> = ({ ingredients, userId }) => {
 
     return (
         <AddIngredientComponent
+            key={ingredientChanged}
             ingredients={ingredients}
             handleAddIngredient={handleAddIngredient}
             handleIngredientId={handleIngredientId}

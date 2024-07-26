@@ -20,7 +20,6 @@ export const Home = () => {
                 {userCredentials.token === 'null' ?
                     <div>
                         <h4>Welcome to the Home page, please login or register</h4>
-                        {userCredentials.id === 0 && 'Account successfully deleted'}
                     </div>
                     :
                     <div>

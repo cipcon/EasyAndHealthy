@@ -4,6 +4,7 @@ import { ListUserIngredients } from "./Components/ListUserIngredients";
 import { useUserContext } from "../Contexts/Context";
 import AddNewIngredient from "./Components/AddNewIngredient";
 import { fetchIngredients } from "./Components/FetchAllIngredients";
+import { DeleteIngredient } from "./Components/DeleteIngredient";
 
 
 export interface Ingredient {
@@ -12,10 +13,15 @@ export interface Ingredient {
     unit: string;
 }
 
+export interface IngredientChanged {
+    ingredientChanged: number;
+    setIngredientChanged: React.Dispatch<React.SetStateAction<number>>
+}
+
 export const Ingredients: React.FC = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const { userCredentials } = useUserContext();
-    const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
+    const [ingredientChanged, setIngredientChanged] = useState<number>(0);
 
     useEffect(() => {
         const fetchAndSetIngredients = async () => {
@@ -24,17 +30,13 @@ export const Ingredients: React.FC = () => {
         };
 
         fetchAndSetIngredients();
-    }, [refreshTrigger]);
-
-
-    const handleIngredientAdded = () => {
-        setRefreshTrigger(prev => !prev);
-    }
+    }, [ingredientChanged]);
 
     return (
         <>
-            <AddIngredient ingredients={ingredients} userId={userCredentials.id} />
-            <AddNewIngredient onAdded={handleIngredientAdded} />
+            <AddIngredient ingredientChanged={ingredientChanged} setIngredientChanged={setIngredientChanged} ingredients={ingredients} userId={userCredentials.id} />
+            <AddNewIngredient ingredientChanged={ingredientChanged} setIngredientChanged={setIngredientChanged} />
+            <DeleteIngredient ingredients={ingredients} ingredientChanged={ingredientChanged} setIngredientChanged={setIngredientChanged} />
             <ListUserIngredients userId={userCredentials.id} />
         </>
     );

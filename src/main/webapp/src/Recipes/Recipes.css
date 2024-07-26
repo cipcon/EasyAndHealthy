@@ -89,3 +89,13 @@
     text-align: center;
 }
 
+.search-recipe {
+    display: flex;
+    margin: auto;
+    
+}
+
+.center-button {
+    margin-left: 1em;
+    width: 200px;
+}

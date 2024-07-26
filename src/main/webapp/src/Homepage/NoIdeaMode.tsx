@@ -83,7 +83,7 @@ export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
 
     return (
         <>
-            <h4>Hello {userName} how are you today?</h4>
+            <h4>Hello {userName}, how are you today?</h4>
             <hr />
 
             {alertVisible && <Alert color={alertColor} message={apiResponse.message} onClose={() => setAlertVisibility(false)} children={recipeName} type='button' />}

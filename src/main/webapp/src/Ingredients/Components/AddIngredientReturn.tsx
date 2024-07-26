@@ -68,10 +68,10 @@ const AddIngredientComponent: React.FC<AddIngredientProps> = ({
             <div className='col-auto'>
                 <Button color='success' type='submit' children='Add' />
             </div>
-            <div className="col-auto">
-                {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} />}
-            </div>
         </form>
+        <div className="form-width">
+            {alertVisible && <Alert color={alertColor} message={message} onClose={() => setAlertVisibility(false)} />}
+        </div>
     </>;
 };
 

@@ -128,12 +128,16 @@ public class IngredientsResource {
     @DELETE
     @Path("/deleteIngredient")
     public Response deleteGlobalIngredient(int ingredientId) {
+        boolean deleted = false;
+        System.out.println(ingredientId);
         try {
-            Ingredients.deleteGlobalIngredient(ingredientId);
-            return Response.status(Response.Status.OK).build();
+            deleted = Ingredients.deleteGlobalIngredient(ingredientId);
+            System.out.println(deleted + "try");
+            return Response.ok(deleted).build();
         } catch (Exception e) {
+            System.out.println(deleted + "catch");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error deleting ingredient: " + e.getMessage()).build();
+                    .entity(deleted).build();
         }
     }
 

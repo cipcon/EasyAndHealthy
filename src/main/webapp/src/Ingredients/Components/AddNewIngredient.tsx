@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import Button from '../../components/Button';
-import { Alert } from '../../components/Alert';
+import React, { useEffect, useState } from 'react';
 import { AlertColor } from './AddIngredients';
+import { AddNewIngredientChild } from './AddNewIngredientChild';
+import { IngredientChanged } from '../Ingredients';
 
-interface ApiResponseProps {
+export interface ApiResponseProps {
     message: string;
     added: boolean;
 }
 
-interface AddedProps {
-    onAdded: () => void;
-}
-
-const AddNewIngredient: React.FC<AddedProps> = ({ onAdded }) => {
+const AddNewIngredient: React.FC<IngredientChanged> = ({ ingredientChanged, setIngredientChanged }) => {
     const [unitList, setUnitList] = useState<string[]>([]);
     const [unit, setUnit] = useState<string>('');
     const [alertColor, setAlertColor] = useState<AlertColor>();
@@ -22,19 +18,17 @@ const AddNewIngredient: React.FC<AddedProps> = ({ onAdded }) => {
 
     useEffect(() => {
         getUnits();
-    }, [])
+    }, []); // Re-fetch units if ingredient is added
 
     // save locally the unit the user saved
     const handleUnit = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setUnit(event.target.value);
-        console.log(unit);
-    }
+    };
 
     // save locally the name of the ingredient the user typed in
     const handleIngredient = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIngredientName(event.target.value);
-        console.log(ingredientName);
-    }
+    };
 
     // take all the inputs and send the request to API
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,8 +36,7 @@ const AddNewIngredient: React.FC<AddedProps> = ({ onAdded }) => {
         const request = {
             ingredientName: ingredientName,
             unit: unit
-        }
-        console.log(request);
+        };
         try {
             const response = await fetch('/ingredients/createIngredient', {
                 method: 'POST',
@@ -59,16 +52,16 @@ const AddNewIngredient: React.FC<AddedProps> = ({ onAdded }) => {
             const data: ApiResponseProps = await response.json();
             setApiResponse(data);
             setAlertVisibility(true);
-            setAlertColor(data.added ? 'success' : 'danger')
+            setAlertColor(data.added ? 'success' : 'danger');
             if (data.added) {
-                onAdded();
+                setIngredientChanged(prev => prev + 1); // Update ingredientAdded to trigger re-render
             }
         } catch (error) {
             console.error('Error adding ingredient: ', error);
-            setApiResponse({ message: 'Error adding ingredient', added: false })
+            setApiResponse({ message: 'Error adding ingredient', added: false });
             setAlertColor('danger');
         }
-    }
+    };
 
     // get all units from the API
     const getUnits = async () => {
@@ -81,65 +74,23 @@ const AddNewIngredient: React.FC<AddedProps> = ({ onAdded }) => {
             const data: string[] = await response.json();
             setUnitList(data);
         } catch (error) {
-            console.error('Error fetching units: ', error)
+            console.error('Error fetching units: ', error);
         }
-    }
+    };
 
     return (
-        <div>
-            <hr />
-            <h5>Cannot find ingredient you are looking for? Then add it:</h5>
-            <form className='row g-3 form-width' onSubmit={handleSubmit}>
+        <AddNewIngredientChild
+            key={ingredientChanged}
+            handleSubmit={handleSubmit}
+            handleIngredient={handleIngredient}
+            handleUnit={handleUnit}
+            unitList={unitList}
+            alertVisible={alertVisible}
+            alertColor={alertColor}
+            apiResponse={apiResponse}
+            setAlertVisibility={setAlertVisibility}
+        />
+    );
+};
 
-                <div className='col-auto'>
-                    <label
-                        htmlFor="ingredient"
-                        className='visually-hidden'
-                    >
-                        Ingredient
-                    </label>
-                    <input
-                        className='form-control'
-                        onChange={handleIngredient}
-                        placeholder='ingredient'
-                        required
-                        type='text'
-                        id='ingredient'
-                    />
-                </div>
-
-                <div className='col-auto'>
-                    <label htmlFor="unit" className='visually-hidden'>Unit</label>
-                    <select
-                        className='form-select'
-                        id="unit"
-                        onChange={handleUnit}
-                        required
-                    >
-                        <option value="">Select an unit</option>
-                        {unitList.map((u) =>
-                            <option
-                                key={u}
-                                value={u}
-                            >
-                                {u}
-                            </option>
-                        )}
-                    </select>
-                </div>
-
-                <div className='col-auto'>
-                    <Button color='success' type='submit' children='Add' />
-                </div>
-
-                <div className="col-auto">
-                    {alertVisible && <Alert color={alertColor} message={apiResponse?.message} onClose={() => setAlertVisibility(false)} />}
-                </div>
-
-
-            </form>
-        </div>
-    )
-}
-
-export default AddNewIngredient
+export default AddNewIngredient;
