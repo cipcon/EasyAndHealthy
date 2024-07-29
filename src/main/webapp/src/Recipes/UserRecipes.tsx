@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useUserContext } from "../Contexts/Context";
-import { Recipe } from "./AllRecipes";
 import { UserRecipesComponent } from "./Components/UserRecipesComponent";
+
+
+export interface Ingredient {
+    ingredientName: string;
+    ingredientId: number;
+    quantity: number;
+    unit: string;
+}
+
+export interface Recipe {
+    recipeName: string;
+    recipeId: number;
+    servings: number;
+    ingredients: Ingredient[];
+}
 
 export const UserRecipes: React.FC = () => {
     const [recipes, setRecipe] = useState<Recipe[]>([]);

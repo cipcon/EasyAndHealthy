@@ -92,10 +92,14 @@
 .search-recipe {
     display: flex;
     margin: auto;
-    
 }
 
 .center-button {
     margin-left: 1em;
     width: 200px;
+}
+
+.shopping-list {
+    list-style-type: none; 
+    padding-left: 0px;
 }

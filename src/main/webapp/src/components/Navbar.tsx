@@ -12,7 +12,7 @@ export const Navbar = () => {
             <nav className="navbar sticky-top navbar-expand-lg " >
                 <div className="container-fluid"  >
                     <div className="collapse navbar-collapse gap-3" >
-                        <a href="/" className="logo">
+                        <a href='/' className="logo">
                             <img src="logoCompleted.png" alt="Easy and healthy Logo" width={100} height={45} style={{ borderRadius: 10 }} />
                         </a>
 
@@ -28,7 +28,7 @@ export const Navbar = () => {
                                 : ''
                         }
 
-                        <Link to={'/allRecipes'} className=' nav-link '>Recipes</Link>
+                        <Link to={'/recipes'} className=' nav-link '>Recipes</Link>
 
                         {/* No Profile Link, if no user */}
                         {

@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { ApiResponse } from "../../Recipes/Components/AddRecipeComponent";
 import { Ingredient } from "../Ingredients";
 import AddIngredientComponent from "./AddIngredientReturn";
 
@@ -14,6 +13,12 @@ interface AddProps {
     ingredientId: number;
     quantity: number;
 }
+
+export interface ApiResponse {
+    added: boolean;
+    message: string;
+}
+
 
 export type AlertColor = 'success' | 'warning' | 'danger' | undefined;
 

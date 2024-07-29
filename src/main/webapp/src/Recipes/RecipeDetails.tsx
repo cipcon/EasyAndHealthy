@@ -1,8 +1,22 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { Ingredient, Recipe } from "./AllRecipes";
+import { useLocation } from "react-router-dom"
 import React, { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { useUserContext } from "../Contexts/Context";
+import { ShoppingList } from "./Components/ShoppingList";
+
+export interface Ingredient {
+    ingredientName: string;
+    ingredientId: number;
+    quantity: number;
+    unit: string;
+}
+
+export interface Recipe {
+    recipeName: string;
+    recipeId: number;
+    servings: number;
+    ingredients: Ingredient[];
+}
 
 interface RequestLoadProps {
     portions: number;
@@ -10,7 +24,6 @@ interface RequestLoadProps {
 }
 
 export const RecipeDetails: React.FC = () => {
-    const navigate = useNavigate();
     const location = useLocation();
     const { recipeWithIngredients } = location.state || {};
     const { recipeWithoutIngredients } = location.state || {};
@@ -115,19 +128,9 @@ export const RecipeDetails: React.FC = () => {
         }
     }
 
-    const handleClick = () => {
-        const request = {
-            portions: recipe.servings,
-            recipeId: recipe.recipeId,
-            userId: userCredentials.id
-        }
-        navigate('/shoppingList', { state: { request } })
-    }
-
-
     return (
         <div className="recipe-details">
-            <h1>{recipe?.recipeName}</h1>
+            <h4>{recipe?.recipeName}</h4>
             <div className="row change-servings">
                 <input
                     className="form-control"
@@ -148,9 +151,10 @@ export const RecipeDetails: React.FC = () => {
                     </li>
                 )}
             </ul>
-            <a href="/shoppingList" onClick={handleClick}>
-                Show me the shopping list for this recipe
-            </a>
+            <ShoppingList
+                recipe={recipe}
+                userId={userCredentials.id}
+            />
         </div>
     )
 }

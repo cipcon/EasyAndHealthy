@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import Button from '../../components/Button';
 import { AlertColor } from '../../Ingredients/Components/AddIngredients';
 import { Alert } from '../../components/Alert';
-import { ApiResponse } from './AddRecipeComponent';
 import AddIngredientComponent from '../../Ingredients/Components/AddIngredientReturn';
 import { fetchIngredients } from '../../Ingredients/Components/FetchAllIngredients';
 import { RecipeNameAndServings } from './RecipeNameAndServings';
@@ -32,6 +31,12 @@ interface Ingredient {
     ingredientId: number;
     unit: string;
 }
+
+export interface ApiResponse {
+    added: boolean;
+    message: string;
+}
+
 
 export const EditRecipe: React.FC = () => {
     const location = useLocation();

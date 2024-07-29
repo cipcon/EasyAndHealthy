@@ -12,8 +12,8 @@ export const Home = () => {
     const { userCredentials } = useUserContext();
 
     useEffect(() => {
-
-    }, [])
+        <NoIdeaMode userId={userCredentials.id} userName={userCredentials.name} />
+    }, [userCredentials])
     return (
         <>
             <div>

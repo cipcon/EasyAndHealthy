@@ -25,7 +25,6 @@ public class SearchRecipeResource {
     public Response recipeSearch(String request) {
         ArrayList<RecipeRequest> recipeRequest = new ArrayList<>();
         SearchRecipe searchRecipe = new SearchRecipe();
-        System.out.println(request);
         try {
             recipeRequest = searchRecipe.recipeSearch(request);
             return Response.ok(recipeRequest).build();
@@ -69,6 +68,7 @@ public class SearchRecipeResource {
     public Response shoppingList(ShoppingListRequest request) {
         SearchRecipe searchRecipe = new SearchRecipe();
         ArrayList<IngredientRequest> list = new ArrayList<>();
+        System.out.println(request.getPortions());
         try {
             list = searchRecipe.shoppingList(request.getPortions(), request.getRecipeId(), request.getUserId());
             return Response.ok(list).build();
@@ -77,17 +77,4 @@ public class SearchRecipeResource {
         }
     }
 
-    // @SuppressWarnings("unchecked")
-    public static void main(String[] args) {
-        /*
-         * SearchRecipeResource resource = new SearchRecipeResource();
-         * Response response = resource.recipeSearch("kar");
-         * ArrayList<RecipeRequest> recipes = (ArrayList<RecipeRequest>)
-         * response.getEntity();
-         * for (RecipeRequest r : recipes) {
-         * System.out.println(r.getRecipeId() + " " + r.getRecipeName() + " " +
-         * r.getServings());
-         * }
-         */
-    }
 }

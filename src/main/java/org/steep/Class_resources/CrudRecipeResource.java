@@ -27,7 +27,6 @@ public class CrudRecipeResource {
     @POST
     @Path("/createRecipe")
     public Response createRecipe(CreateRecipeRequest request) {
-        System.out.println(request);
         AddToUserRequest response = new AddToUserRequest(false, "");
         try {
             response = CrudRecipe.createRecipe(request);
@@ -207,14 +206,5 @@ public class CrudRecipeResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error retrieving ingredients: " + e.getMessage()).build();
         }
-    }
-
-    public static void main(String[] args) {
-        CrudRecipeResource resource = new CrudRecipeResource();
-        DeleteRecipeRequest request = new DeleteRecipeRequest();
-        request.setRecipeId(2127);
-        request.setUserId(15);
-        Response response = resource.deleteRecipeGlobally(request);
-        System.out.println(response.getStatus());
     }
 }

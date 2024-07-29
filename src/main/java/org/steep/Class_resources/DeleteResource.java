@@ -20,7 +20,6 @@ public class DeleteResource {
         DeleteAccount deleteAccount = new DeleteAccount();
         try {
             DeleteResponse deleteResponse = deleteAccount.deleteUser(userId);
-            System.out.println("Delete response: " + deleteResponse.isDeleted() + ", " + deleteResponse.getMessage());
             if (deleteResponse.isDeleted()) {
                 return Response.ok(deleteResponse).build();
             } else {

@@ -129,13 +129,10 @@ public class IngredientsResource {
     @Path("/deleteIngredient")
     public Response deleteGlobalIngredient(int ingredientId) {
         boolean deleted = false;
-        System.out.println(ingredientId);
         try {
             deleted = Ingredients.deleteGlobalIngredient(ingredientId);
-            System.out.println(deleted + "try");
             return Response.ok(deleted).build();
         } catch (Exception e) {
-            System.out.println(deleted + "catch");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(deleted).build();
         }

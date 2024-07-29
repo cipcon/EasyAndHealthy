@@ -29,7 +29,6 @@ const EditOwnRecipes: React.FC = () => {
             recipeId: recipeId,
             userId: userCredentials.id
         }
-        console.log(request);
         try {
             const response = await fetch('/recipe/deleteRecipeGlobally', {
                 method: 'POST',

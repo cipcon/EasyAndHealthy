@@ -4,7 +4,6 @@ import { Home } from './Homepage/Home';
 import { Login } from './User/Login';
 import { Register } from './User/Register';
 import { Profile } from './User/Profile';
-import { AllRecipes } from './Recipes/AllRecipes';
 import { useCallback, useEffect, useState } from 'react';
 import { AppContext } from './Contexts/Context';
 import { RecipeDetails } from './Recipes/RecipeDetails';
@@ -15,6 +14,7 @@ import { ShoppingList } from './Recipes/Components/ShoppingList';
 import EditOwnRecipes from './User/Components/EditOwnRecipes';
 import { CreateRecipe } from './Recipes/Components/CreateRecipe';
 import { EditRecipe } from './Recipes/Components/EditRecipe';
+import { SearchRecipe } from './Recipes/SearchRecipe';
 
 export interface UserProps {
   id: number;
@@ -77,12 +77,11 @@ const App: React.FC = () => {
               <Route path='/login' element={<Login />} />
               <Route path='/register' element={<Register />} />
               <Route path='/profile' element={<Profile />} />
-              <Route path='/allRecipes' element={<AllRecipes />} />
+              <Route path='/recipes' element={<SearchRecipe />} />
               <Route path='/favoriteRecipes' element={<FavoriteRecipes />} />
               <Route path='*' element={<h1>You are out of the page</h1>} />
               <Route path='/recipeDetails' element={<RecipeDetails />} />
               <Route path='/ingredients' element={<Ingredients />} />
-              <Route path='/shoppingList' element={<ShoppingList />} />
               <Route path='/editOwnRecipes' element={<EditOwnRecipes />} />
               <Route path='/create-recipe' element={<CreateRecipe />} />
               <Route path='/edit-recipe' element={<EditRecipe />} />

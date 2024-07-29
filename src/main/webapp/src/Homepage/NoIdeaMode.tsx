@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { UserProps } from './Home';
 import Button from '../components/Button';
 import { useUserContext } from '../Contexts/Context';
-import { ApiResponse } from '../Recipes/Components/AddRecipeComponent';
 import { AlertColor } from '../Ingredients/Components/AddIngredients';
 import { Alert } from '../components/Alert';
 
@@ -13,6 +12,12 @@ export interface Recipe {
     recipeId: number;
     servings: number;
 }
+
+export interface ApiResponse {
+    added: boolean;
+    message: string;
+}
+
 
 export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
     const navigate = useNavigate();

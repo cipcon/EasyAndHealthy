@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import Button from '../../components/Button';
-import { Recipe } from '../../Homepage/NoIdeaMode';
-import { Alert } from '../../components/Alert';
-import { useUserContext } from '../../Contexts/Context';
-import { AlertColor } from '../../Ingredients/Components/AddIngredients';
-import { ApiResponse } from './AddRecipeComponent';
+import Button from '../components/Button';
+import { Recipe } from '../Homepage/NoIdeaMode';
+import { Alert } from '../components/Alert';
+import { useUserContext } from '../Contexts/Context';
+import { AlertColor } from '../Ingredients/Components/AddIngredients';
 
-interface Props {
-    setSearch: React.Dispatch<React.SetStateAction<boolean>>
+interface ApiResponse {
+    added: boolean;
+    message: string;
 }
 
-export const SearchRecipe: React.FC<Props> = ({ setSearch }) => {
+export const SearchRecipe: React.FC = () => {
     const { userCredentials } = useUserContext();
     const [message, setMessage] = useState<string>('');
     const [alertColor, setAlertColor] = useState<AlertColor>();
@@ -22,6 +22,9 @@ export const SearchRecipe: React.FC<Props> = ({ setSearch }) => {
     const [name, setName] = useState<string>('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        fetchData();
+    }, [name]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -53,7 +56,6 @@ export const SearchRecipe: React.FC<Props> = ({ setSearch }) => {
         }
         console.log(recipes);
         setAlertVisibility(true);
-        setSearch(true);
     }
 
     const handleRecipeAdd = async (recipeId: number, userId: number, recipeName: string) => {
@@ -95,9 +97,6 @@ export const SearchRecipe: React.FC<Props> = ({ setSearch }) => {
                     type="text"
                     onChange={handleChange}
                 />
-                <div className='center-button'>
-                    <Button color='success' children='All Recipes' type='submit' />
-                </div>
 
             </form>
             {alertVisibility ? (<div style={{ marginTop: 10 }}>

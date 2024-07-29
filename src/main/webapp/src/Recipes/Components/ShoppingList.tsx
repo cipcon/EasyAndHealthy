@@ -1,19 +1,35 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom';
-import { Ingredient } from '../AllRecipes';
+import React, { useState } from 'react'
+import { Ingredient, Recipe } from '../RecipeDetails';
+import Button from '../../components/Button';
 
-export const ShoppingList: React.FC = () => {
-    const location = useLocation();
-    const { request } = location.state || {};
+interface ShoppingListProps {
+    portions: number;
+    recipeId: number;
+    userId: number;
+}
+
+interface Props {
+    recipe: Recipe;
+    userId: number;
+}
+
+export const ShoppingList: React.FC<Props> = ({
+    recipe,
+    userId,
+}) => {
     const [message, setMessage] = useState<string>();
     const [missingIngredients, setMissingIngredients] = useState<Ingredient[]>([]);
 
-    useEffect(() => {
-        fetchIngredients();
-        // eslint-disable-next-line
-    }, [])
+    const handleClick = () => {
+        const request = {
+            portions: recipe.servings,
+            recipeId: recipe.recipeId,
+            userId: userId
+        }
+        shoppingList(request);
+    }
 
-    const fetchIngredients = async () => {
+    const shoppingList = async (request: ShoppingListProps) => {
         console.log(request);
         try {
             const response = await fetch('/searchRecipe/shoppingList', {
@@ -35,19 +51,22 @@ export const ShoppingList: React.FC = () => {
             setMissingIngredients(data);
         } catch (error) {
             console.error("Error fetching ingredients:", error);
-            setMessage('Something went Wrong, please try again later');
+            setMessage('Something went wrong, please try again later');
         }
         console.log(missingIngredients);
     }
 
     return (
         <>
+            <Button color='success' type='button' children='Show me the shopping list' onClick={handleClick} />
             {missingIngredients.length > 0 ?
-                <div>
-                    <h5>Shopping List</h5>
-                    <ul>
+
+                <div >
+                    <hr />
+                    <h5>Shopping List:</h5>
+                    <ul className='ul-padding'>
                         {missingIngredients.map((ingredient: Ingredient) =>
-                            <li key={ingredient.ingredientId}>
+                            <li className='shopping-list' key={ingredient.ingredientId}>
                                 {ingredient.ingredientName}: {ingredient.quantity} {ingredient.unit}
                             </li>
                         )}

@@ -1,12 +1,24 @@
 import '../Recipes.css'
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Recipe } from "../AllRecipes";
 import { useUserContext } from "../../Contexts/Context";
 import { Alert } from "../../components/Alert";
 import Button from "../../components/Button";
 import { AlertColor } from '../../Ingredients/Components/AddIngredients';
 
+interface Ingredient {
+    ingredientName: string;
+    ingredientId: number;
+    quantity: number;
+    unit: string;
+}
+
+interface Recipe {
+    recipeName: string;
+    recipeId: number;
+    servings: number;
+    ingredients: Ingredient[];
+}
 
 export interface UserRecipesProps {
     recipes: Recipe[];
