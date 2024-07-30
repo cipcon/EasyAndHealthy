@@ -7,6 +7,7 @@ import org.steep.Requests.RecipeIngredients.IngredientRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
 import org.steep.Requests.SearchRecipe.CookingPlanRequest;
 import org.steep.Requests.SearchRecipe.ShoppingListRequest;
+import org.steep.Requests.SearchRecipe.PrepareRecipeRequest;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -74,6 +75,20 @@ public class SearchRecipeResource {
             return Response.ok(list).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(list).build();
+        }
+    }
+
+    @POST
+    @Path("/prepareRecipe")
+    public Response prepareRecipe(ShoppingListRequest request) {
+        SearchRecipe searchRecipe = new SearchRecipe();
+        PrepareRecipeRequest response = new PrepareRecipeRequest(false, null);
+        try {
+            response = searchRecipe.prepareRecipe(request.getPortions(), request.getRecipeId(), request.getUserId());
+            return Response.ok(response).build();
+        } catch (Exception e) {
+            response.setMessage("Something went wrong, please try again later");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).build();
         }
     }
 

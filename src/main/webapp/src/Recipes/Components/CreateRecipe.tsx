@@ -140,7 +140,7 @@ export const CreateRecipe: React.FC = () => {
                     <Button color='success' type='button' onClick={addIngredient}>Add Ingredient</Button>
                 </div>
                 <div>
-                    <Button color='success' type='submit'>Add new Recipe</Button>
+                    <Button color='success' type='submit'>Create Recipe</Button>
                 </div>
 
             </form>

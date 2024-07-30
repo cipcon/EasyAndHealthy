@@ -11,6 +11,7 @@ import java.util.Set;
 import org.steep.Database.DatabaseManagement;
 import org.steep.Requests.RecipeIngredients.IngredientRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
+import org.steep.Requests.SearchRecipe.PrepareRecipeRequest;
 import org.steep.Stock.ManageStock;
 
 public class SearchRecipe {
@@ -128,10 +129,15 @@ public class SearchRecipe {
         ManageStock manageStock = new ManageStock();
         SearchRecipe searchRecipe = new SearchRecipe();
 
+        System.out.println(portions + " " + recipeId + " " + userId);
+
         ArrayList<IngredientRequest> recipeIngredients = searchRecipe.cookingPlan(portions, recipeId);
         ArrayList<IngredientRequest> userIngredients = manageStock.readUserStock(userId);
 
         ArrayList<IngredientRequest> shoppingList = new ArrayList<>();
+
+        System.out.println(recipeIngredients);
+        System.out.println(userIngredients);
 
         if (recipeIngredients.isEmpty() || userIngredients.isEmpty()
                 || recipeId == 0 || userId == 0) {
@@ -215,4 +221,47 @@ public class SearchRecipe {
         }
         return recipes;
     }
+
+    public PrepareRecipeRequest prepareRecipe(int portions, int recipeId, int userId) {
+        ManageStock manageStock = new ManageStock();
+        SearchRecipe searchRecipe = new SearchRecipe();
+
+        ArrayList<IngredientRequest> recipeIngredients = searchRecipe.cookingPlan(portions, recipeId);
+        ArrayList<IngredientRequest> userIngredients = manageStock.readUserStock(userId);
+        System.out.println(portions + " " + recipeId + " " + userId);
+        if (recipeIngredients.isEmpty() || userIngredients.isEmpty()
+                || recipeId == 0 || userId == 0) {
+            System.out.println(
+                    "Sth went wrong with the recipeIngredients, userIngredients or user object and recipe parameters are empty");
+            return new PrepareRecipeRequest(false, "Sth went wrong, please try again later");
+        }
+
+        Set<String> specialIngredients = new HashSet<>(
+                Set.of("Salz", "Pfeffer", "Wasser", "Olivenöl", "Balsamico-Essig"));
+
+        for (IngredientRequest ingredientFromRecipe : recipeIngredients) {
+            // handle usual ingredients
+            if (specialIngredients.contains(ingredientFromRecipe.getIngredientName())) {
+                continue;
+            }
+
+            for (IngredientRequest ingredientFromUser : userIngredients) {
+                if (ingredientFromRecipe.getIngredientName().equals(ingredientFromUser.getIngredientName())) {
+                    double missingQuantity = ingredientFromRecipe.getQuantity() - ingredientFromUser.getQuantity();
+                    if (missingQuantity > 0) {
+                        return new PrepareRecipeRequest(false, "Not enough Ingredients to prepare the recipe");
+                    }
+                } else {
+                    return new PrepareRecipeRequest(false, "Not enough Ingredients to prepare the recipe");
+                }
+            }
+        }
+
+        for (IngredientRequest ingredientRequest : recipeIngredients) {
+            manageStock.removeIngredientFromUserList(ingredientRequest.getIngredientId(), userId);
+        }
+
+        return new PrepareRecipeRequest(true, "Recipe could be cooked");
+    }
+
 }

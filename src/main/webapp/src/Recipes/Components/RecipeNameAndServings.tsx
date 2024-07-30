@@ -3,11 +3,13 @@ import React from 'react'
 interface Props {
     handleRecipeName: (event: React.ChangeEvent<HTMLInputElement>) => void;
     handleServings: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    recipeName?: string;
 }
 
 export const RecipeNameAndServings: React.FC<Props> = ({
     handleRecipeName,
-    handleServings
+    handleServings,
+    recipeName
 }) => {
     return (
         <>
@@ -17,7 +19,7 @@ export const RecipeNameAndServings: React.FC<Props> = ({
                     className='form-control'
                     id='recipeName'
                     onChange={handleRecipeName}
-                    placeholder='Recipe Name'
+                    placeholder={recipeName ? recipeName : "Recipe Name"}
                     required
                     type="text"
                 />

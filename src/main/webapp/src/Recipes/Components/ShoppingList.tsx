@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 import { Ingredient, Recipe } from '../RecipeDetails';
 import Button from '../../components/Button';
+import { Alert } from '../../components/Alert';
 
 interface ShoppingListProps {
     portions: number;
     recipeId: number;
     userId: number;
+}
+
+interface CookedResponseProps {
+    prepared: boolean;
+    message: string;
 }
 
 interface Props {
@@ -18,7 +24,11 @@ export const ShoppingList: React.FC<Props> = ({
     userId,
 }) => {
     const [message, setMessage] = useState<string>();
+    const [cookedReponse, setCookedResponse] = useState<CookedResponseProps>({ prepared: false, message: '' });
     const [missingIngredients, setMissingIngredients] = useState<Ingredient[]>([]);
+    const [showList, setShowList] = useState<boolean>(false);
+    const [alertVisible, setAlertVisibility] = useState<boolean>(false);
+
 
     const handleClick = () => {
         const request = {
@@ -27,6 +37,40 @@ export const ShoppingList: React.FC<Props> = ({
             userId: userId
         }
         shoppingList(request);
+        setShowList(true);
+    }
+
+    const handleCookButton = async () => {
+        const request = {
+            recipeId: recipe.recipeId,
+            userId: userId,
+            portions: recipe.servings
+        }
+        console.log(request)
+        try {
+            const response = await fetch('/searchRecipe/prepareRecipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request)
+            })
+            if (!response.ok) {
+                const resp = {
+                    prepared: false,
+                    message: 'Something went wrong, please try again later'
+                }
+                setCookedResponse(resp);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data: CookedResponseProps = await response.json();
+            setCookedResponse(data);
+        } catch (error) {
+            console.error("Error fetching ingredients:", error);
+            setMessage('Something went wrong, please try again later');
+        }
+        console.log(cookedReponse);
+        setAlertVisibility(true);
     }
 
     const shoppingList = async (request: ShoppingListProps) => {
@@ -59,20 +103,27 @@ export const ShoppingList: React.FC<Props> = ({
     return (
         <>
             <Button color='success' type='button' children='Show me the shopping list' onClick={handleClick} />
-            {missingIngredients.length > 0 ?
-
-                <div >
-                    <hr />
-                    <h5>Shopping List:</h5>
-                    <ul className='ul-padding'>
-                        {missingIngredients.map((ingredient: Ingredient) =>
-                            <li className='shopping-list' key={ingredient.ingredientId}>
-                                {ingredient.ingredientName}: {ingredient.quantity} {ingredient.unit}
-                            </li>
-                        )}
-                    </ul>
-                </div> :
-                <p>{message}</p>}
+            {showList &&
+                <div>
+                    {
+                        missingIngredients.length > 0 ?
+                            <div >
+                                <hr />
+                                <h5>Shopping List:</h5>
+                                <ul className='ul-padding'>
+                                    {missingIngredients.map((ingredient: Ingredient) =>
+                                        <li className='shopping-list' key={ingredient.ingredientId}>
+                                            {ingredient.ingredientName}: {ingredient.quantity} {ingredient.unit}
+                                        </li>
+                                    )}
+                                </ul>
+                                <Button color='warning' type='button' children='Close the shopping list' onClick={() => setShowList(false)} />
+                            </div> :
+                            <p>{message}</p>
+                    }
+                    <Button color='success' type='button' children='Cook recipe' onClick={handleCookButton} />
+                    {alertVisible && <Alert color='warning' children={cookedReponse.message} type='button' onClose={() => setAlertVisibility(false)} />}                </div>
+            }
         </>
     )
 }

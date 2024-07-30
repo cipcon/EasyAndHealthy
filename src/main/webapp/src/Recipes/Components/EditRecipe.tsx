@@ -266,8 +266,10 @@ export const EditRecipe: React.FC = () => {
             </div>
             <form className='row g-3 form-width' onSubmit={handleRecipe}>
                 <RecipeNameAndServings
+                    recipeName={recipeNameServings.newRecipeName}
                     handleRecipeName={handleRecipeName}
-                    handleServings={handleServings} />
+                    handleServings={handleServings}
+                />
                 <div className='col-auto' style={{ alignContent: 'end' }}>
                     <Button color='success' type='submit' children='Change' />
                 </div>
