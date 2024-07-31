@@ -31,7 +31,7 @@ export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
     useEffect(() => {
         fetchData();
         // eslint-disable-next-line
-    }, []);
+    }, [userCredentials.id]);
 
     const handleClick = (recipeWithoutIngredients: Recipe) => {
         navigate('/recipeDetails', { state: { recipeWithoutIngredients } });
@@ -104,7 +104,6 @@ export const NoIdeaMode: React.FC<UserProps> = ({ userId, userName }) => {
                                 <Button color='success' children='Add' heart='&#x1F49A;' onClick={() => handleRecipeAdd(recipe.recipeId, userCredentials.id, recipe.recipeName)} type='button' />
                             </li>
                         ))}
-
                     </ul>
                 </div> :
                 <div>

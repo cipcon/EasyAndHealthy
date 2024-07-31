@@ -14,7 +14,7 @@ public class ManageStock {
 
     // CRUD (Instead of Create - Add)
     // Add ingredients to the user's list
-    public AddToUserRequest addIngredientToUserList(int ingredientId, int quantity, int userId) {
+    public AddToUserRequest addIngredientToUserList(int ingredientId, double quantity, int userId) {
         boolean ingredientAdded = false;
         String message = "";
 
@@ -31,7 +31,7 @@ public class ManageStock {
                 if (!existingIngredient(ingredientId, userId)) {
                     statement.setInt(1, userId);
                     statement.setInt(2, ingredientId);
-                    statement.setInt(3, quantity);
+                    statement.setDouble(3, quantity);
                     int rowsAffected = statement.executeUpdate();
                     if (rowsAffected == 1) {
                         message = "ingredient added successfully";
@@ -85,7 +85,7 @@ public class ManageStock {
     }
 
     // update the user's stock list
-    public boolean updateUserStock(int ingredientId, int quantity, int userId) {
+    public boolean updateUserStock(int ingredientId, double quantity, int userId) {
         int rowsUpdated = 0;
         boolean updated = false;
         try (Connection connection = DatabaseManagement.connectToDB()) {
@@ -96,7 +96,7 @@ public class ManageStock {
                     "zutat_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(updateIngredient)) {
-                statement.setInt(1, quantity);
+                statement.setDouble(1, quantity);
                 statement.setInt(2, userId);
                 statement.setInt(3, ingredientId);
                 rowsUpdated = statement.executeUpdate();

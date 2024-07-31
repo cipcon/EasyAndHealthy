@@ -53,7 +53,7 @@ const EditOwnRecipes: React.FC = () => {
     useEffect(() => {
         fetchOwnRecipes();
         // eslint-disable-next-line
-    }, [userCredentials, removeRecipe]);
+    }, [userCredentials]);
 
     const fetchOwnRecipes = async () => {
         try {

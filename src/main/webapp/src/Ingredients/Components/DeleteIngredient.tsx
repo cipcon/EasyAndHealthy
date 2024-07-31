@@ -49,6 +49,7 @@ export const DeleteIngredient: React.FC<Props> = ({ ingredients, ingredientChang
             setAlertColor('warning');
         }
         setAlertVisibility(true);
+
     };
 
     return (

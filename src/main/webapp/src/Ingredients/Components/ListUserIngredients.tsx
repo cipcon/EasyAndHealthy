@@ -27,9 +27,10 @@ interface IngredientNameIdProps {
 
 interface UserIdProps {
     userId: number;
+    ingredientChanged: number;
 }
 
-export const ListUserIngredients: React.FC<UserIdProps> = ({ userId }) => {
+export const ListUserIngredients: React.FC<UserIdProps> = ({ userId, ingredientChanged }) => {
     const [apiResponse, setApiResponse] = useState<ResponseProps[]>();
     const [changed, setChanged] = useState<ChangedProps>();
     const [alertVisible, setAlertVisibility] = useState<boolean>(false);
@@ -39,7 +40,7 @@ export const ListUserIngredients: React.FC<UserIdProps> = ({ userId }) => {
 
     useEffect(() => {
         fetchData();
-    });
+    }, [userId, ingredientChanged, alertVisible]);
 
     /* Fetch list od user ingredients */
     const fetchData = async () => {
@@ -157,7 +158,7 @@ export const ListUserIngredients: React.FC<UserIdProps> = ({ userId }) => {
                             </div>
                             <div className='col-auto'>
                                 <label htmlFor="quantity" className='visually-hidden'>Quantity</label>
-                                <input className='form-control' id="quantity" min='1' name="quantity" onChange={handleQuantity} placeholder='quantity' required type="number" />
+                                <input className='form-control' id="quantity" name="quantity" onChange={handleQuantity} placeholder='quantity' required type="number" />
                             </div>
                             <Button color='warning' type='submit' children='Update' />
                             <Button color='warning' type='submit' children='Back' onClick={() => setUpdateVisibility(false)} />

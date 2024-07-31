@@ -36,7 +36,6 @@ export const AddIngredient: React.FC<Props> = ({ ingredients, userId, ingredient
             quantity: dataSend.quantity,
             userId: userId
         }
-        console.log('Payload', JSON.stringify(request));
 
         try {
             const response = await fetch('/manageStock/addIngredientToUser', {

@@ -25,7 +25,7 @@ public class ManageStockResource {
     @Path("/addIngredientToUser")
     public Response addIngredientToUserList(IngredientUserQuantityRequest request) {
         int ingredientId = request.getIngredientId();
-        int quantity = request.getQuantity();
+        double quantity = request.getQuantity();
         int userId = request.getUserId();
         try {
             ManageStock manageStock = new ManageStock();
@@ -73,7 +73,7 @@ public class ManageStockResource {
     public Response updateUserStock(IngredientUserQuantityRequest request) {
         boolean ingredientUpdated = false;
         int ingredientId = request.getIngredientId();
-        int quantity = request.getQuantity();
+        double quantity = request.getQuantity();
         int userId = request.getUserId();
         try {
             ManageStock manageStock = new ManageStock();

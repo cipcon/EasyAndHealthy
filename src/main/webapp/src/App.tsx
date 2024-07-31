@@ -10,7 +10,6 @@ import { RecipeDetails } from './Recipes/RecipeDetails';
 import { Navbar } from './components/Navbar';
 import FavoriteRecipes from './Recipes/FavoriteRecipes';
 import { Ingredients } from './Ingredients/Ingredients';
-import { ShoppingList } from './Recipes/Components/ShoppingList';
 import EditOwnRecipes from './User/Components/EditOwnRecipes';
 import { CreateRecipe } from './Recipes/Components/CreateRecipe';
 import { EditRecipe } from './Recipes/Components/EditRecipe';
@@ -31,20 +30,12 @@ export interface AppContextType {
 const App: React.FC = () => {
   const [userCredentials, setUserCredentials] = useState<UserProps>({ id: 0, name: '', token: null });
 
-  // the code inside this function changes only when sth is passed in the second parameter. The second parameter is an array that can take more inputs
-
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUserCredentials(JSON.parse(storedUser));
     }
-  }, []); // this is the second parameter
-
-  // Example: when i pass a function in this parameter (sth should change when i click a button for eg.), the function inside useEffect() is triggered when the button is clicked
-  // else it isn't
-  // If i don't pass anything inside the second parameter, the function inside useEffect() only runs once on mount
-  // In my case, the useEffect() hook is triggered one time and takes the values. The values are not going to be changed during the app is used
-  // have also the possibility to return sth
+  }, []);
 
   useEffect(() => {
     if (userCredentials.token) {

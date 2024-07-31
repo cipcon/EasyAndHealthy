@@ -38,7 +38,7 @@ export const Navbar = () => {
                                     <Link to={'/profile'} className="nav-link">Profile</Link>
                                     <Link to={'/favoriteRecipes'} className="nav-link">Favorite</Link>
                                     <Link to={'/ingredients'} className="nav-link">Ingredients</Link>
-                                    <Link to={"editOwnRecipes"} className="nav-link">Own Recipes</Link>
+                                    <Link to={"/editOwnRecipes"} className="nav-link">Own Recipes</Link>
                                     <LogoutButton />
                                 </>
 

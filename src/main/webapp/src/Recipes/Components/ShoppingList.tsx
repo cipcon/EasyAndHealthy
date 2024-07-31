@@ -65,12 +65,13 @@ export const ShoppingList: React.FC<Props> = ({
             }
             const data: CookedResponseProps = await response.json();
             setCookedResponse(data);
+            console.log(data);
         } catch (error) {
             console.error("Error fetching ingredients:", error);
             setMessage('Something went wrong, please try again later');
         }
-        console.log(cookedReponse);
         setAlertVisibility(true);
+        shoppingList(request);
     }
 
     const shoppingList = async (request: ShoppingListProps) => {
@@ -90,7 +91,7 @@ export const ShoppingList: React.FC<Props> = ({
             console.log(response.status);
             const data: Ingredient[] = await response.json();
             if (data.length == 0) {
-                setMessage('You have all necessary ingredients');
+                setMessage('You have all the necessary ingredients');
             }
             setMissingIngredients(data);
         } catch (error) {
@@ -106,10 +107,13 @@ export const ShoppingList: React.FC<Props> = ({
             {showList &&
                 <div>
                     {
+
                         missingIngredients.length > 0 ?
                             <div >
+
                                 <hr />
-                                <h5>Shopping List:</h5>
+                                <Button color='warning' type='button' children='Close the shopping list' onClick={() => setShowList(false)} />
+                                <h5 style={{ marginTop: 10 }}>Shopping List:</h5>
                                 <ul className='ul-padding'>
                                     {missingIngredients.map((ingredient: Ingredient) =>
                                         <li className='shopping-list' key={ingredient.ingredientId}>
@@ -117,12 +121,13 @@ export const ShoppingList: React.FC<Props> = ({
                                         </li>
                                     )}
                                 </ul>
-                                <Button color='warning' type='button' children='Close the shopping list' onClick={() => setShowList(false)} />
+
                             </div> :
-                            <p>{message}</p>
+                            <h5 style={{ marginTop: 10 }}>{message}</h5>
                     }
                     <Button color='success' type='button' children='Cook recipe' onClick={handleCookButton} />
-                    {alertVisible && <Alert color='warning' children={cookedReponse.message} type='button' onClose={() => setAlertVisibility(false)} />}                </div>
+                    {alertVisible && <Alert color='warning' children={cookedReponse.message} type='button' onClose={() => setAlertVisibility(false)} />}
+                </div>
             }
         </>
     )

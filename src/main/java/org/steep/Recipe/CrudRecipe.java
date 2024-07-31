@@ -238,7 +238,6 @@ public class CrudRecipe {
         return recipes;
     }
 
-    // Not sure yet if i need this function
     // Return a ArrayList with the recipes the user saved in his recipe list
     // If the ArrayList is empty, sth went wrong
     public static ArrayList<RecipeRequest> recipesFromUser(int userId) {

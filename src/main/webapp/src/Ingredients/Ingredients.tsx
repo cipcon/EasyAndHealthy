@@ -23,21 +23,23 @@ export const Ingredients: React.FC = () => {
     const { userCredentials } = useUserContext();
     const [ingredientChanged, setIngredientChanged] = useState<number>(0);
 
-    useEffect(() => {
-        const fetchAndSetIngredients = async () => {
-            const fetchedIngredients = await fetchIngredients();
-            setIngredients(fetchedIngredients);
-        };
+    const fetchAndSetIngredients = async () => {
+        const fetchedIngredients = await fetchIngredients();
+        setIngredients(fetchedIngredients);
+    };
 
+
+    useEffect(() => {
         fetchAndSetIngredients();
-    }, [ingredientChanged]);
+        console.log(userCredentials);
+    }, [ingredientChanged, userCredentials.id]);
 
     return (
         <>
             <AddIngredient ingredientChanged={ingredientChanged} setIngredientChanged={setIngredientChanged} ingredients={ingredients} userId={userCredentials.id} />
             <AddNewIngredient ingredientChanged={ingredientChanged} setIngredientChanged={setIngredientChanged} />
             <DeleteIngredient ingredients={ingredients} ingredientChanged={ingredientChanged} setIngredientChanged={setIngredientChanged} />
-            <ListUserIngredients userId={userCredentials.id} />
+            <ListUserIngredients userId={userCredentials.id} ingredientChanged={ingredientChanged} />
         </>
     );
 

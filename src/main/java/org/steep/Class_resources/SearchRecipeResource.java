@@ -69,7 +69,6 @@ public class SearchRecipeResource {
     public Response shoppingList(ShoppingListRequest request) {
         SearchRecipe searchRecipe = new SearchRecipe();
         ArrayList<IngredientRequest> list = new ArrayList<>();
-        System.out.println(request.getPortions());
         try {
             list = searchRecipe.shoppingList(request.getPortions(), request.getRecipeId(), request.getUserId());
             return Response.ok(list).build();

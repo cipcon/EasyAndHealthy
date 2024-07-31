@@ -3,9 +3,9 @@ package org.steep.Requests.ManageStock;
 public class IngredientUserQuantityRequest {
     private int ingredientId;
     private int userId;
-    private int quantity;
+    private double quantity;
 
-    public IngredientUserQuantityRequest(int ingredientId, int userId, int quantity) {
+    public IngredientUserQuantityRequest(int ingredientId, int userId, double quantity) {
         this.ingredientId = ingredientId;
         this.userId = userId;
         this.quantity = quantity;
@@ -27,7 +27,7 @@ public class IngredientUserQuantityRequest {
         this.userId = userId;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return this.quantity;
     }
 

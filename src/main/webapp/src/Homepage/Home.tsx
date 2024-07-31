@@ -11,23 +11,20 @@ export interface UserProps {
 export const Home = () => {
     const { userCredentials } = useUserContext();
 
-    useEffect(() => {
-        <NoIdeaMode userId={userCredentials.id} userName={userCredentials.name} />
-    }, [userCredentials])
     return (
         <>
-            <div>
-                {userCredentials.token === 'null' ?
-                    <div>
-                        <h4>Welcome to the Home page, please login or register</h4>
-                    </div>
-                    :
-                    <div>
-                        <NoIdeaMode userId={userCredentials.id} userName={userCredentials.name} />
-                    </div>
-                }
-            </div>
+            {userCredentials.token === 'null' ?
+                <div>
+                    <h4>Welcome to the Home page, please login or register</h4>
+                </div>
+                :
+                <div>
+                    {userCredentials && <NoIdeaMode userId={userCredentials.id} userName={userCredentials.name} />}
+
+                </div>
+            }
         </>
 
     );
+
 }

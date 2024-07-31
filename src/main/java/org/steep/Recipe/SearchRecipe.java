@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.steep.Database.DatabaseManagement;
+import org.steep.Requests.ManageStock.IngredientUserQuantityRequest;
 import org.steep.Requests.RecipeIngredients.IngredientRequest;
 import org.steep.Requests.RecipeIngredients.RecipeRequest;
 import org.steep.Requests.SearchRecipe.PrepareRecipeRequest;
@@ -64,9 +65,6 @@ public class SearchRecipe {
         } catch (Exception e) {
             System.out.println("An error occurred while executing the SQL query.");
             e.printStackTrace();
-        }
-        for (RecipeRequest recipeRequest : recipes) {
-            System.out.println(recipeRequest.toString());
         }
         return recipes;
     }
@@ -129,20 +127,15 @@ public class SearchRecipe {
         ManageStock manageStock = new ManageStock();
         SearchRecipe searchRecipe = new SearchRecipe();
 
-        System.out.println(portions + " " + recipeId + " " + userId);
-
         ArrayList<IngredientRequest> recipeIngredients = searchRecipe.cookingPlan(portions, recipeId);
         ArrayList<IngredientRequest> userIngredients = manageStock.readUserStock(userId);
 
         ArrayList<IngredientRequest> shoppingList = new ArrayList<>();
 
-        System.out.println(recipeIngredients);
-        System.out.println(userIngredients);
-
-        if (recipeIngredients.isEmpty() || userIngredients.isEmpty()
+        if (recipeIngredients.isEmpty()
                 || recipeId == 0 || userId == 0) {
             System.out.println(
-                    "Sth went wrong with the recipeIngredients, userIngredients or user object and recipe parameters are empty");
+                    "Sth went wrong with the recipeIngredients or parameters are empty");
             return shoppingList;
         }
 
@@ -228,11 +221,12 @@ public class SearchRecipe {
 
         ArrayList<IngredientRequest> recipeIngredients = searchRecipe.cookingPlan(portions, recipeId);
         ArrayList<IngredientRequest> userIngredients = manageStock.readUserStock(userId);
+
+        ArrayList<IngredientUserQuantityRequest> updateOrDelete = new ArrayList<>();
+
         System.out.println(portions + " " + recipeId + " " + userId);
-        if (recipeIngredients.isEmpty() || userIngredients.isEmpty()
-                || recipeId == 0 || userId == 0) {
-            System.out.println(
-                    "Sth went wrong with the recipeIngredients, userIngredients or user object and recipe parameters are empty");
+        if (recipeIngredients.isEmpty() || recipeId == 0 || userId == 0) {
+            System.out.println("Sth went wrong with the recipeIngredients or parameters are empty");
             return new PrepareRecipeRequest(false, "Sth went wrong, please try again later");
         }
 
@@ -240,25 +234,47 @@ public class SearchRecipe {
                 Set.of("Salz", "Pfeffer", "Wasser", "Olivenöl", "Balsamico-Essig"));
 
         for (IngredientRequest ingredientFromRecipe : recipeIngredients) {
-            // handle usual ingredients
+            // Handle usual ingredients
             if (specialIngredients.contains(ingredientFromRecipe.getIngredientName())) {
                 continue;
             }
 
+            boolean ingredientFound = false; // Flag to check if the ingredient is found in the user's stock
+
             for (IngredientRequest ingredientFromUser : userIngredients) {
                 if (ingredientFromRecipe.getIngredientName().equals(ingredientFromUser.getIngredientName())) {
+                    ingredientFound = true; // Ingredient is found in user's stock
                     double missingQuantity = ingredientFromRecipe.getQuantity() - ingredientFromUser.getQuantity();
                     if (missingQuantity > 0) {
                         return new PrepareRecipeRequest(false, "Not enough Ingredients to prepare the recipe");
+                    } else {
+                        IngredientUserQuantityRequest request = new IngredientUserQuantityRequest(
+                                ingredientFromRecipe.getIngredientId(), userId,
+                                ingredientFromRecipe.getQuantity());
+                        updateOrDelete.add(request);
                     }
-                } else {
-                    return new PrepareRecipeRequest(false, "Not enough Ingredients to prepare the recipe");
+                    break; // Break out of the inner loop as the ingredient has been found and processed
                 }
+            }
+
+            if (!ingredientFound) {
+                // If the ingredient was not found in the user's stock, return an error
+                return new PrepareRecipeRequest(false, "Not enough Ingredients to prepare the recipe");
             }
         }
 
-        for (IngredientRequest ingredientRequest : recipeIngredients) {
-            manageStock.removeIngredientFromUserList(ingredientRequest.getIngredientId(), userId);
+        // Update the user's stock based on the updateOrDelete list
+        for (IngredientRequest ingredientFromUser : userIngredients) {
+            for (IngredientUserQuantityRequest ingredientToModify : updateOrDelete) {
+                if (ingredientToModify.getIngredientId() == ingredientFromUser.getIngredientId()) {
+                    double quantityDifference = ingredientFromUser.getQuantity() - ingredientToModify.getQuantity();
+                    if (quantityDifference == 0) {
+                        manageStock.removeIngredientFromUserList(ingredientFromUser.getIngredientId(), userId);
+                    } else {
+                        manageStock.updateUserStock(ingredientFromUser.getIngredientId(), quantityDifference, userId);
+                    }
+                }
+            }
         }
 
         return new PrepareRecipeRequest(true, "Recipe could be cooked");
